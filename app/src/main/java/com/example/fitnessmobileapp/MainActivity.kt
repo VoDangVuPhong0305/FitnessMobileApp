@@ -3,9 +3,9 @@ package com.example.fitnessmobileapp
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.example.fitnessmobileapp.ui.profile.ProfileFragment
 import com.example.fitnessmobileapp.ui.nutrition.NutritionFragment
 import com.example.fitnessmobileapp.ui.plan.PlanFragment
-import com.example.fitnessmobileapp.ui.profile.ProfileFragment
 import com.example.fitnessmobileapp.ui.report.ReportFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import android.graphics.Color

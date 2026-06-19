@@ -25,7 +25,6 @@
         app:labelVisibilityMode="labeled"
         app:itemIconTint="@color/bottom_nav_color"
         app:itemTextColor="@color/bottom_nav_color"
-        app:itemActiveIndicatorStyle="@null"
         app:menu="@menu/bottom_nav_menu" />
 
 </LinearLayout>
