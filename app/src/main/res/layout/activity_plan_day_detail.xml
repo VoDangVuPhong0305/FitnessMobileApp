@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#EEEEEE">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Header đen -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="230dp"
+            android:background="#222222"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+            <TextView
+                android:id="@+id/btnBack"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="←"
+                android:textColor="#FFFFFF"
+                android:textSize="36sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtDayTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"
+                android:text="NGÀY 1"
+                android:textColor="#FFFFFF"
+                android:textSize="36sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtWorkoutInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tập Toàn Thân"
+                android:textColor="#FFFFFF"
+                android:textSize="22sp" />
+        </LinearLayout>
+
+        <!-- Nội dung trắng -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#FFFFFF"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="6 phút, 7 bài tập"
+                android:textColor="#777777"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_marginTop="28dp"
+                android:gravity="center_vertical"
+                android:text="Leo núi\n30 s"
+                android:textColor="#333333"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:gravity="center_vertical"
+                android:text="Gánh đùi\n30 s"
+                android:textColor="#333333"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:gravity="center_vertical"
+                android:text="Bước cao\n30 s"
+                android:textColor="#333333"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:gravity="center_vertical"
+                android:text="Chống đẩy\n30 s"
+                android:textColor="#333333"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="62dp"
+                android:layout_marginTop="28dp"
+                android:background="#7B61FF"
+                android:gravity="center"
+                android:text="BẮT ĐẦU"
+                android:textColor="#FFFFFF"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>
