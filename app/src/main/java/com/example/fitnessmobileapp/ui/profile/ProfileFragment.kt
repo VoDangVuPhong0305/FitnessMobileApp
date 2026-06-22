@@ -5,17 +5,16 @@ import android.app.DatePickerDialog
 import android.content.Context
 import android.os.Bundle
 import android.view.Gravity
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.NumberPicker
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.fitnessmobileapp.R
 import java.util.Locale
 
-class ProfileFragment : Fragment() {
+class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
     private lateinit var btnMetric: TextView
     private lateinit var btnImperial: TextView
@@ -29,10 +28,6 @@ class ProfileFragment : Fragment() {
     private lateinit var txtLevel: TextView
     private lateinit var txtTrainingDays: TextView
 
-    private lateinit var txtProfileBMI: TextView
-    private lateinit var txtProfileGoal: TextView
-    private lateinit var txtProfileAdvice: TextView
-
     private var isMetric = true
     private var height = 165
     private var weight = 65.0
@@ -43,85 +38,112 @@ class ProfileFragment : Fragment() {
     private var level = "Trung bình"
     private var trainingDays = 3
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        val view = inflater.inflate(R.layout.fragment_profile, container, false)
-
-        val btnBack = view.findViewById<TextView>(R.id.btnBackProfile)
-        btnBack.setOnClickListener {
-            requireActivity().onBackPressedDispatcher.onBackPressed()
-        }
-
-        btnMetric = view.findViewById(R.id.btnMetric)
-        btnImperial = view.findViewById(R.id.btnImperial)
-
-        txtHeight = view.findViewById(R.id.txtHeight)
-        txtWeight = view.findViewById(R.id.txtWeight)
-        txtTargetWeight = view.findViewById(R.id.txtTargetWeight)
-        txtGender = view.findViewById(R.id.txtGender)
-        txtBirthDate = view.findViewById(R.id.txtBirthday)
-        txtTargetPart = view.findViewById(R.id.txtTargetPart)
-        txtLevel = view.findViewById(R.id.txtWorkoutLevel)
-        txtTrainingDays = view.findViewById(R.id.txtWorkoutDays)
-
-        txtProfileBMI = view.findViewById(R.id.txtProfileBMI)
-        txtProfileGoal = view.findViewById(R.id.txtProfileGoal)
-        txtProfileAdvice = view.findViewById(R.id.txtProfileAdvice)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         loadProfile()
-        updateUI()
 
-        btnMetric.setOnClickListener {
-            isMetric = true
-            updateUI()
-            saveProfile()
+        view.findViewById<View>(R.id.btnHelp).setOnClickListener {
+            Toast.makeText(requireContext(), "Trợ giúp", Toast.LENGTH_SHORT).show()
         }
 
-        btnImperial.setOnClickListener {
-            isMetric = false
-            updateUI()
-            saveProfile()
+        view.findViewById<View>(R.id.itemMyProfile).setOnClickListener {
+            showProfileMenuDialog()
         }
 
-        view.findViewById<View>(R.id.layoutHeight).setOnClickListener {
-            showHeightDialog()
+        view.findViewById<View>(R.id.itemReminder).setOnClickListener {
+            Toast.makeText(requireContext(), "Nhắc nhở", Toast.LENGTH_SHORT).show()
         }
 
-        view.findViewById<View>(R.id.layoutWeight).setOnClickListener {
-            showWeightDialog()
+        view.findViewById<View>(R.id.itemSound).setOnClickListener {
+            Toast.makeText(requireContext(), "Lựa chọn âm thanh", Toast.LENGTH_SHORT).show()
         }
 
-        view.findViewById<View>(R.id.layoutTargetWeight).setOnClickListener {
-            showTargetWeightDialog()
+        view.findViewById<View>(R.id.itemResetProgress).setOnClickListener {
+            showResetProgressDialog()
         }
 
-        view.findViewById<View>(R.id.layoutGender).setOnClickListener {
-            showGenderDialog()
+        view.findViewById<View>(R.id.itemDeleteAllData).setOnClickListener {
+            showDeleteAllDataDialog()
         }
 
-        view.findViewById<View>(R.id.layoutBirthDate).setOnClickListener {
-            showBirthDateDialog()
+        view.findViewById<View>(R.id.itemFeedback).setOnClickListener {
+            Toast.makeText(requireContext(), "Ý kiến phản hồi", Toast.LENGTH_SHORT).show()
         }
 
-        view.findViewById<View>(R.id.layoutTargetPart).setOnClickListener {
-            showTargetPartDialog()
+        view.findViewById<View>(R.id.itemFAQ).setOnClickListener {
+            Toast.makeText(requireContext(), "Câu hỏi thường gặp", Toast.LENGTH_SHORT).show()
         }
+    }
 
-        view.findViewById<View>(R.id.layoutLevel).setOnClickListener {
-            showLevelDialog()
-        }
+    private fun showProfileMenuDialog() {
+        val options = arrayOf(
+            "Chiều cao: ${getHeightText()}",
+            "Cân nặng: ${getWeightText()}",
+            "Cân nặng mục tiêu: ${getTargetWeightText()}",
+            "Giới tính: $gender",
+            "Ngày sinh: $birthDate",
+            "Bộ phận mục tiêu: $targetPart",
+            "Mức tập luyện: $level",
+            "Ngày tập luyện: $trainingDays/7"
+        )
 
-        view.findViewById<View>(R.id.layoutTrainingDays).setOnClickListener {
-            showTrainingDaysDialog()
-        }
+        AlertDialog.Builder(requireContext())
+            .setTitle("Hồ sơ của tôi")
+            .setItems(options) { _, which ->
+                when (which) {
+                    0 -> showHeightDialog()
+                    1 -> showWeightDialog()
+                    2 -> showTargetWeightDialog()
+                    3 -> showGenderDialog()
+                    4 -> showBirthDateDialog()
+                    5 -> showTargetPartDialog()
+                    6 -> showLevelDialog()
+                    7 -> showTrainingDaysDialog()
+                }
+            }
+            .setNegativeButton("ĐÓNG", null)
+            .show()
+    }
 
-        return view
+    private fun showResetProgressDialog() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Đặt lại tiến độ")
+            .setMessage("Bạn có chắc muốn đặt lại tiến độ tập luyện không?")
+            .setNegativeButton("HỦY", null)
+            .setPositiveButton("ĐỒNG Ý") { _, _ ->
+                Toast.makeText(requireContext(), "Đã đặt lại tiến độ", Toast.LENGTH_SHORT).show()
+            }
+            .show()
+    }
+
+    private fun showDeleteAllDataDialog() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Xóa tất cả dữ liệu")
+            .setMessage("Bạn có chắc muốn xóa tất cả dữ liệu không?")
+            .setNegativeButton("HỦY", null)
+            .setPositiveButton("XÓA") { _, _ ->
+                Toast.makeText(requireContext(), "Đã xóa dữ liệu", Toast.LENGTH_SHORT).show()
+            }
+            .show()
     }
 
     private fun updateUI() {
+        if (
+            !::btnMetric.isInitialized ||
+            !::btnImperial.isInitialized ||
+            !::txtHeight.isInitialized ||
+            !::txtWeight.isInitialized ||
+            !::txtTargetWeight.isInitialized ||
+            !::txtGender.isInitialized ||
+            !::txtBirthDate.isInitialized ||
+            !::txtTargetPart.isInitialized ||
+            !::txtLevel.isInitialized ||
+            !::txtTrainingDays.isInitialized
+        ) {
+            return
+        }
+
         if (isMetric) {
             txtHeight.text = "$height cm"
             txtWeight.text = String.format(Locale.US, "%.1f kg", weight)
@@ -143,29 +165,6 @@ class ProfileFragment : Fragment() {
         txtTargetPart.text = targetPart
         txtLevel.text = level
         txtTrainingDays.text = "$trainingDays/7"
-
-        val heightM = height / 100.0
-        val bmi = weight / (heightM * heightM)
-
-        val bmiStatus = when {
-            bmi < 18.5 -> "Gầy"
-            bmi < 25 -> "Bình thường"
-            bmi < 30 -> "Thừa cân"
-            else -> "Béo phì"
-        }
-
-        txtProfileBMI.text = "BMI hiện tại: %.1f - %s".format(Locale.US, bmi, bmiStatus)
-
-        val goalDiff = weight - targetWeight
-        txtProfileGoal.text = when {
-            goalDiff > 0 -> "Mục tiêu: Giảm %.1f kg".format(Locale.US, goalDiff)
-            goalDiff < 0 -> "Mục tiêu: Tăng %.1f kg".format(Locale.US, -goalDiff)
-            else -> "Mục tiêu: Duy trì cân nặng"
-        }
-
-        val nextTrainingDay = (trainingDays + 1).coerceAtMost(7)
-        txtProfileAdvice.text =
-            "Gợi ý: Duy trì tập luyện $trainingDays - $nextTrainingDay buổi mỗi tuần."
     }
 
     private fun saveProfile() {
@@ -232,6 +231,7 @@ class ProfileFragment : Fragment() {
                 isMetric = unitPicker.value == 0
                 updateUI()
                 saveProfile()
+                Toast.makeText(requireContext(), "Đã lưu chiều cao", Toast.LENGTH_SHORT).show()
             }
             .show()
     }
@@ -241,6 +241,7 @@ class ProfileFragment : Fragment() {
             weight = it
             updateUI()
             saveProfile()
+            Toast.makeText(requireContext(), "Đã lưu cân nặng", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -249,6 +250,7 @@ class ProfileFragment : Fragment() {
             targetWeight = it
             updateUI()
             saveProfile()
+            Toast.makeText(requireContext(), "Đã lưu cân nặng mục tiêu", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -313,7 +315,7 @@ class ProfileFragment : Fragment() {
     private fun showGenderDialog() {
         val context = requireContext()
         val options = arrayOf("Nam", "Nữ")
-        val checkedIndex = options.indexOf(gender)
+        val checkedIndex = options.indexOf(gender).coerceAtLeast(0)
 
         AlertDialog.Builder(context)
             .setTitle("Giới tính")
@@ -321,6 +323,7 @@ class ProfileFragment : Fragment() {
                 gender = options[which]
                 updateUI()
                 saveProfile()
+                Toast.makeText(requireContext(), "Đã lưu giới tính", Toast.LENGTH_SHORT).show()
                 dialog.dismiss()
             }
             .show()
@@ -346,6 +349,7 @@ class ProfileFragment : Fragment() {
 
                 updateUI()
                 saveProfile()
+                Toast.makeText(requireContext(), "Đã lưu ngày sinh", Toast.LENGTH_SHORT).show()
             },
             year,
             month,
@@ -356,7 +360,7 @@ class ProfileFragment : Fragment() {
     private fun showTargetPartDialog() {
         val context = requireContext()
         val options = arrayOf("Cánh tay", "Bụng", "Mông", "Chân")
-        val checkedIndex = options.indexOf(targetPart)
+        val checkedIndex = options.indexOf(targetPart).coerceAtLeast(0)
 
         AlertDialog.Builder(context)
             .setTitle("Bộ phận mục tiêu")
@@ -364,6 +368,7 @@ class ProfileFragment : Fragment() {
                 targetPart = options[which]
                 updateUI()
                 saveProfile()
+                Toast.makeText(requireContext(), "Đã lưu bộ phận mục tiêu", Toast.LENGTH_SHORT).show()
                 dialog.dismiss()
             }
             .show()
@@ -372,7 +377,7 @@ class ProfileFragment : Fragment() {
     private fun showLevelDialog() {
         val context = requireContext()
         val options = arrayOf("Người bắt đầu", "Trung bình", "Nâng cao")
-        val checkedIndex = options.indexOf(level)
+        val checkedIndex = options.indexOf(level).coerceAtLeast(0)
 
         AlertDialog.Builder(context)
             .setTitle("Mức tập luyện")
@@ -380,6 +385,7 @@ class ProfileFragment : Fragment() {
                 level = options[which]
                 updateUI()
                 saveProfile()
+                Toast.makeText(requireContext(), "Đã lưu mức tập luyện", Toast.LENGTH_SHORT).show()
                 dialog.dismiss()
             }
             .show()
@@ -396,9 +402,34 @@ class ProfileFragment : Fragment() {
                 trainingDays = which + 1
                 updateUI()
                 saveProfile()
+                Toast.makeText(requireContext(), "Đã lưu ngày tập luyện", Toast.LENGTH_SHORT).show()
                 dialog.dismiss()
             }
             .show()
+    }
+
+    private fun getHeightText(): String {
+        return if (isMetric) {
+            "$height cm"
+        } else {
+            convertCmToFtIn(height)
+        }
+    }
+
+    private fun getWeightText(): String {
+        return if (isMetric) {
+            String.format(Locale.US, "%.1f kg", weight)
+        } else {
+            String.format(Locale.US, "%.1f lb", kgToLb(weight))
+        }
+    }
+
+    private fun getTargetWeightText(): String {
+        return if (isMetric) {
+            String.format(Locale.US, "%.1f kg", targetWeight)
+        } else {
+            String.format(Locale.US, "%.1f lb", kgToLb(targetWeight))
+        }
     }
 
     private fun kgToLb(kg: Double): Double {
