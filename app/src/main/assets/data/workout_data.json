@@ -1,0 +1,986 @@
+{
+  "exerciseLibrary": {
+    "fullBody": [],
+    "armsChest": [
+      {
+        "id": "arms_chest_001",
+        "name": "Ngực dao động",
+        "category": "Tay & ngực",
+        "duration": 30,
+        "calories": 4,
+        "level": "Beginner",
+        "intensity": "Low",
+        "animationFile": "videos/arms_chest/Nguc_dao_dong.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Đứng trên sàn, hai chân rộng bằng vai. Duỗi thẳng hai cánh tay về phía trước ở độ cao ngang vai, lòng bàn tay hướng vào nhau.",
+          "Duỗi thẳng hai cánh tay ra càng xa càng tốt rồi đưa hai tay trở lại phía trước. Lặp lại bài tập này."
+        ]
+      },
+      {
+        "id": "arms_chest_002",
+        "name": "Tập cơ tay sau trên ghế",
+        "category": "Tay & ngực",
+        "duration": 30,
+        "calories": 6,
+        "level": "Beginner",
+        "intensity": "Medium",
+        "animationFile": "videos/arms_chest/Tap_co_tay_sau_tren_ghe.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Từ vị trí bắt đầu, ngồi trên ghế. Rồi di chuyển mông khỏi ghế, tay giữ vào mép ghế.",
+          "Từ từ cong và duỗi thẳng tay để nâng và hạ cơ thể.",
+          "Bài tập này có tác dụng tốt cho cơ tay sau."
+        ]
+      },
+      {
+        "id": "arms_chest_003",
+        "name": "Chống đẩy",
+        "category": "Tay & ngực",
+        "duration": 30,
+        "calories": 7,
+        "level": "Beginner",
+        "intensity": "Medium",
+        "animationFile": "videos/arms_chest/Chong_day.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Nằm áp xuống sàn lấy tay đỡ thân. Giữ thẳng thân trong khi nâng và hạ thân bằng tay.",
+          "Bài tập này giúp tập ngực, vai, cơ tay sau, lưng và chân."
+        ]
+      },
+      {
+        "id": "arms_chest_004",
+        "name": "Hít đất chéo",
+        "category": "Tay & ngực",
+        "duration": 30,
+        "calories": 7,
+        "level": "Medium",
+        "intensity": "Medium",
+        "animationFile": "videos/arms_chest/Hit_dat_cheo.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Bắt đầu ở tư thế hít đất thẳng tay.",
+          "Nâng tay phải và chân trái lên cho đến khi song song với sàn.",
+          "Trở lại tư thế bắt đầu và lặp lại với bên kia."
+        ]
+      },
+      {
+        "id": "arms_chest_005",
+        "name": "Chống đẩy cao tay",
+        "category": "Tay & ngực",
+        "duration": 30,
+        "calories": 6,
+        "level": "Beginner",
+        "intensity": "Medium",
+        "animationFile": "videos/arms_chest/Chong_day_cao_tay.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Bắt đầu với tư thế chống đẩy thông thường nhưng để tay cao trên ghế hoặc ghế dài.",
+          "Sau đó đẩy cơ thể lên xuống bằng sức mạnh của tay.",
+          "Nhớ phải giữ thẳng cơ thể."
+        ]
+      },
+      {
+        "id": "arms_chest_006",
+        "name": "Trườn hình ngôi sao",
+        "category": "Tay & ngực",
+        "duration": 30,
+        "calories": 7,
+        "level": "Medium",
+        "intensity": "Medium",
+        "animationFile": "videos/arms_chest/Truon_hinh_ngoi_sao.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Bắt đầu với hai tay và hai chân chống trên sàn, hai tay đặt ngay dưới vai và đầu gối dưới hông.",
+          "Đưa bàn tay trái về phía trước, và đưa đầu gối phải đến gần khuỷu tay phải. Đổi bên và làm lại động tác này.",
+          "Sau đó di chuyển về phía sau theo chiều ngược lại và quay về tư thế bắt đầu. Lặp lại bài tập này."
+        ]
+      },
+      {
+        "id": "arms_chest_007",
+        "name": "Tay cắt kéo",
+        "category": "Tay & ngực",
+        "duration": 30,
+        "calories": 4,
+        "level": "Beginner",
+        "intensity": "Low",
+        "animationFile": "videos/arms_chest/Tay_cat_keo.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Đứng thẳng, hai chân rộng bằng vai.",
+          "Duỗi hai tay ra trước mặt ở độ cao ngang vai, một cánh tay chồng lên tay kia tạo thành hình chữ \"X\", sau đó dang hai tay ra xa nhau.",
+          "Đổi cánh tay và lặp lại bài tập này."
+        ]
+      },
+      {
+        "id": "arms_chest_008",
+        "name": "Căng cơ tay trái",
+        "category": "Tay & ngực",
+        "duration": 30,
+        "calories": 3,
+        "level": "Beginner",
+        "intensity": "Low",
+        "animationFile": "videos/arms_chest/Cang_co_tay_trai.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Để tay trái ra sau lưng, sử dụng tay phải để nắm lấy khuỷu tay trái và nhẹ nhàng kéo. Giữ nguyên tư thế này trong vài giây."
+        ]
+      },
+      {
+        "id": "arms_chest_009",
+        "name": "Căng cơ tay phải",
+        "category": "Tay & ngực",
+        "duration": 30,
+        "calories": 3,
+        "level": "Beginner",
+        "intensity": "Low",
+        "animationFile": "videos/arms_chest/Cang_co_tay_phai.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Để tay phải ra sau lưng, sử dụng tay trái để nắm lấy khuỷu tay phải và nhẹ nhàng kéo. Giữ nguyên tư thế này trong vài giây"
+        ]
+      },
+      {
+        "id": "arms_chest_010",
+        "name": "Đứng duỗi cơ tay trước bên trái",
+        "category": "Tay & ngực",
+        "duration": 30,
+        "calories": 3,
+        "level": "Beginner",
+        "intensity": "Low",
+        "animationFile": "videos/arms_chest/Dung_duoi_co_tay_truoc_ben_trai.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Đứng, cánh tay trái ở gần tường. Duỗi cánh tay trái và đặt bàn tay trái lên tường, sau đó nhẹ nhàng xoay người sang phải."
+        ]
+      },
+      {
+        "id": "arms_chest_011",
+        "name": "Đứng duỗi cơ tay trước bên phải",
+        "category": "Tay & ngực",
+        "duration": 30,
+        "calories": 3,
+        "level": "Beginner",
+        "intensity": "Low",
+        "animationFile": "videos/arms_chest/Dung_duoi_co_tay_truoc_ben_phai.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Đứng, cánh tay phải ở gần tường. Duỗi cánh tay phải và đặt bàn tay phải lên tường, sau đó nhẹ nhàng xoay người sang trái."
+        ]
+      },
+      {
+        "id": "arms_chest_012",
+        "name": "Đưa khuỷu tay về sau",
+        "category": "Tay & ngực",
+        "duration": 30,
+        "calories": 4,
+        "level": "Beginner",
+        "intensity": "Low",
+        "animationFile": "videos/arms_chest/Dua_khuyu_tay_ve_sau.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Đứng thẳng hai chân rộng bằng vai. Đặt hai tay ở hai bên eo, các ngón tay hướng xuống dưới và khuỷu tay hướng ra ngoài.",
+          "Nhẹ nhàng kéo hai khuỷu tay của bạn về phía sau, sau đó đưa trở lại tư thế bắt đầu. Lặp lại bài tập này."
+        ]
+      },
+      {
+        "id": "arms_chest_013",
+        "name": "Cuốn tạ chân trái",
+        "category": "Tay & ngực",
+        "duration": 30,
+        "calories": 5,
+        "level": "Beginner",
+        "intensity": "Low",
+        "animationFile": "videos/arms_chest/Cuon_ta_chan_trai.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Đứng dựa vào tường. Nâng chân phải lên, nghiêng về phía trước và dùng tay trái nắm lấy bên dưới mắt cá chân phải.",
+          "Nâng mắt cá chân lên về phía vai càng nhiều càng tốt, sau đó hạ xuống và lặp lại bài tập này."
+        ]
+      },
+      {
+        "id": "arms_chest_014",
+        "name": "Cuốn tạ chân phải",
+        "category": "Tay & ngực",
+        "duration": 30,
+        "calories": 5,
+        "level": "Beginner",
+        "intensity": "Low",
+        "animationFile": "videos/arms_chest/Cuon_ta_chan_phai.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Đứng dựa vào tường. Nâng chân trái lên, nghiêng về phía trước và dùng tay phải nắm lấy bên dưới mắt cá chân trái.",
+          "Nâng mắt cá chân lên về phía vai càng nhiều càng tốt, sau đó hạ xuống và lặp lại bài tập này."
+        ]
+      },
+      {
+        "id": "arms_chest_015",
+        "name": "Hít đất vỗ vai",
+        "category": "Tay & ngực",
+        "duration": 30,
+        "calories": 7,
+        "level": "Medium",
+        "intensity": "Medium",
+        "animationFile": "videos/arms_chest/Hít đất vỗ vai.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Bắt đầu với tư thế hít đất thẳng tay.",
+          "Đưa tay phải lên chạm vào vai trái.",
+          "Trở lại tư thế bắt đầu và lặp lại với tay kia."
+        ]
+      },
+      {
+        "id": "arms_chest_016",
+        "name": "Cua bò",
+        "category": "Tay & ngực",
+        "duration": 30,
+        "calories": 7,
+        "level": "Medium",
+        "intensity": "Medium",
+        "animationFile": "videos/arms_chest/Cua_bo.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Ngồi xuống và gập hai chân, đặt hai tay rộng bằng vai trên mặt đất phía sau bạn và đảm bảo các ngón tay hướng sang hai bên.",
+          "Nâng hông đến khi thân trên song song với mặt đất và đi về phía trước bằng hai tay và hai chân."
+        ]
+      },
+      {
+        "id": "arms_chest_017",
+        "name": "Chống đẩy bằng đầu gối",
+        "category": "Tay & ngực",
+        "duration": 30,
+        "calories": 5,
+        "level": "Beginner",
+        "intensity": "Low",
+        "animationFile": "videos/arms_chest/Chong_day_bang_dau_goi.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Bắt đầu ở tư thế chống đẩy thông thường, sau đó để đầu gối chạm sàn và nâng cẳng chân lên khỏi sàn.",
+          "Tiếp đến, thực hiện chống đẩy lên xuống."
+        ]
+      },
+      {
+        "id": "arms_chest_018",
+        "name": "Đấm móc luân phiên",
+        "category": "Tay & ngực",
+        "duration": 30,
+        "calories": 6,
+        "level": "Beginner",
+        "intensity": "Medium",
+        "animationFile": "videos/arms_chest/Dam_moc_luan_phien.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Đứng hai chân rộng bằng vai và đặt bàn chân thuận phía trên chân kia. Hơi gập đầu gối, siết chặt nắm tay và gập khuỷu tay thành góc 90 độ.",
+          "Nâng cánh tay phải lên cao ngang vai và giữ cẳng tay song song với mặt đất. Xoay vai và hông và đấm về phía bên trái. Đổi bên và lặp lại."
+        ]
+      },
+      {
+        "id": "arms_chest_019",
+        "name": "Chống đẩy vào tường",
+        "category": "Tay & ngực",
+        "duration": 30,
+        "calories": 4,
+        "level": "Beginner",
+        "intensity": "Low",
+        "animationFile": "videos/arms_chest/Chong_day_vao_tuong.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Đứng cách trước tường một bước dài. Sau đó đưa thẳng tay ra phía tường và dựa vào. Nâng gót chân của bạn.",
+          "Từ từ cong khuỷu tay và ép thân trên về phía tường. Đẩy ngược lại và lặp lại bài tập này.",
+          "Nhớ phải giữ thẳng cơ thể."
+        ]
+      },
+      {
+        "id": "arms_chest_020",
+        "name": "Chống đẩy tay hình kim cương",
+        "category": "Tay & ngực",
+        "duration": 30,
+        "calories": 8,
+        "level": "Medium",
+        "intensity": "High",
+        "animationFile": "videos/arms_chest/Chong_day_tay_hinh_kim_cuong.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Bắt đầu ở tư thế chống đẩy.",
+          "Tạo hình kim cương bằng ngón trỏ và ngón cái với nhau, để ngay phía dưới ngực của bạn, rồi chống đẩy lên và xuống.",
+          "Nhớ phải giữ thẳng người."
+        ]
+      },
+      {
+        "id": "arms_chest_021",
+        "name": "Chống đẩy để tay rộng",
+        "category": "Tay & ngực",
+        "duration": 30,
+        "calories": 7,
+        "level": "Beginner",
+        "intensity": "Medium",
+        "animationFile": "videos/arms_chest/Chong_day_de_tay_rong.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Bắt đầu với tư thế chống đẩy thông thường nhưng tay dang rộng hơn vai.",
+          "Sau đó đẩy cơ thể lên và xuống. Nhớ phải giữ thẳng cơ thể."
+        ]
+      },
+      {
+        "id": "arms_chest_022",
+        "name": "Đấm",
+        "category": "Tay & ngực",
+        "duration": 30,
+        "calories": 5,
+        "level": "Beginner",
+        "intensity": "Medium",
+        "animationFile": "videos/arms_chest/Dam.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Đứng với một chân của bạn về phía trước và đầu gối của bạn hơi cong.",
+          "Cong khuỷu tay và đấm về phía trước mặt. Duỗi một tay về trước, lòng bàn tay quay xuống sàn.",
+          "Co tay lại và lặp lại với tay kia."
+        ]
+      }
+    ],
+    "legs": [
+      {
+        "id": "legs_001",
+        "name": "Bật nhảy",
+        "category": "Chân",
+        "duration": 30,
+        "calories": 7,
+        "level": "Beginner",
+        "intensity": "Medium",
+        "animationFile": "videos/legs/Bat_nhay.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Bắt đầu đứng hai chân để gần nhau, tay buông xuống để hai bên, sau đó nhảy lên chân dang ra và để tay lên cao trên đầu. Trở lại vị trí bắt đầu rồi lặp lại.",
+          "Bài tập này tập luyện cho toàn thân và có tác dụng với tất cả các nhóm cơ lớn."
+        ]
+      },
+      {
+        "id": "legs_002",
+        "name": "Gánh đùi",
+        "category": "Chân",
+        "duration": 30,
+        "calories": 6,
+        "level": "Beginner",
+        "intensity": "Medium",
+        "animationFile": "videos/legs/Ganh_dui.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Chân đứng rộng bằng vai, tay để thẳng về trước, hạ thấp cơ thể cho tới khi đùi song song với sàn.",
+          "Đầu gối cùng hướng với ngón chân. Quay lại tư thế ban đầu và lặp lại.",
+          "Bài tập này giúp tập đùi, hông, cơ đùi trước, gân kheo và thân dưới."
+        ]
+      },
+      {
+        "id": "legs_003",
+        "name": "Nằm nghiên phải nâng chân trái",
+        "category": "Chân",
+        "duration": 30,
+        "calories": 5,
+        "level": "Beginner",
+        "intensity": "Low",
+        "animationFile": "videos/legs/Nam_nghien_phai_nang_chan_trai.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Nằm nghiêng đầu tựa vào tay phải. Nhấc chân trên lên rồi trở lại tư thế bắt đầu.",
+          "Lời khuyên: Đảm bảo chân trái phải đưa thẳng lên và xuống trong khi tập.",
+          "Cơ: Cơ mông"
+        ]
+      },
+      {
+        "id": "legs_004",
+        "name": "Nằm người trái nâng chân phải",
+        "category": "Chân",
+        "duration": 30,
+        "calories": 5,
+        "level": "Beginner",
+        "intensity": "Low",
+        "animationFile": "videos/legs/Nam_nghien_trai_nang_chan_phai.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Nằm nghiêng đầu tựa vào tay trái. Nhấc chân trên lên rồi trở lại tư thế bắt đầu.",
+          "Lời khuyên: Đảm bảo chân phải phải đưa thẳng lên và xuống trong khi tập.",
+          "Cơ: Cơ mông"
+        ]
+      },
+      {
+        "id": "legs_005",
+        "name": "Tấn sau",
+        "category": "Chân",
+        "duration": 30,
+        "calories": 6,
+        "level": "Beginner",
+        "intensity": "Medium",
+        "animationFile": "videos/legs/Tan_sau.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Đứng chân rộng bằng vai, hai tay để trên hông.",
+          "Bước dài một bước về sau bằng chân phải rồi hạ thân người xuống cho tới khi đùi trái song song với sàn. Trở lại tư thế và lặp lại với chân bên kia."
+        ]
+      },
+      {
+        "id": "legs_006",
+        "name": "Lừa đá chân trái",
+        "category": "Chân",
+        "duration": 30,
+        "calories": 5,
+        "level": "Beginner",
+        "intensity": "Low",
+        "animationFile": "videos/legs/Lua_da_chan_trai.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Bắt đầu với tư thế quỳ gối chống hai tay. Sau đó nhấc chân trái và ép mông đến hết mức có thể.",
+          "Trở lại tư thế bắt đầu và lặp lại từ 10-15 lần cho bài tập này."
+        ]
+      },
+      {
+        "id": "legs_007",
+        "name": "Lừa đá chân phải",
+        "category": "Chân",
+        "duration": 30,
+        "calories": 5,
+        "level": "Beginner",
+        "intensity": "Low",
+        "animationFile": "videos/legs/Lua_da_chan_phai.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Bắt đầu với tư thế quỳ gối chống hai tay. Sau đó nhấc chân phải và ép mông đến hết mức có thể.",
+          "Trở lại tư thế bắt đầu và lặp lại từ 10-15 lần cho bài tập này."
+        ]
+      },
+      {
+        "id": "legs_008",
+        "name": "Dựa tường duỗi cơ đùi trước trái",
+        "category": "Chân",
+        "duration": 30,
+        "calories": 3,
+        "level": "Beginner",
+        "intensity": "Low",
+        "animationFile": "videos/legs/Dua_tuong_duoi_co_dui_truoc_trai.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Đứng với tay phải đặt trên tường. Gập chân trái và nắm lấy mắt cá chân hoặc các ngón chân để đưa bắp chân trái lại gần với đùi trái. Giữ tư thế này."
+        ]
+      },
+      {
+        "id": "legs_009",
+        "name": "Dựa tường duỗi cơ đùi trước phải",
+        "category": "Chân",
+        "duration": 30,
+        "calories": 3,
+        "level": "Beginner",
+        "intensity": "Low",
+        "animationFile": "videos/legs/Dua_tuong_duoi_co_dui_truoc_phai.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Đứng với tay trái đặt trên tường. Gập chân phải và nắm lấy mắt cá chân hoặc các ngón chân để đưa bắp chân phải lại gần với đùi phải. Giữ tư thế này."
+        ]
+      },
+      {
+        "id": "legs_010",
+        "name": "Ép đầu gối trái lên ngực",
+        "category": "Chân",
+        "duration": 30,
+        "calories": 3,
+        "level": "Beginner",
+        "intensity": "Low",
+        "animationFile": "videos/legs/Ep_dau_goi_trai_len_nguc.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Nằm trên sàn, hai chân duỗi thẳng. Nâng đầu gối trái lên và nắm lấy bằng cả hai tay.",
+          "Kéo đầu gối trái về phía ngực hết mức có thể đồng thời giữ chân phải thẳng trên mặt đất.",
+          "Giữ tư thế này trong vài giây."
+        ]
+      },
+      {
+        "id": "legs_011",
+        "name": "Ép đầu gối phải lên ngực",
+        "category": "Chân",
+        "duration": 30,
+        "calories": 3,
+        "level": "Beginner",
+        "intensity": "Low",
+        "animationFile": "videos/legs/Ep_dau_goi_phai_len_nguc.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Nằm trên sàn, hai chân duỗi thẳng. Nâng đầu gối phải lên và nắm lấy bằng cả hai tay.",
+          "Kéo đầu gối phải về phía ngực hết mức có thể đồng thời giữ chân trái thẳng trên mặt đất.",
+          "Giữ tư thế này trong vài giây."
+        ]
+      },
+      {
+        "id": "legs_012",
+        "name": "Cây cầu mông",
+        "category": "Chân",
+        "duration": 30,
+        "calories": 5,
+        "level": "Beginner",
+        "intensity": "Low",
+        "animationFile": "videos/legs/Cay_cau_mong.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Nằm ngửa với đầu gối cong và chân để sát mặt sàn. Đặt cánh tay sát với hai bên thân. Sau đó nhấc mông lên rồi hạ xuống.",
+          "Lặp lại 10-15 lần cho bài tập này."
+        ]
+      },
+      {
+        "id": "legs_013",
+        "name": "Đứng tấn",
+        "category": "Chân",
+        "duration": 30,
+        "calories": 6,
+        "level": "Beginner",
+        "intensity": "Medium",
+        "animationFile": "videos/legs/Dung_tan.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Đứng để tay lên hông và chân đứng hơi rộng hơn vai. Sau đó hạ cơ thể xuống cho đến khi đùi song song với sàn.",
+          "Đầu gối mở ra cùng hướng với ngón chân. Lặp lại từ 10-15 lần cho bài tập này."
+        ]
+      },
+      {
+        "id": "legs_014",
+        "name": "Leo núi",
+        "category": "Chân",
+        "duration": 30,
+        "calories": 7,
+        "level": "Beginner",
+        "intensity": "Medium",
+        "animationFile": "videos/legs/Leo_nui.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Bắt đầu ở tư thế chống đẩy. Co gối phải về phía ngực và giữ chân trái thẳng, sau đó nhanh chóng chuyển sang chân khác.",
+          "Bài tập này tăng cường nhiều nhóm cơ."
+        ]
+      },
+      {
+        "id": "legs_015",
+        "name": "Đứng tấn chân trái",
+        "category": "Chân",
+        "duration": 30,
+        "calories": 6,
+        "level": "Beginner",
+        "intensity": "Medium",
+        "animationFile": "videos/legs/Dung_tan_chan_trai.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Bước một bước dài về trước bằng chân trái và giữ thân trên thẳng. Sau đó hạ thân xuống rồi lại nâng lên.",
+          "Lặp lại từ 10-15 lần cho bài tập này."
+        ]
+      },
+      {
+        "id": "legs_016",
+        "name": "Đứng tấn chân phải",
+        "category": "Chân",
+        "duration": 30,
+        "calories": 6,
+        "level": "Beginner",
+        "intensity": "Medium",
+        "animationFile": "videos/legs/Dung_tan_chan_phai.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Bước một bước dài về trước bằng chân phải và giữ thân trên thẳng. Sau đó hạ thân xuống rồi lại nâng lên.",
+          "Lặp lại từ 10-15 lần cho bài tập này."
+        ]
+      },
+      {
+        "id": "legs_017",
+        "name": "Duỗi cơ đùi trong khi đứng",
+        "category": "Chân",
+        "duration": 30,
+        "calories": 3,
+        "level": "Beginner",
+        "intensity": "Low",
+        "animationFile": "videos/legs/Duoi_co_dui_trong_khi_dung.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Đứng với hai bàn chân cách xa nhau và hai tay đặt trên hông.",
+          "Sau đó khuỵu gối chân trái và nghiêng người sang bên trái.",
+          "Giữ tư thế này trong vài giây, sau đó quay trở lại và lặp lại với phía bên kia."
+        ]
+      },
+      {
+        "id": "legs_018",
+        "name": "Duỗi vặn sống lưng bên trái",
+        "category": "Chân",
+        "duration": 30,
+        "calories": 3,
+        "level": "Beginner",
+        "intensity": "Low",
+        "animationFile": "videos/legs/Duoi_van_song_lung_ben_trai.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Nằm ngửa xuống sàn với hai chân mở rộng.",
+          "Nâng chân trái lên và dùng tay phải kéo đầu gối trái sang bên phải, nhưng giữ cánh tay còn lại được mở rộng về bên kia trên mặt sàn.",
+          "Giữ nguyên tư thế này trong vài giây."
+        ]
+      },
+      {
+        "id": "legs_019",
+        "name": "Duỗi vặn sống lưng bên phải",
+        "category": "Chân",
+        "duration": 30,
+        "calories": 3,
+        "level": "Beginner",
+        "intensity": "Low",
+        "animationFile": "videos/legs/Duoi_van_song_lung_ben_phai.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Nằm ngửa xuống sàn với hai chân mở rộng.",
+          "Nâng chân phải lên và dùng tay trái kéo đầu gối phải sang bên trái, nhưng giữ cánh tay còn lại được mở rộng về bên kia trên mặt sàn.",
+          "Giữ nguyên tư thế này trong vài giây."
+        ]
+      },
+      {
+        "id": "legs_020",
+        "name": "Nâng bắp chân dựa tường",
+        "category": "Chân",
+        "duration": 30,
+        "calories": 4,
+        "level": "Beginner",
+        "intensity": "Low",
+        "animationFile": "videos/legs/Nang_bap_chan_dua_tuong.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Đứng thẳng, hai tay đặt lên tường và hai chân rộng bằng vai.",
+          "Nâng hai gót chân và đứng trên các ngón chân, sau đó hạ gót chân xuống. Lặp lại bài tập này."
+        ]
+      },
+      {
+        "id": "legs_021",
+        "name": "Đứng tấn nâng bắp chân dựa tường",
+        "category": "Chân",
+        "duration": 30,
+        "calories": 5,
+        "level": "Beginner",
+        "intensity": "Medium",
+        "animationFile": "videos/legs/Dung_tan_nang_bap_chan_dua_tuong.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Đứng với hai tay đặt lên tường và hai chân cách nhau xa hơn chiều rộng vai một chút.",
+          "Hạ thấp cơ thể cho đến khi đùi song song với sàn nhà. Nâng hai gót chân lên và xuống."
+        ]
+      }
+    ],
+    "abs": [
+      {
+        "id": "abs_001",
+        "name": "Gập người xe đạp đứng",
+        "category": "Cơ bụng",
+        "duration": 30,
+        "calories": 6,
+        "level": "Beginner",
+        "intensity": "Medium",
+        "animationFile": "videos/abs/Gap_nguoi_xe_dap_dung.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Đứng với hai chân rộng bằng vai. Đưa đầu gối đến gần khuỷu tay đối diện.",
+          "Quay lại tư thế bắt đầu và lặp lại với bên còn lại."
+        ]
+      },
+      {
+        "id": "abs_002",
+        "name": "Gập bụng chéo kiểu nga",
+        "category": "Cơ bụng",
+        "duration": 30,
+        "calories": 6,
+        "level": "Beginner",
+        "intensity": "Medium",
+        "animationFile": "videos/abs/Gap_bung_cheo_kieu_nga.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Ngồi trên sàn với đầu gối cong, bàn chân đặt xuống mặt sàn và lưng nghiêng về sau.",
+          "Sau đó nắm hai tay với nhau và xoay vặn từ bên này sang bên kia. Bài tập này tập cho cơ liên sườn."
+        ]
+      },
+      {
+        "id": "abs_003",
+        "name": "Tập cơ bụng",
+        "category": "Cơ bụng",
+        "duration": 30,
+        "calories": 5,
+        "level": "Beginner",
+        "intensity": "Medium",
+        "animationFile": "videos/abs/Tap_co_bung.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Nằm ngửa cong gối và tay duỗi thẳng. Sau đó nhấc thân trên khỏi sàn. Giữ một vài giây rồi từ từ trở lại tư thế ban đầu.",
+          "Bài tập này chủ yếu cho các cơ bụng thẳng và cơ liên sườn."
+        ]
+      },
+      {
+        "id": "abs_004",
+        "name": "Gập bụng ngược",
+        "category": "Cơ bụng",
+        "duration": 30,
+        "calories": 6,
+        "level": "Beginner",
+        "intensity": "Medium",
+        "animationFile": "videos/abs/Gap_bung_nguoc.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Nằm ngửa giữ đầu gối bạn vuông góc 90 độ và tay để phía sau đầu. Nâng đùi và thân trên lên, và sau đó duỗi căng ra.",
+          "Lặp lại động tác này."
+        ]
+      },
+      {
+        "id": "abs_005",
+        "name": "Chạm gót chân",
+        "category": "Cơ bụng",
+        "duration": 30,
+        "calories": 5,
+        "level": "Beginner",
+        "intensity": "Low",
+        "animationFile": "videos/abs/Cham_got_chan.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Nằm ngửa trên sàn, gập chân và tay để hai bên.",
+          "Nhẹ nhàng nâng thân trên khỏi sàn rồi đưa tay lần lượt chạm vào gót chân."
+        ]
+      },
+      {
+        "id": "abs_006",
+        "name": "Con bọ",
+        "category": "Cơ bụng",
+        "duration": 30,
+        "calories": 5,
+        "level": "Beginner",
+        "intensity": "Low",
+        "animationFile": "videos/abs/Con_bo.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Nằm ngửa, đầu gối gập lên tạo thành góc 90 độ và hai tay nâng lên về phía trần nhà.",
+          "Hạ chân phải và duỗi cánh tay trái lên trên đầu.",
+          "Giữ trong một giây, sau đó quay lại tư thế bắt đầu và lặp lại với bên kia."
+        ]
+      },
+      {
+        "id": "abs_007",
+        "name": "Đo sàn",
+        "category": "Cơ bụng",
+        "duration": 30,
+        "calories": 5,
+        "level": "Beginner",
+        "intensity": "Low",
+        "animationFile": "videos/abs/Do_san.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Nằm trên sàn, chạm sàn bằng ngón chân và cẳng tay. Giữ thẳng cơ thể và giữ tư thế càng lâu càng tốt.",
+          "Bài tập này làm khỏe cơ bụng, lưng và vai."
+        ]
+      },
+      {
+        "id": "abs_008",
+        "name": "Hai đầu gối chạm ngực",
+        "category": "Cơ bụng",
+        "duration": 30,
+        "calories": 5,
+        "level": "Beginner",
+        "intensity": "Low",
+        "animationFile": "videos/abs/Hai_dau_goi_cham_nguc.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Nằm ngửa, hai chân duỗi ra.",
+          "Gập hai đầu gối và đưa chúng về phía ngực; ôm đầu gối bằng cả hai tay. Giữ trong vài giây."
+        ]
+      },
+      {
+        "id": "abs_009",
+        "name": "Nằm vặn người trái",
+        "category": "Cơ bụng",
+        "duration": 30,
+        "calories": 3,
+        "level": "Beginner",
+        "intensity": "Low",
+        "animationFile": "videos/abs/Nam_van_nguoi_trai.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Nằm ngửa, hai chân thẳng và hai tay duỗi ra hai bên.",
+          "Nâng hai đầu gối và vặn hai chân sang trái. Giữ tư thế này."
+        ]
+      },
+      {
+        "id": "abs_010",
+        "name": "Nằm vặn người phải",
+        "category": "Cơ bụng",
+        "duration": 30,
+        "calories": 3,
+        "level": "Beginner",
+        "intensity": "Low",
+        "animationFile": "videos/abs/Nam_van_nguoi_phai.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Nằm ngửa, hai chân thẳng và hai tay duỗi ra hai bên.",
+          "Nâng hai đầu gối và vặn hai chân sang phải. Giữ tư thế này."
+        ]
+      },
+      {
+        "id": "abs_011",
+        "name": "Gập người gối chạm khuỷu tay",
+        "category": "Cơ bụng",
+        "duration": 30,
+        "calories": 6,
+        "level": "Beginner",
+        "intensity": "Medium",
+        "animationFile": "videos/abs/Gap_nguoi_goi_cham_khuyu_tay.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Đứng hai chân rộng bằng vai và hai tay đặt sau tai.",
+          "Nâng đầu gối phải và dùng khuỷu tay trái để chạm vào đầu gối phải. Đổi bên và lặp lại."
+        ]
+      },
+      {
+        "id": "abs_012",
+        "name": "Nâng tay dài",
+        "category": "Cơ bụng",
+        "duration": 30,
+        "calories": 5,
+        "level": "Beginner",
+        "intensity": "Low",
+        "animationFile": "videos/abs/Nang_tay_dai.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Nằm ngửa với đầu gối cong và chân để sát mặt sàn.",
+          "Đặt cánh tay thẳng trên đỉnh đầu của bạn. Nâng thân trên của bạn khỏi sàn nhà, sau đó từ từ trở lại vị trí bắt đầu.",
+          "Các bài tập tăng sức chịu đựng bụng"
+        ]
+      },
+      {
+        "id": "abs_013",
+        "name": "Nghiên người vặn cơ liên sườn",
+        "category": "Cơ bụng",
+        "duration": 30,
+        "calories": 5,
+        "level": "Beginner",
+        "intensity": "Low",
+        "animationFile": "videos/abs/Nghien_nguoi_van_co_lien_suon.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Nằm ngửa, duỗi hai chân và khuỷu tay đặt ngay dưới vai.",
+          "Nâng chân trái lên một góc 45 độ đồng thời vươn cánh tay phải sang bên trái.",
+          "Sau đó từ từ quay lại tư thế bắt đầu. Lặp lại vài lần, sau đó chuyển sang bên còn lại."
+        ]
+      },
+      {
+        "id": "abs_014",
+        "name": "Nâng chân",
+        "category": "Cơ bụng",
+        "duration": 30,
+        "calories": 6,
+        "level": "Beginner",
+        "intensity": "Medium",
+        "animationFile": "videos/abs/Nang_chan.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Nằm ngửa, đặt tay đỡ dưới hông.",
+          "Sau đó nâng chân lên cho đến khi tạo thành một góc thẳng với sàn.",
+          "Từ từ hạ chân xuống rồi lặp lại bài tập này."
+        ]
+      },
+      {
+        "id": "abs_015",
+        "name": "Tấm ván đi bộ ngang",
+        "category": "Cơ bụng",
+        "duration": 30,
+        "calories": 7,
+        "level": "Medium",
+        "intensity": "Medium",
+        "animationFile": "videos/abs/Tam_van_di_bo_ngang.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Bắt đầu ở tư thế tấm ván thẳng tay, hai tay đặt dưới vai.",
+          "Đi bộ với hai tay và hai chân đồng thời bước sang trái. Đi vài bước sang bên trái, sau đó vài bước sang bên phải. Lặp lại bài tập."
+        ]
+      },
+      {
+        "id": "abs_016",
+        "name": "Gập bụng đạp xe",
+        "category": "Cơ bụng",
+        "duration": 30,
+        "calories": 6,
+        "level": "Beginner",
+        "intensity": "Medium",
+        "animationFile": "videos/abs/Gap_bung_dap_xe.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Nằm trên sàn để tay sau tai.",
+          "Nâng gối và đưa khuỷu tay phải đến gần gối trái, rồi đưa khuỷu tay trái về phía đầu gối phải. Lặp lại bài tập."
+        ]
+      },
+      {
+        "id": "abs_017",
+        "name": "Gập bụng ngang thân",
+        "category": "Cơ bụng",
+        "duration": 30,
+        "calories": 6,
+        "level": "Beginner",
+        "intensity": "Medium",
+        "animationFile": "videos/abs/Gap_bung_ngang_than.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Nằm và cong gối, để chân trên sàn. Để tay chéo trước ngực.",
+          "Sau đó nhấc đầu và vai để tạo góc 30 độ với mặt đất. Bài tập này chủ yếu có tác dụng với cơ bụng thẳng và cơ liên sườn."
+        ]
+      },
+      {
+        "id": "abs_018",
+        "name": "Tung chân hít đất",
+        "category": "Cơ bụng",
+        "duration": 30,
+        "calories": 7,
+        "level": "Medium",
+        "intensity": "High",
+        "animationFile": "videos/abs/Tung_chan_hit_dat.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Bắt đầu với tư thế hít đất thẳng tay. Sau đó lần lượt nâng và hạ chân."
+        ]
+      },
+      {
+        "id": "abs_019",
+        "name": "Đứng gập cơ liên sườn trái",
+        "category": "Cơ bụng",
+        "duration": 30,
+        "calories": 5,
+        "level": "Beginner",
+        "intensity": "Low",
+        "animationFile": "videos/abs/Dung_gap_co_lien_suon_trai.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Đứng với tay trái nâng lên qua đầu và tay phải đặt trên eo.",
+          "Đưa khuỷu tay trái và đầu gối trái chạm nhau. Duỗi ra và lặp lại."
+        ]
+      },
+      {
+        "id": "abs_020",
+        "name": "Đứng gập cơ liên sườn phải",
+        "category": "Cơ bụng",
+        "duration": 30,
+        "calories": 5,
+        "level": "Beginner",
+        "intensity": "Low",
+        "animationFile": "videos/abs/Dung_gap_co_lien_suon_phai.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Đứng với tay phải nâng lên qua đầu và tay trái đặt trên eo.",
+          "Đưa khuỷu tay phải và đầu gối phải chạm nhau. Duỗi ra và lặp lại."
+        ]
+      },
+      {
+        "id": "abs_021",
+        "name": "Gập người sao biển",
+        "category": "Cơ bụng",
+        "duration": 30,
+        "calories": 6,
+        "level": "Beginner",
+        "intensity": "Medium",
+        "animationFile": "videos/abs/Gap_nguoi_sao_bien.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Nằm ngửa, hai tay duỗi thẳng sang hai bên. Giữ hai chân xa nhau, hai bàn chân cách xa hơn chiều rộng của vai.",
+          "Nâng chân trái lên, hơi nhấc vai khỏi sàn và đưa tay phải chạm vào bàn chân trái.",
+          "Quay lại tư thế bắt đầu và lặp lại với bên còn lại."
+        ]
+      }
+    ]
+  }
+}
