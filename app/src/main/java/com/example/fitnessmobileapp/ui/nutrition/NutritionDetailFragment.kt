@@ -16,7 +16,6 @@ class NutritionDetailFragment : Fragment(R.layout.fragment_nutrition_detail) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Ánh xạ các view
         val tvTitle = view.findViewById<TextView>(R.id.tvTitle)
         val tvBreakfast = view.findViewById<TextView>(R.id.tvBreakfast)
         val tvSnack = view.findViewById<TextView>(R.id.tvSnack)
@@ -32,41 +31,42 @@ class NutritionDetailFragment : Fragment(R.layout.fragment_nutrition_detail) {
         data?.let { item ->
             tvTitle.text = "NGÀY ${item.day}"
 
-            fun showMenu(b: String, s: String, l: String, d: String) {
-                tvBreakfast.text = "🍳 Bữa sáng: $b"
-                tvSnack.text = "🍎 Bữa nhẹ: $s"
-                tvLunch.text = "🥗 Bữa trưa: $l"
-                tvDinner.text = "🍲 Bữa tối: $d"
+            fun showMenu(b: String, s: String, l: String, d: String, bAlt: String, sAlt: String, lAlt: String, dAlt: String) {
+                tvBreakfast.text = "🍳 Bữa sáng: $b\n(Thay thế: $bAlt)"
+                tvSnack.text = "🍎 Bữa nhẹ: $s\n(Thay thế: $sAlt)"
+                tvLunch.text = "🥗 Bữa trưa: $l\n(Thay thế: $lAlt)"
+                tvDinner.text = "🍲 Bữa tối: $d\n(Thay thế: $dAlt)"
             }
 
-            // Hiển thị thực đơn mặc định
-            showMenu(item.breakfastStd, item.snackStd, item.lunchStd, item.dinnerStd)
+            // Hiển thị mặc định (Tiêu chuẩn)
+            showMenu(item.breakfastStd, item.snackStd, item.lunchStd, item.dinnerStd,
+                item.breakfastAlt, item.snackAlt, item.lunchAlt, item.dinnerAlt)
 
-            btnStandard.setOnClickListener { showMenu(item.breakfastStd, item.snackStd, item.lunchStd, item.dinnerStd) }
-            btnVegetarian.setOnClickListener { showMenu(item.breakfastVeg, item.snackVeg, item.lunchVeg, item.dinnerVeg) }
+            // Nút tiêu chuẩn: Dùng bộ Alt chuẩn
+            btnStandard.setOnClickListener {
+                showMenu(item.breakfastStd, item.snackStd, item.lunchStd, item.dinnerStd,
+                    item.breakfastAlt, item.snackAlt, item.lunchAlt, item.dinnerAlt)
+            }
+
+            // Nút ăn chay: Dùng bộ VegAlt thuần chay (ĐÃ CẬP NHẬT Ở ĐÂY)
+            btnVegetarian.setOnClickListener {
+                showMenu(item.breakfastVeg, item.snackVeg, item.lunchVeg, item.dinnerVeg,
+                    item.breakfastVegAlt, item.snackVegAlt, item.lunchVegAlt, item.dinnerVegAlt)
+            }
         }
 
-        // Logic thoát
-        btnBack.setOnClickListener {
-            parentFragmentManager.popBackStack()
-        }
+        btnBack.setOnClickListener { parentFragmentManager.popBackStack() }
 
-        // Logic dấu tích
         btnCheck.setOnClickListener {
-            // Cập nhật giao diện nút tích
             btnCheck.setImageResource(R.drawable.ic_check_green)
             btnCheck.setColorFilter(Color.GREEN)
 
-            // Hiện thông báo
             val builder = AlertDialog.Builder(requireContext())
             builder.setTitle("Thông báo")
             builder.setMessage("Đã kết thúc")
-            builder.setPositiveButton("OK") { dialog, _ ->
-                dialog.dismiss()
-            }
+            builder.setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
             builder.show()
 
-            // Lưu trạng thái vào bộ nhớ
             data?.let { item ->
                 val prefs = requireActivity().getSharedPreferences("user_prefs", 0)
                 prefs.edit().putBoolean("day_${item.day}_done", true).apply()
