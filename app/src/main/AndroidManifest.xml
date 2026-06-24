@@ -17,6 +17,10 @@
             android:exported="false" />
 
         <activity
+            android:name=".ui.plan.ExerciseDetailActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".MainActivity"
             android:exported="true">
 

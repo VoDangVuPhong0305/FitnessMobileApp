@@ -4,73 +4,46 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#EEEEEE"
-    android:fillViewport="true">
+    android:clipToPadding="false"
+    android:paddingBottom="90dp">
 
     <LinearLayout
         android:id="@+id/layoutPlanContent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
-        android:paddingTop="48dp"
-        android:paddingBottom="20dp">
+        android:paddingStart="18dp"
+        android:paddingTop="22dp"
+        android:paddingEnd="18dp"
+        android:paddingBottom="24dp">
 
-        <!-- Header -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/txtPlanTitle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="KẾ HOẠCH"
-                android:textColor="#222222"
-                android:textSize="30sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/txtPremium"
-                android:layout_width="wrap_content"
-                android:layout_height="44dp"
-                android:background="#222222"
-                android:gravity="center"
-                android:paddingStart="22dp"
-                android:paddingEnd="22dp"
-                android:text="CAO CẤP"
-                android:textColor="#F7E7A0"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-        <!-- Dots trang trí -->
+        <!-- Tiêu đề -->
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="━━  • • •"
-            android:textColor="#6C4DF6"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="18dp" />
-
-        <!-- Card chương trình -->
-        <LinearLayout
-            android:id="@+id/cardWorkoutProgram"
             android:layout_width="match_parent"
-            android:layout_height="210dp"
-            android:background="#222222"
+            android:layout_height="wrap_content"
+            android:text="KẾ HOẠCH"
+            android:textColor="#222222"
+            android:textSize="35sp"
+            android:paddingTop="30dp"
+            android:textStyle="bold" />
+
+        <!-- Header chương trình -->
+        <LinearLayout
+            android:id="@+id/layoutPlanHeader"
+            android:layout_width="match_parent"
+            android:layout_height="220dp"
+            android:layout_marginTop="18dp"
+            android:background="@drawable/bg_plan_header"
             android:orientation="vertical"
-            android:padding="24dp">
+            android:paddingStart="26dp"
+            android:paddingTop="26dp"
+            android:paddingEnd="26dp"
+            android:paddingBottom="20dp">
 
             <TextView
-                android:layout_width="348dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="TẬP TOÀN THÂN"
+                android:text="TẬP CƠ BỤNG"
                 android:textColor="#FFFFFF"
                 android:textSize="34sp"
                 android:textStyle="bold" />
@@ -78,10 +51,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Giảm cân và giữ dáng"
-                android:textColor="#EEEEEE"
-                android:textSize="18sp"
-                android:layout_marginTop="10dp" />
+                android:layout_marginTop="8dp"
+                android:text="Giảm mỡ bụng và săn chắc cơ"
+                android:textColor="#E0E0E0"
+                android:textSize="18sp" />
 
             <Space
                 android:layout_width="match_parent"
@@ -95,121 +68,51 @@
                 android:orientation="horizontal">
 
                 <TextView
+                    android:id="@+id/txtRemainingDays"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="30 ngày còn lại"
-                    android:textColor="#CCCCCC"
-                    android:textSize="17sp"
+                    android:text="29 ngày còn lại"
+                    android:textColor="#FFFFFF"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/txtProgressPercent"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="0%"
-                    android:textColor="#CCCCCC"
-                    android:textSize="17sp"
+                    android:text="3%"
+                    android:textColor="#FFFFFF"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
+
             </LinearLayout>
+
+            <!-- Thanh tiến độ giả lập -->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="6dp"
+                android:layout_marginTop="8dp"
+                android:background="#555555">
+
+                <View
+                    android:id="@+id/viewProgress"
+                    android:layout_width="24dp"
+                    android:layout_height="match_parent"
+                    android:background="#7B61FF" />
+
+            </FrameLayout>
+
         </LinearLayout>
 
-        <!-- Ngày 1 -->
+        <!-- Danh sách 30 ngày sẽ được thêm bằng Kotlin -->
         <LinearLayout
-            android:id="@+id/cardDay1"
+            android:id="@+id/layoutDayList"
             android:layout_width="match_parent"
-            android:layout_height="92dp"
-            android:layout_marginTop="22dp"
-            android:background="#7B61FF"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingStart="24dp"
-            android:paddingEnd="20dp">
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Ngày 1"
-                    android:textColor="#FFFFFF"
-                    android:textSize="30sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="7 bài tập"
-                    android:textColor="#FFFFFF"
-                    android:textSize="16sp" />
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/btnStartDay1"
-                android:layout_width="120dp"
-                android:layout_height="54dp"
-                android:background="#FFFFFF"
-                android:gravity="center"
-                android:text="Bắt đầu"
-                android:textColor="#2F1893"
-                android:textSize="19sp"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-        <!-- Ngày 2 -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="92dp"
-            android:layout_marginTop="16dp"
-            android:background="#FFFFFF"
-            android:gravity="center_vertical"
-            android:paddingStart="24dp"
-            android:text="Ngày 2\n7 bài tập"
-            android:textColor="#222222"
-            android:textSize="24sp"
-            android:textStyle="bold" />
-
-        <!-- Ngày 3 -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="92dp"
-            android:layout_marginTop="16dp"
-            android:background="#FFFFFF"
-            android:gravity="center_vertical"
-            android:paddingStart="24dp"
-            android:text="Ngày 3\n7 bài tập"
-            android:textColor="#222222"
-            android:textSize="24sp"
-            android:textStyle="bold" />
-
-        <!-- Ngày 4 -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="92dp"
-            android:layout_marginTop="16dp"
-            android:background="#FFFFFF"
-            android:gravity="center_vertical"
-            android:paddingStart="24dp"
-            android:text="Ngày 4\nNgày nghỉ"
-            android:textColor="#222222"
-            android:textSize="24sp"
-            android:textStyle="bold" />
-
-        <!-- Ngày 5 -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="92dp"
-            android:layout_marginTop="16dp"
-            android:background="#FFFFFF"
-            android:gravity="center_vertical"
-            android:paddingStart="24dp"
-            android:text="Ngày 5\n7 bài tập"
-            android:textColor="#222222"
-            android:textSize="24sp"
-            android:textStyle="bold" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical" />
 
     </LinearLayout>
+
 </ScrollView>
