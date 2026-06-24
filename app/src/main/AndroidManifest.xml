@@ -21,6 +21,10 @@
             android:exported="false" />
 
         <activity
+            android:name=".ui.plan.WorkoutSessionActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".MainActivity"
             android:exported="true">
 

@@ -74,7 +74,7 @@ class PlanDayDetailActivity : AppCompatActivity() {
 
         btnStartWorkout.setOnClickListener {
             if (exercisesOfDay.isNotEmpty()) {
-                openExerciseDetail(exercisesOfDay.first())
+                openWorkoutSession()
             } else {
                 Toast.makeText(this, "Không có bài tập trong ngày này", Toast.LENGTH_SHORT).show()
             }
@@ -170,9 +170,20 @@ class PlanDayDetailActivity : AppCompatActivity() {
         return root
     }
 
+    // Bấm từng bài trong danh sách thì vẫn mở màn chi tiết bài tập
     private fun openExerciseDetail(exercise: Exercise) {
         val intent = Intent(this, ExerciseDetailActivity::class.java)
         intent.putExtra("EXERCISE_ID", exercise.id)
+        intent.putExtra("EXERCISE_TYPE", exerciseType)
+        intent.putStringArrayListExtra("EXERCISE_IDS", exerciseIds)
+        startActivity(intent)
+    }
+
+    // Bấm nút BẮT ĐẦU thì mở màn tập thật
+    private fun openWorkoutSession() {
+        val intent = Intent(this, WorkoutSessionActivity::class.java)
+        intent.putExtra("DAY_NUMBER", dayNumber)
+        intent.putExtra("DAY_TITLE", dayTitle)
         intent.putExtra("EXERCISE_TYPE", exerciseType)
         intent.putStringArrayListExtra("EXERCISE_IDS", exerciseIds)
         startActivity(intent)
