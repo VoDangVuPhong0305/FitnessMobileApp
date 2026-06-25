@@ -25,6 +25,7 @@ import com.example.fitnessmobileapp.data.repository.WorkoutDataReader
 import java.io.File
 import java.io.FileOutputStream
 import java.util.Locale
+import com.example.fitnessmobileapp.data.repository.WorkoutReportManager
 
 class WorkoutSessionActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
@@ -649,6 +650,17 @@ class WorkoutSessionActivity : AppCompatActivity(), TextToSpeech.OnInitListener 
         val totalDurationSeconds = exerciseList.sumOf { exercise ->
             exercise.duration
         }
+
+        // Chức năng: lưu lịch sử tập luyện để màn Báo cáo có dữ liệu thống kê.
+        // Mỗi lần hoàn thành một vòng tập sẽ lưu một bản ghi mới.
+        WorkoutReportManager.saveCompletedWorkout(
+            context = this,
+            dayNumber = dayNumber,
+            exerciseType = exerciseType,
+            exerciseCount = totalExercises,
+            durationSeconds = totalDurationSeconds,
+            calories = totalCalories
+        )
 
         val intent = Intent(this, WorkoutCompletedActivity::class.java)
         intent.putExtra("DAY_NUMBER", dayNumber)
