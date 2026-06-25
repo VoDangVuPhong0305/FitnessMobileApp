@@ -16,6 +16,7 @@ import com.example.fitnessmobileapp.data.model.Exercise
 import com.example.fitnessmobileapp.data.repository.WorkoutDataReader
 import java.io.File
 import java.io.FileOutputStream
+import android.view.View
 
 class PlanDayDetailActivity : AppCompatActivity() {
 
@@ -25,15 +26,16 @@ class PlanDayDetailActivity : AppCompatActivity() {
     private lateinit var txtWorkoutSummary: TextView
     private lateinit var layoutExerciseList: LinearLayout
     private lateinit var btnStartWorkout: TextView
-
     private var dayNumber: Int = 1
     private var dayTitle: String = "Ngày 1"
     private var durationMinutes: Int = 6
     private var exerciseCount: Int = 7
     private var exerciseType: String = "abs"
     private var exerciseIds: ArrayList<String> = arrayListOf()
-
     private var exercisesOfDay: List<Exercise> = emptyList()
+    private var isCompletedDay: Boolean = false
+    private var canStartWorkout: Boolean = true
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,6 +61,9 @@ class PlanDayDetailActivity : AppCompatActivity() {
         exerciseCount = intent.getIntExtra("EXERCISE_COUNT", 7)
         exerciseType = intent.getStringExtra("EXERCISE_TYPE") ?: "abs"
         exerciseIds = intent.getStringArrayListExtra("EXERCISE_IDS") ?: arrayListOf()
+
+        isCompletedDay = intent.getBooleanExtra("IS_COMPLETED_DAY", false)
+        canStartWorkout = intent.getBooleanExtra("CAN_START_WORKOUT", true)
     }
 
     private fun showHeaderInfo() {
@@ -67,9 +72,23 @@ class PlanDayDetailActivity : AppCompatActivity() {
         txtWorkoutSummary.text = "$durationMinutes phút, $exerciseCount bài tập"
     }
 
+    // Chức năng: xử lý nút quay lại và nút bắt đầu/tập lại.
+// Nếu ngày chưa mở thì ẩn nút để người dùng chỉ xem trước danh sách bài.
     private fun setupButtons() {
         btnBack.setOnClickListener {
             finish()
+        }
+
+        if (!canStartWorkout) {
+            btnStartWorkout.visibility = View.GONE
+            return
+        }
+
+        btnStartWorkout.visibility = View.VISIBLE
+        btnStartWorkout.text = if (isCompletedDay) {
+            "TẬP LẠI"
+        } else {
+            "BẮT ĐẦU"
         }
 
         btnStartWorkout.setOnClickListener {
@@ -122,7 +141,9 @@ class PlanDayDetailActivity : AppCompatActivity() {
 
         val imgExercise = ImageView(this).apply {
             scaleType = ImageView.ScaleType.CENTER_CROP
-            setBackgroundColor(0xFFEFEFEF.toInt())
+            setBackgroundResource(R.drawable.bg_exercise_media_rounded)
+            clipToOutline = true
+            outlineProvider = android.view.ViewOutlineProvider.BACKGROUND
             layoutParams = LinearLayout.LayoutParams(dp(86), dp(86))
         }
 

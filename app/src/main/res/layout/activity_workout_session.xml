@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rootWorkoutSession"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF">
 
+    <!-- Màn chuẩn bị / màn tập chính -->
     <LinearLayout
+        android:id="@+id/layoutMainSession"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -47,7 +50,7 @@
 
         </LinearLayout>
 
-        <!-- Video / hoạt hình bài tập -->
+        <!-- Video bài tập -->
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="320dp"
@@ -75,7 +78,6 @@
             android:layout_width="match_parent"
             android:layout_height="62dp" />
 
-        <!-- Tiêu đề trạng thái: ĐÃ SẴN SÀNG TẬP -->
         <TextView
             android:id="@+id/txtPhaseTitle"
             android:layout_width="match_parent"
@@ -86,7 +88,6 @@
             android:textSize="30sp"
             android:textStyle="bold" />
 
-        <!-- Tên bài tập -->
         <TextView
             android:id="@+id/txtSessionExerciseName"
             android:layout_width="match_parent"
@@ -98,7 +99,6 @@
             android:textSize="24sp"
             android:textStyle="bold" />
 
-        <!-- Đồng hồ -->
         <TextView
             android:id="@+id/txtSessionTimer"
             android:layout_width="match_parent"
@@ -110,13 +110,12 @@
             android:textSize="76sp"
             android:textStyle="bold" />
 
-        <!-- Nút bắt đầu ngay trong màn chuẩn bị -->
         <TextView
             android:id="@+id/btnStartNow"
             android:layout_width="match_parent"
             android:layout_height="58dp"
             android:layout_marginStart="42dp"
-            android:layout_marginTop="34dp"
+            android:layout_marginTop="24dp"
             android:layout_marginEnd="42dp"
             android:background="@drawable/bg_session_gray_button"
             android:gravity="center"
@@ -125,7 +124,7 @@
             android:textSize="18sp"
             android:textStyle="bold" />
 
-        <!-- Cụm nút khi đang tập -->
+        <!-- Cụm điều khiển khi đang tập -->
         <LinearLayout
             android:id="@+id/layoutExerciseControls"
             android:layout_width="match_parent"
@@ -182,6 +181,153 @@
                     android:textStyle="bold" />
 
             </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Màn nghỉ ngơi -->
+    <LinearLayout
+        android:id="@+id/layoutRestScreen"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#252B35"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <!-- Phần trên nền tối -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="#252B35">
+
+            <!-- Nội dung nghỉ ngơi -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:paddingStart="24dp"
+                android:paddingEnd="24dp">
+
+                <TextView
+                    android:id="@+id/txtRestTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Nghỉ ngơi"
+                    android:textColor="#6AF174"
+                    android:textSize="34sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="126dp"
+                    android:layout_marginTop="18dp"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingStart="2dp"
+                    android:paddingEnd="2dp">
+
+                    <TextView
+                        android:id="@+id/btnAddRestTime"
+                        android:layout_width="0dp"
+                        android:layout_height="56dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_rest_action_button"
+                        android:gravity="center"
+                        android:text="+20s"
+                        android:textColor="#FFFFFF"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/txtRestTimer"
+                        android:layout_width="0dp"
+                        android:layout_height="126dp"
+                        android:layout_marginStart="12dp"
+                        android:layout_marginEnd="12dp"
+                        android:layout_weight="1.25"
+                        android:gravity="center"
+                        android:text="10"
+                        android:textColor="#FFFFFF"
+                        android:textSize="76sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/btnSkipRest"
+                        android:layout_width="0dp"
+                        android:layout_height="56dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_rest_action_button"
+                        android:gravity="center"
+                        android:text="BỎ QUA"
+                        android:textColor="#FFFFFF"
+                        android:textSize="17sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </FrameLayout>
+
+        <!-- Phần dưới trắng gợi ý cho bài tiếp theo -->
+        <LinearLayout
+            android:id="@+id/layoutNextExerciseCard"
+            android:layout_width="match_parent"
+            android:layout_height="460dp"
+            android:background="@drawable/bg_rest_bottom_card"
+            android:orientation="vertical"
+            android:paddingStart="26dp"
+            android:paddingTop="30dp"
+            android:paddingEnd="26dp"
+            android:paddingBottom="26dp">
+
+            <TextView
+                android:id="@+id/txtRestNextInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Tiếp theo 2/7"
+                android:textColor="#9B9B9B"
+                android:textSize="23sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtRestNextName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Chống đẩy 00:30"
+                android:textColor="#555555"
+                android:textSize="26sp"
+                android:textStyle="bold" />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="18dp"
+                android:layout_weight="1"
+                android:background="#FFFFFF">
+
+                <VideoView
+                    android:id="@+id/videoRestNextExercise"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+                <TextView
+                    android:id="@+id/txtRestNextEmpty"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="Chưa có hoạt hình"
+                    android:textColor="#999999"
+                    android:textSize="16sp"
+                    android:visibility="gone" />
+
+            </FrameLayout>
 
         </LinearLayout>
 

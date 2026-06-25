@@ -13,18 +13,13 @@ import androidx.fragment.app.Fragment
 import com.example.fitnessmobileapp.R
 import com.example.fitnessmobileapp.data.model.PlanDay
 import com.example.fitnessmobileapp.data.repository.AbsWorkoutPlan
+import com.example.fitnessmobileapp.data.repository.PlanProgressManager
 
 class PlanFragment : Fragment(R.layout.fragment_plan) {
 
     private lateinit var layoutDayList: LinearLayout
     private lateinit var txtRemainingDays: TextView
     private lateinit var txtProgressPercent: TextView
-
-    // Hiện tại đang giả lập:
-    // Ngày 1 đã hoàn thành, Ngày 2 đang mở.
-    // Sau này mình sẽ thay bằng SharedPreferences.
-    private val completedDay = 1
-    private val currentDay = 2
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -36,31 +31,61 @@ class PlanFragment : Fragment(R.layout.fragment_plan) {
         showPlanDays()
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        if (::layoutDayList.isInitialized) {
+            showPlanDays()
+        }
+    }
+
+    // Chức năng: đọc tiến độ hiện tại và vẽ lại toàn bộ 30 ngày.
+    // Hàm này chạy khi mở tab Plan và khi quay lại từ màn tập.
     private fun showPlanDays() {
         layoutDayList.removeAllViews()
 
         val planDays = AbsWorkoutPlan.getThirtyDayPlan()
 
+        val completedDay = PlanProgressManager.getCompletedDay(requireContext())
+        val currentDay = PlanProgressManager.getCurrentDay(requireContext(), planDays)
+        val progressPercent = PlanProgressManager.getProgressPercent(requireContext())
+
         txtRemainingDays.text = "${30 - completedDay} ngày còn lại"
-        txtProgressPercent.text = "${completedDay * 100 / 30}%"
+        txtProgressPercent.text = "$progressPercent%"
 
         for (planDay in planDays) {
-            val dayCard = createDayCard(planDay)
+            val dayCard = createDayCard(
+                planDay = planDay,
+                completedDay = completedDay,
+                currentDay = currentDay
+            )
+
             layoutDayList.addView(dayCard)
         }
     }
 
-    private fun createDayCard(planDay: PlanDay): View {
+    // Chức năng: quyết định mỗi ngày sẽ dùng giao diện nào:
+    // ngày nghỉ, ngày đã xong, ngày hiện tại, hoặc ngày xem trước.
+    private fun createDayCard(
+        planDay: PlanDay,
+        completedDay: Int,
+        currentDay: Int
+    ): View {
         return when {
             planDay.isRestDay -> createRestDayCard(planDay)
-            planDay.dayNumber <= completedDay -> createCompletedDayCard(planDay)
-            planDay.dayNumber == currentDay -> createActiveDayCard(planDay)
-            else -> createPreviewDayCard(planDay)
+            planDay.dayNumber <= completedDay -> createCompletedDayCard(planDay, completedDay, currentDay)
+            planDay.dayNumber == currentDay -> createActiveDayCard(planDay, completedDay, currentDay)
+            else -> createPreviewDayCard(planDay, completedDay, currentDay)
         }
     }
 
-    // Card ngày đã hoàn thành
-    private fun createCompletedDayCard(planDay: PlanDay): View {
+    // Chức năng: tạo card cho ngày đã hoàn thành.
+    // Card này có dấu tick và vẫn cho bấm vào xem lại danh sách bài.
+    private fun createCompletedDayCard(
+        planDay: PlanDay,
+        completedDay: Int,
+        currentDay: Int
+    ): View {
         val card = createBaseCard()
         card.setBackgroundResource(R.drawable.bg_plan_day_white)
 
@@ -96,16 +121,20 @@ class PlanFragment : Fragment(R.layout.fragment_plan) {
         card.addView(textContainer)
         card.addView(checkCircle)
 
-        // Ngày đã hoàn thành vẫn bấm vào xem lại được
         card.setOnClickListener {
-            openPlanDayDetail(planDay)
+            openPlanDayDetail(planDay, completedDay, currentDay)
         }
 
         return card
     }
 
-    // Card ngày hiện tại có nút Bắt đầu
-    private fun createActiveDayCard(planDay: PlanDay): View {
+    // Chức năng: tạo card cho ngày hiện tại.
+    // Đây là ngày đang được mở để người dùng bấm Bắt đầu.
+    private fun createActiveDayCard(
+        planDay: PlanDay,
+        completedDay: Int,
+        currentDay: Int
+    ): View {
         val card = createBaseCard()
         card.setBackgroundResource(R.drawable.bg_plan_day_active)
 
@@ -142,18 +171,23 @@ class PlanFragment : Fragment(R.layout.fragment_plan) {
         card.addView(btnStart)
 
         card.setOnClickListener {
-            openPlanDayDetail(planDay)
+            openPlanDayDetail(planDay, completedDay, currentDay)
         }
 
         btnStart.setOnClickListener {
-            openPlanDayDetail(planDay)
+            openPlanDayDetail(planDay, completedDay, currentDay)
         }
 
         return card
     }
 
-    // Card ngày chưa tới nhưng vẫn cho xem trước
-    private fun createPreviewDayCard(planDay: PlanDay): View {
+    // Chức năng: tạo card cho ngày chưa mở.
+    // Người dùng vẫn được bấm vào xem trước danh sách bài, nhưng chưa được bắt đầu tập.
+    private fun createPreviewDayCard(
+        planDay: PlanDay,
+        completedDay: Int,
+        currentDay: Int
+    ): View {
         val card = createBaseCard()
         card.setBackgroundResource(R.drawable.bg_plan_day_white)
 
@@ -188,15 +222,15 @@ class PlanFragment : Fragment(R.layout.fragment_plan) {
         card.addView(textContainer)
         card.addView(txtArrow)
 
-        // Ngày chưa tới vẫn bấm vào xem trước được
         card.setOnClickListener {
-            openPlanDayDetail(planDay)
+            openPlanDayDetail(planDay, completedDay, currentDay)
         }
 
         return card
     }
 
-    // Card ngày nghỉ
+    // Chức năng: tạo card ngày nghỉ.
+    // Ngày nghỉ không mở màn tập, chỉ báo đây là ngày nghỉ.
     private fun createRestDayCard(planDay: PlanDay): View {
         val card = createBaseCard()
         card.setBackgroundResource(R.drawable.bg_plan_day_white)
@@ -213,11 +247,9 @@ class PlanFragment : Fragment(R.layout.fragment_plan) {
 
         val txtTitle = createTitleText(planDay.title, "#222222")
         val txtSub = createSubText("Ngày nghỉ", "#888888")
-        val txtRest = createSubText("Hãy để cơ bụng phục hồi", "#AAAAAA")
 
         textContainer.addView(txtTitle)
         textContainer.addView(txtSub)
-        textContainer.addView(txtRest)
 
         val txtIcon = TextView(requireContext()).apply {
             text = "☕"
@@ -237,6 +269,7 @@ class PlanFragment : Fragment(R.layout.fragment_plan) {
         return card
     }
 
+    // Chức năng: tạo khung nền chung cho tất cả card ngày.
     private fun createBaseCard(): LinearLayout {
         return LinearLayout(requireContext()).apply {
             orientation = LinearLayout.HORIZONTAL
@@ -251,6 +284,7 @@ class PlanFragment : Fragment(R.layout.fragment_plan) {
         }
     }
 
+    // Chức năng: tạo chữ tiêu đề lớn, ví dụ "Ngày 1", "Ngày 2".
     private fun createTitleText(text: String, color: String): TextView {
         return TextView(requireContext()).apply {
             this.text = text
@@ -261,6 +295,7 @@ class PlanFragment : Fragment(R.layout.fragment_plan) {
         }
     }
 
+    // Chức năng: tạo dòng mô tả nhỏ, ví dụ "6 phút, 7 bài tập".
     private fun createSubText(text: String, color: String): TextView {
         return TextView(requireContext()).apply {
             this.text = text
@@ -271,17 +306,30 @@ class PlanFragment : Fragment(R.layout.fragment_plan) {
         }
     }
 
-    private fun openPlanDayDetail(planDay: PlanDay) {
+    // Chức năng: mở màn chi tiết ngày tập và gửi theo trạng thái ngày đó.
+    // Nếu là ngày hiện tại hoặc ngày đã xong thì cho bấm Bắt đầu/Tập lại.
+    // Nếu là ngày tương lai thì chỉ cho xem trước danh sách bài.
+    private fun openPlanDayDetail(
+        planDay: PlanDay,
+        completedDay: Int,
+        currentDay: Int
+    ) {
+        val isCompletedDay = !planDay.isRestDay && planDay.dayNumber <= completedDay
+        val canStartWorkout = !planDay.isRestDay && planDay.dayNumber <= currentDay
+
         val intent = Intent(requireContext(), PlanDayDetailActivity::class.java)
         intent.putExtra("DAY_NUMBER", planDay.dayNumber)
         intent.putExtra("DAY_TITLE", planDay.title)
         intent.putExtra("DURATION_MINUTES", planDay.durationMinutes)
         intent.putExtra("EXERCISE_COUNT", planDay.exerciseCount)
         intent.putExtra("EXERCISE_TYPE", planDay.exerciseType)
+        intent.putExtra("IS_COMPLETED_DAY", isCompletedDay)
+        intent.putExtra("CAN_START_WORKOUT", canStartWorkout)
         intent.putStringArrayListExtra("EXERCISE_IDS", ArrayList(planDay.exerciseIds))
         startActivity(intent)
     }
 
+    // Chức năng: đổi đơn vị dp sang pixel để tạo giao diện bằng Kotlin.
     private fun dp(value: Int): Int {
         return (value * resources.displayMetrics.density).toInt()
     }
