@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F3F6F5"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="64dp">
+
+            <ImageView
+                android:id="@+id/btnBackSound"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:padding="8dp"
+                android:src="@drawable/ic_back" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="LỰA CHỌN ÂM THANH"
+                android:textColor="#111111"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+        </RelativeLayout>
+
+        <RadioGroup
+            android:id="@+id/radioSoundGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="22dp"
+            android:background="@drawable/bg_card_profile"
+            android:elevation="4dp"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <RadioButton
+                android:id="@+id/radioSoundBell"
+                android:layout_width="match_parent"
+                android:layout_height="58dp"
+                android:text="Chuông nhẹ"
+                android:textColor="#111111"
+                android:textSize="18sp" />
+
+            <RadioButton
+                android:id="@+id/radioSoundEnergy"
+                android:layout_width="match_parent"
+                android:layout_height="58dp"
+                android:text="Năng lượng"
+                android:textColor="#111111"
+                android:textSize="18sp" />
+
+            <RadioButton
+                android:id="@+id/radioSoundBird"
+                android:layout_width="match_parent"
+                android:layout_height="58dp"
+                android:text="Tiếng chim"
+                android:textColor="#111111"
+                android:textSize="18sp" />
+
+            <RadioButton
+                android:id="@+id/radioSoundSilent"
+                android:layout_width="match_parent"
+                android:layout_height="58dp"
+                android:text="Không âm thanh"
+                android:textColor="#111111"
+                android:textSize="18sp" />
+        </RadioGroup>
+
+        <TextView
+            android:id="@+id/btnSaveSound"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="28dp"
+            android:background="@drawable/bg_unit_selected"
+            android:gravity="center"
+            android:text="LƯU ÂM THANH"
+            android:textColor="#111111"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+</ScrollView>

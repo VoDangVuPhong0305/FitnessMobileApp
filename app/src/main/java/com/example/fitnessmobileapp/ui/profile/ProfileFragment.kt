@@ -1,6 +1,7 @@
 package com.example.fitnessmobileapp.ui.profile
 
 import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -14,20 +15,19 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         super.onViewCreated(view, savedInstanceState)
 
         view.findViewById<View>(R.id.btnHelp).setOnClickListener {
-            Toast.makeText(requireContext(), "Trợ giúp", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(requireContext(), FAQActivity::class.java))
         }
 
         view.findViewById<View>(R.id.itemMyProfile).setOnClickListener {
-            val intent = Intent(requireContext(), ProfileActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(requireContext(), ProfileActivity::class.java))
         }
 
         view.findViewById<View>(R.id.itemReminder).setOnClickListener {
-            Toast.makeText(requireContext(), "Nhắc nhở", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(requireContext(), ReminderActivity::class.java))
         }
 
         view.findViewById<View>(R.id.itemSound).setOnClickListener {
-            Toast.makeText(requireContext(), "Lựa chọn âm thanh", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(requireContext(), SoundActivity::class.java))
         }
 
         view.findViewById<View>(R.id.itemResetProgress).setOnClickListener {
@@ -39,11 +39,11 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         }
 
         view.findViewById<View>(R.id.itemFeedback).setOnClickListener {
-            Toast.makeText(requireContext(), "Ý kiến phản hồi", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(requireContext(), FeedbackActivity::class.java))
         }
 
         view.findViewById<View>(R.id.itemFAQ).setOnClickListener {
-            Toast.makeText(requireContext(), "Câu hỏi thường gặp", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(requireContext(), FAQActivity::class.java))
         }
     }
 
@@ -53,6 +53,12 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
             .setMessage("Bạn có chắc muốn đặt lại tiến độ tập luyện không?")
             .setNegativeButton("HỦY", null)
             .setPositiveButton("ĐỒNG Ý") { _, _ ->
+                requireActivity()
+                    .getSharedPreferences("progress_data", Context.MODE_PRIVATE)
+                    .edit()
+                    .clear()
+                    .apply()
+
                 Toast.makeText(requireContext(), "Đã đặt lại tiến độ", Toast.LENGTH_SHORT).show()
             }
             .show()
@@ -61,10 +67,32 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
     private fun showDeleteAllDataDialog() {
         AlertDialog.Builder(requireContext())
             .setTitle("Xóa tất cả dữ liệu")
-            .setMessage("Bạn có chắc muốn xóa tất cả dữ liệu không?")
+            .setMessage("Bạn có chắc muốn xóa tất cả dữ liệu không? Thao tác này sẽ xóa hồ sơ, nhắc nhở, âm thanh và tiến độ.")
             .setNegativeButton("HỦY", null)
             .setPositiveButton("XÓA") { _, _ ->
-                Toast.makeText(requireContext(), "Đã xóa dữ liệu", Toast.LENGTH_SHORT).show()
+                val context = requireContext()
+
+                context.getSharedPreferences("profile_data", Context.MODE_PRIVATE)
+                    .edit()
+                    .clear()
+                    .apply()
+
+                context.getSharedPreferences("reminder_data", Context.MODE_PRIVATE)
+                    .edit()
+                    .clear()
+                    .apply()
+
+                context.getSharedPreferences("sound_data", Context.MODE_PRIVATE)
+                    .edit()
+                    .clear()
+                    .apply()
+
+                context.getSharedPreferences("progress_data", Context.MODE_PRIVATE)
+                    .edit()
+                    .clear()
+                    .apply()
+
+                Toast.makeText(context, "Đã xóa tất cả dữ liệu", Toast.LENGTH_SHORT).show()
             }
             .show()
     }
