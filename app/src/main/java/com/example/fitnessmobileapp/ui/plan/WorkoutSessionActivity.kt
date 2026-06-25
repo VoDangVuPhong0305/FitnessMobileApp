@@ -117,7 +117,7 @@ class WorkoutSessionActivity : AppCompatActivity() {
 
     private fun setupButtons() {
         btnCloseSession.setOnClickListener {
-            showExitConfirmDialog()
+            showPauseDialog()
         }
 
         btnStartNow.setOnClickListener {
