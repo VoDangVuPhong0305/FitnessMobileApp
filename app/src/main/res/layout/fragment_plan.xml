@@ -1,61 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/scrollPlan"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layoutPlanRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#EEEEEE"
-    android:clipToPadding="false"
-    android:paddingBottom="90dp">
+    android:orientation="vertical">
 
+    <!-- Phần trên cố định, không bị cuộn mất -->
     <LinearLayout
-        android:id="@+id/layoutPlanContent"
+        android:id="@+id/layoutPlanFixedHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingStart="18dp"
-        android:paddingTop="22dp"
-        android:paddingEnd="18dp"
-        android:paddingBottom="24dp">
+        android:paddingTop="22dp">
 
         <!-- Tiêu đề -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="30dp"
+            android:layout_marginStart="18dp"
+            android:layout_marginEnd="18dp"
+            android:paddingTop="22dp"
             android:text="KẾ HOẠCH"
             android:textColor="#222222"
-            android:textSize="35sp"
-            android:textStyle="bold" />
+            android:textSize="32sp"
+            android:textStyle="bold"
+            android:fontFamily="sans-serif"
+            android:includeFontPadding="false" />
+
+        <!-- Dấu chấm vị trí -->
+        <LinearLayout
+            android:id="@+id/layoutPlanDots"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="22dp"
+            android:layout_marginTop="5dp"
+            android:gravity="start"
+            android:orientation="horizontal" />
 
         <!-- Card kế hoạch lớn kéo ngang -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerPlanHeader"
             android:layout_width="match_parent"
-            android:layout_height="220dp"
-            android:layout_marginTop="18dp"
+            android:layout_height="185dp"
+            android:layout_marginTop="14dp"
             android:clipToPadding="false"
             android:overScrollMode="never"
             android:paddingStart="0dp"
             android:paddingEnd="0dp"
             android:scrollbars="none" />
 
-        <!-- Dấu chấm vị trí -->
-        <LinearLayout
-            android:id="@+id/layoutPlanDots"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:gravity="center"
-            android:orientation="horizontal" />
+    </LinearLayout>
 
-        <!-- Danh sách 30 ngày -->
+    <!-- Chỉ phần danh sách ngày được cuộn -->
+    <ScrollView
+        android:id="@+id/scrollPlanDays"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="true"
+        android:paddingTop="14dp"
+        android:paddingBottom="0dp"
+        android:scrollbars="none">
+
         <LinearLayout
             android:id="@+id/layoutDayList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"
-            android:orientation="vertical" />
+            android:orientation="vertical"
+            android:paddingStart="18dp"
+            android:paddingEnd="18dp"
+            android:paddingBottom="24dp" />
+    </ScrollView>
 
-    </LinearLayout>
-
-</ScrollView>
+</LinearLayout>

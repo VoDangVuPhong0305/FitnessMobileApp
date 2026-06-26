@@ -639,7 +639,11 @@ class WorkoutSessionActivity : AppCompatActivity(), TextToSpeech.OnInitListener 
 
         stopSpeech()
 
-        PlanProgressManager.completeDay(this, dayNumber)
+        PlanProgressManager.completeDay(
+            context = this,
+            planId = exerciseType,
+            dayNumber = dayNumber
+        )
 
         val totalExercises = exerciseList.size
 

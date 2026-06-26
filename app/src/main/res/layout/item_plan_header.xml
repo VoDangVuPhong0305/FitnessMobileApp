@@ -1,82 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layoutHeaderItemRoot"
     android:layout_width="match_parent"
-    android:layout_height="220dp"
-    android:background="@drawable/bg_plan_header_dark">
+    android:layout_height="match_parent">
 
-    <!-- Sau này bạn muốn thêm ảnh người tập thì thêm ImageView ở đây -->
-
-    <LinearLayout
+    <FrameLayout
+        android:id="@+id/layoutHeaderCard"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:paddingStart="24dp"
-        android:paddingTop="24dp"
-        android:paddingEnd="24dp"
-        android:paddingBottom="20dp">
-
-        <TextView
-            android:id="@+id/txtHeaderTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="TẬP CƠ BỤNG"
-            android:textColor="#FFFFFF"
-            android:textSize="31sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/txtHeaderSubtitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Cho cơ bụng săn chắc và gợi cảm"
-            android:textColor="#E0E0E0"
-            android:textSize="17sp" />
-
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
+        android:background="@drawable/bg_plan_header_dark">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingStart="22dp"
+            android:paddingTop="22dp"
+            android:paddingEnd="22dp"
+            android:paddingBottom="18dp">
 
             <TextView
-                android:id="@+id/txtHeaderRemaining"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="30 ngày còn lại"
-                android:textColor="#FFFFFF"
-                android:textSize="17sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/txtHeaderPercent"
+                android:id="@+id/txtHeaderTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="0%"
+                android:includeFontPadding="false"
+                android:text="TẬP CƠ BỤNG"
+                android:fontFamily="sans-serif"
                 android:textColor="#FFFFFF"
-                android:textSize="17sp"
+                android:textSize="28sp"
                 android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtHeaderSubtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:includeFontPadding="false"
+                android:text="Cho cơ bụng săn chắc và gợi cảm"
+                android:textColor="#E0E0E0"
+                android:fontFamily="sans-serif"
+                android:textSize="16sp" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/txtHeaderRemaining"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="30 ngày còn lại"
+                    android:fontFamily="sans-serif"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/txtHeaderPercent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0%"
+                    android:fontFamily="sans-serif"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="6dp"
+                android:layout_marginTop="8dp"
+                android:background="#55FFFFFF">
+
+                <View
+                    android:id="@+id/viewHeaderProgress"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:background="#F3D66B" />
+            </FrameLayout>
+
         </LinearLayout>
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="6dp"
-            android:layout_marginTop="8dp"
-            android:background="#55FFFFFF">
-
-            <View
-                android:id="@+id/viewHeaderProgress"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:background="#F3D66B" />
-        </FrameLayout>
-
-    </LinearLayout>
+    </FrameLayout>
 
 </FrameLayout>

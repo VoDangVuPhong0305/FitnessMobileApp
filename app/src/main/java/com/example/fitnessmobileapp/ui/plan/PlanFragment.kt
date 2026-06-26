@@ -9,6 +9,7 @@ import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,6 +21,7 @@ import com.example.fitnessmobileapp.data.model.WorkoutPlanCategories
 import com.example.fitnessmobileapp.data.repository.PlanProgressManager
 import com.example.fitnessmobileapp.data.repository.WorkoutPlanProvider
 
+
 class PlanFragment : Fragment(R.layout.fragment_plan) {
 
     private lateinit var recyclerPlanHeader: RecyclerView
@@ -30,8 +32,8 @@ class PlanFragment : Fragment(R.layout.fragment_plan) {
     private lateinit var pagerSnapHelper: PagerSnapHelper
 
     // Chức năng: lưu kế hoạch hiện tại đang được chọn.
-    // Mặc định mở app lên chọn Tập cơ bụng.
-    private var selectedPlanId: String = WorkoutPlanCategories.ABS_ID
+    // Mặc định mở app lên chọn Tập toàn thân.
+    private var selectedPlanId: String = WorkoutPlanCategories.FULL_BODY_ID
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -71,6 +73,25 @@ class PlanFragment : Fragment(R.layout.fragment_plan) {
 
         recyclerPlanHeader.adapter = planHeaderAdapter
 
+        // Chức năng: chừa khoảng trống hai bên RecyclerView để card đầu và card cuối
+        // có thể tự snap vào chính giữa màn hình mà không bị khuyết.
+        recyclerPlanHeader.post {
+            val cardWidth = resources.displayMetrics.widthPixels - dp(48)
+            val cardGap = dp(14)
+
+            val sidePadding = ((recyclerPlanHeader.width - cardWidth - cardGap) / 2)
+                .coerceAtLeast(0)
+
+            recyclerPlanHeader.setPadding(
+                sidePadding,
+                0,
+                sidePadding,
+                0
+            )
+
+            recyclerPlanHeader.clipToPadding = false
+        }
+
         pagerSnapHelper = PagerSnapHelper()
         pagerSnapHelper.attachToRecyclerView(recyclerPlanHeader)
 
@@ -94,7 +115,7 @@ class PlanFragment : Fragment(R.layout.fragment_plan) {
         })
     }
 
-    // Chức năng: khi mở màn hình, tự đưa card Cơ bụng vào vị trí đang chọn.
+    // Chức năng: khi mở màn hình, tự đưa phần Card vào vị trí đang chọn (ở chính giữa màn hình).
     private fun scrollToSelectedPlan() {
         recyclerPlanHeader.post {
             val selectedIndex = WorkoutPlanCategories.allPlans.indexOfFirst { plan ->
@@ -124,37 +145,40 @@ class PlanFragment : Fragment(R.layout.fragment_plan) {
     }
 
     // Chức năng: hiển thị dấu chấm dưới card.
-    // Dấu chấm đang chọn sẽ dài hơn và đổi màu theo plan hiện tại.
+    // Chức năng: hiển thị các chấm màu tương ứng với từng kế hoạch.
+    // Chấm đang chọn sẽ dài ra, chấm chưa chọn vẫn giữ màu riêng của plan.
     private fun showPlanDots() {
         layoutPlanDots.removeAllViews()
 
         val planList = WorkoutPlanCategories.allPlans
+        val selectedIndex = planList.indexOfFirst { it.id == selectedPlanId }
 
-        planList.forEach { plan ->
-            val isSelected = plan.id == selectedPlanId
+        planList.forEachIndexed { index, plan ->
+            val isSelected = index == selectedIndex
 
-            val dot = View(requireContext()).apply {
-                background = GradientDrawable().apply {
+            val dotView = View(requireContext())
+
+            dotView.layoutParams = LinearLayout.LayoutParams(
+                if (isSelected) dp(24) else dp(7),
+                dp(7)
+            ).apply {
+                marginEnd = dp(7)
+            }
+
+            val dotBackground = GradientDrawable().apply {
+                // Quan trọng: mỗi dot luôn lấy màu riêng của plan đó.
+                setColor(Color.parseColor(plan.startColor))
+
+                if (isSelected) {
                     shape = GradientDrawable.RECTANGLE
-                    cornerRadius = dp(6).toFloat()
-                    setColor(
-                        if (isSelected) {
-                            Color.parseColor(plan.startColor)
-                        } else {
-                            Color.parseColor("#CFCFCF")
-                        }
-                    )
-                }
-
-                layoutParams = LinearLayout.LayoutParams(
-                    if (isSelected) dp(26) else dp(9),
-                    dp(9)
-                ).apply {
-                    marginEnd = dp(6)
+                    cornerRadius = dp(10).toFloat()
+                } else {
+                    shape = GradientDrawable.OVAL
                 }
             }
 
-            layoutPlanDots.addView(dot)
+            dotView.background = dotBackground
+            layoutPlanDots.addView(dotView)
         }
     }
 
@@ -223,14 +247,11 @@ class PlanFragment : Fragment(R.layout.fragment_plan) {
         textContainer.addView(txtTitle)
         textContainer.addView(txtSub)
 
-        val checkCircle = TextView(requireContext()).apply {
-            text = "✓"
-            textSize = 34f
-            setTypeface(null, Typeface.BOLD)
-            setTextColor(Color.parseColor(selectedPlan.startColor))
-            gravity = Gravity.CENTER
-            background = resources.getDrawable(R.drawable.bg_plan_check_circle, null)
-            layoutParams = LinearLayout.LayoutParams(dp(72), dp(72))
+        val checkCircle = ImageView(requireContext()).apply {
+            setImageResource(R.drawable.ic_plan_check)
+            scaleType = ImageView.ScaleType.FIT_CENTER
+
+            layoutParams = LinearLayout.LayoutParams(dp(58), dp(58))
         }
 
         card.addView(textContainer)
@@ -269,12 +290,12 @@ class PlanFragment : Fragment(R.layout.fragment_plan) {
 
         val btnStart = TextView(requireContext()).apply {
             text = "Bắt đầu"
-            textSize = 22f
-            setTypeface(null, Typeface.BOLD)
+            textSize = 19f
+            typeface = Typeface.create("sans-serif", Typeface.BOLD)
             setTextColor(Color.parseColor(selectedPlan.startColor))
             gravity = Gravity.CENTER
             background = resources.getDrawable(R.drawable.bg_plan_start_button, null)
-            layoutParams = LinearLayout.LayoutParams(dp(150), dp(58))
+            layoutParams = LinearLayout.LayoutParams(dp(132), dp(48))
         }
 
         card.addView(textContainer)
@@ -337,7 +358,7 @@ class PlanFragment : Fragment(R.layout.fragment_plan) {
             textSize = 38f
             gravity = Gravity.CENTER
             setTextColor(Color.parseColor(selectedPlan.startColor))
-            layoutParams = LinearLayout.LayoutParams(dp(72), dp(72))
+            layoutParams = LinearLayout.LayoutParams(dp(58), dp(58))
         }
 
         card.addView(textContainer)
@@ -372,12 +393,12 @@ class PlanFragment : Fragment(R.layout.fragment_plan) {
         return LinearLayout(requireContext()).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER_VERTICAL
-            setPadding(dp(24), 0, dp(24), 0)
+            setPadding(dp(20), 0, dp(20), 0)
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
-                dp(118)
+                dp(94)
             ).apply {
-                bottomMargin = dp(16)
+                bottomMargin = dp(12)
             }
         }
     }
@@ -386,20 +407,21 @@ class PlanFragment : Fragment(R.layout.fragment_plan) {
     private fun createTitleText(text: String, color: String): TextView {
         return TextView(requireContext()).apply {
             this.text = text
-            textSize = 30f
-            setTypeface(null, Typeface.BOLD)
+            textSize = 26f
+            typeface = Typeface.create("sans-serif", Typeface.BOLD)
             setTextColor(Color.parseColor(color))
             includeFontPadding = false
         }
     }
 
-    // Chức năng: tạo dòng mô tả nhỏ.
+    // Chức năng: tạo dòng mô tả nhỏ cho người dùng đọc để hiểu bài tập mình đang tập.
     private fun createSubText(text: String, color: String): TextView {
         return TextView(requireContext()).apply {
             this.text = text
-            textSize = 17f
+            textSize = 15f
+            typeface = Typeface.create("sans-serif", Typeface.NORMAL)
             setTextColor(Color.parseColor(color))
-            setPadding(0, dp(5), 0, 0)
+            setPadding(0, dp(4), 0, 0)
             includeFontPadding = false
         }
     }
