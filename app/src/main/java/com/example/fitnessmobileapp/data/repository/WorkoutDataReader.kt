@@ -3,6 +3,7 @@ package com.example.fitnessmobileapp.data.repository
 import android.content.Context
 import com.example.fitnessmobileapp.data.model.Exercise
 import com.example.fitnessmobileapp.data.model.ExerciseLibrary
+import com.example.fitnessmobileapp.data.model.WorkoutPlanCategories
 import com.example.fitnessmobileapp.data.model.WorkoutData
 import org.json.JSONArray
 import org.json.JSONObject
@@ -104,5 +105,40 @@ object WorkoutDataReader {
         }
 
         return descriptions
+    }
+
+    // Chức năng: lấy danh sách bài tập toàn thân từ file JSON.
+// Hàm này dùng cho kế hoạch Tập toàn thân.
+    fun getFullBodyExercises(context: Context): List<Exercise> {
+        val workoutData = loadWorkoutData(context)
+        return workoutData.exerciseLibrary.fullBody
+    }
+
+    // Chức năng: lấy danh sách bài tập theo loại kế hoạch.
+    fun getExercisesByType(
+        context: Context,
+        exerciseType: String
+    ): List<Exercise> {
+        return when (exerciseType) {
+            WorkoutPlanCategories.ABS_ID -> {
+                getAbsExercises(context)
+            }
+
+            WorkoutPlanCategories.ARMS_CHEST_ID -> {
+                getArmsChestExercises(context)
+            }
+
+            WorkoutPlanCategories.LEGS_ID -> {
+                getLegExercises(context)
+            }
+
+            WorkoutPlanCategories.FULL_BODY_ID -> {
+                getFullBodyExercises(context)
+            }
+
+            else -> {
+                getAbsExercises(context)
+            }
+        }
     }
 }
