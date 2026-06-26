@@ -1,4 +1,4 @@
-package com.example.fitnessmobileapp.model
+package com.example.fitnessmobileapp.ui.nutrition
 
 import java.io.Serializable
 
