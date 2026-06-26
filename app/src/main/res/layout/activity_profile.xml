@@ -1,25 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Kim Tuyền - Màn hình Hồ sơ của tôi -->
+
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F8F9FA">
+    android:background="#F3F6F5"
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:paddingStart="18dp"
+        android:paddingTop="24dp"
+        android:paddingEnd="18dp"
+        android:paddingBottom="110dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp">
+            android:layout_height="64dp"
+            android:layout_marginBottom="18dp">
 
             <ImageView
                 android:id="@+id/btnBack"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
+                android:padding="8dp"
                 android:src="@drawable/ic_back" />
 
             <TextView
@@ -27,58 +35,69 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:text="HỒ SƠ CỦA TÔI"
-                android:textColor="#000000"
-                android:textSize="22sp"
+                android:textColor="#111111"
+                android:textSize="24sp"
                 android:textStyle="bold" />
         </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:layout_marginBottom="16dp"
+            android:layout_height="58dp"
+            android:layout_marginBottom="18dp"
             android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/btnMetric"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
                 android:layout_marginEnd="8dp"
+                android:layout_weight="1"
                 android:background="@drawable/bg_unit_selected"
                 android:gravity="center"
-                android:text="kg,cm"
-                android:textColor="#000000"
-                android:textSize="18sp"
+                android:text="kg, cm"
+                android:textColor="#111111"
+                android:textSize="19sp"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/btnImperial"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
                 android:layout_marginStart="8dp"
+                android:layout_weight="1"
                 android:background="@drawable/bg_unit_unselected"
                 android:gravity="center"
-                android:text="lb,ft"
-                android:textColor="#666666"
-                android:textSize="18sp"
+                android:text="lb, ft"
+                android:textColor="#777777"
+                android:textSize="19sp"
                 android:textStyle="bold" />
-
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="18dp"
             android:background="@drawable/bg_card_profile"
-            android:elevation="2dp"
+            android:elevation="4dp"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:paddingStart="18dp"
+            android:paddingTop="10dp"
+            android:paddingEnd="18dp"
+            android:paddingBottom="10dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="6dp"
+                android:text="Thông tin cá nhân"
+                android:textColor="#111111"
+                android:textSize="19sp"
+                android:textStyle="bold" />
 
             <RelativeLayout
                 android:id="@+id/layoutHeight"
                 android:layout_width="match_parent"
-                android:layout_height="55dp"
+                android:layout_height="60dp"
                 android:clickable="true"
                 android:focusable="true">
 
@@ -87,8 +106,9 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:text="Chiều cao"
-                    android:textColor="#333333"
-                    android:textSize="16sp" />
+                    android:textColor="#222222"
+                    android:textSize="17sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/txtHeight"
@@ -98,19 +118,19 @@
                     android:layout_centerVertical="true"
                     android:text="165 cm"
                     android:textColor="#00B060"
-                    android:textSize="16sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
             </RelativeLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#EFEFEF" />
+                android:background="#EEEEEE" />
 
             <RelativeLayout
                 android:id="@+id/layoutWeight"
                 android:layout_width="match_parent"
-                android:layout_height="55dp"
+                android:layout_height="60dp"
                 android:clickable="true"
                 android:focusable="true">
 
@@ -119,8 +139,9 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:text="Cân nặng"
-                    android:textColor="#333333"
-                    android:textSize="16sp" />
+                    android:textColor="#222222"
+                    android:textSize="17sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/txtWeight"
@@ -130,19 +151,19 @@
                     android:layout_centerVertical="true"
                     android:text="65.0 kg"
                     android:textColor="#00B060"
-                    android:textSize="16sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
             </RelativeLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#EFEFEF" />
+                android:background="#EEEEEE" />
 
             <RelativeLayout
                 android:id="@+id/layoutTargetWeight"
                 android:layout_width="match_parent"
-                android:layout_height="55dp"
+                android:layout_height="60dp"
                 android:clickable="true"
                 android:focusable="true">
 
@@ -151,8 +172,9 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:text="Cân nặng mục tiêu"
-                    android:textColor="#333333"
-                    android:textSize="16sp" />
+                    android:textColor="#222222"
+                    android:textSize="17sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/txtTargetWeight"
@@ -162,19 +184,19 @@
                     android:layout_centerVertical="true"
                     android:text="65.0 kg"
                     android:textColor="#00B060"
-                    android:textSize="16sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
             </RelativeLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#EFEFEF" />
+                android:background="#EEEEEE" />
 
             <RelativeLayout
                 android:id="@+id/layoutGender"
                 android:layout_width="match_parent"
-                android:layout_height="55dp"
+                android:layout_height="60dp"
                 android:clickable="true"
                 android:focusable="true">
 
@@ -183,8 +205,9 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:text="Giới tính"
-                    android:textColor="#333333"
-                    android:textSize="16sp" />
+                    android:textColor="#222222"
+                    android:textSize="17sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/txtGender"
@@ -194,19 +217,19 @@
                     android:layout_centerVertical="true"
                     android:text="Nữ"
                     android:textColor="#00B060"
-                    android:textSize="16sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
             </RelativeLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#EFEFEF" />
+                android:background="#EEEEEE" />
 
             <RelativeLayout
                 android:id="@+id/layoutBirthDate"
                 android:layout_width="match_parent"
-                android:layout_height="55dp"
+                android:layout_height="60dp"
                 android:clickable="true"
                 android:focusable="true">
 
@@ -215,8 +238,9 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:text="Ngày sinh"
-                    android:textColor="#333333"
-                    android:textSize="16sp" />
+                    android:textColor="#222222"
+                    android:textSize="17sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/txtBirthDate"
@@ -226,7 +250,7 @@
                     android:layout_centerVertical="true"
                     android:text="1995-01-01"
                     android:textColor="#00B060"
-                    android:textSize="16sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
             </RelativeLayout>
         </LinearLayout>
@@ -235,23 +259,26 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/bg_card_profile"
-            android:elevation="2dp"
+            android:elevation="4dp"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:paddingStart="18dp"
+            android:paddingTop="10dp"
+            android:paddingEnd="18dp"
+            android:paddingBottom="10dp">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:text="Bộ phận mục tiêu"
-                android:textColor="#000000"
-                android:textSize="18sp"
+                android:layout_marginBottom="6dp"
+                android:text="Mục tiêu tập luyện"
+                android:textColor="#111111"
+                android:textSize="19sp"
                 android:textStyle="bold" />
 
             <RelativeLayout
                 android:id="@+id/layoutTargetPart"
                 android:layout_width="match_parent"
-                android:layout_height="55dp"
+                android:layout_height="60dp"
                 android:clickable="true"
                 android:focusable="true">
 
@@ -259,9 +286,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:text="Khu vực"
-                    android:textColor="#333333"
-                    android:textSize="16sp" />
+                    android:text="Bộ phận mục tiêu"
+                    android:textColor="#222222"
+                    android:textSize="17sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/txtTargetPart"
@@ -271,19 +299,19 @@
                     android:layout_centerVertical="true"
                     android:text="Mông"
                     android:textColor="#00B060"
-                    android:textSize="16sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
             </RelativeLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#EFEFEF" />
+                android:background="#EEEEEE" />
 
             <RelativeLayout
                 android:id="@+id/layoutLevel"
                 android:layout_width="match_parent"
-                android:layout_height="55dp"
+                android:layout_height="60dp"
                 android:clickable="true"
                 android:focusable="true">
 
@@ -292,8 +320,9 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:text="Mức tập luyện"
-                    android:textColor="#333333"
-                    android:textSize="16sp" />
+                    android:textColor="#222222"
+                    android:textSize="17sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/txtLevel"
@@ -303,19 +332,19 @@
                     android:layout_centerVertical="true"
                     android:text="Trung bình"
                     android:textColor="#00B060"
-                    android:textSize="16sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
             </RelativeLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#EFEFEF" />
+                android:background="#EEEEEE" />
 
             <RelativeLayout
                 android:id="@+id/layoutTrainingDays"
                 android:layout_width="match_parent"
-                android:layout_height="55dp"
+                android:layout_height="60dp"
                 android:clickable="true"
                 android:focusable="true">
 
@@ -324,8 +353,9 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:text="Ngày tập luyện"
-                    android:textColor="#333333"
-                    android:textSize="16sp" />
+                    android:textColor="#222222"
+                    android:textSize="17sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/txtTrainingDays"
@@ -335,7 +365,7 @@
                     android:layout_centerVertical="true"
                     android:text="3/7"
                     android:textColor="#00B060"
-                    android:textSize="16sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
             </RelativeLayout>
         </LinearLayout>

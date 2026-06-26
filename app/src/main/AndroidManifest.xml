@@ -12,10 +12,33 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FitnessMobileApp">
 
+        <!-- Màn hình kế hoạch -->
         <activity
             android:name=".ui.plan.PlanDayDetailActivity"
             android:exported="false" />
 
+        <!-- Các màn hình phần Cá nhân / Của tôi -->
+        <activity
+            android:name=".ui.profile.ProfileActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.profile.ReminderActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.profile.SoundActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.profile.FeedbackActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.profile.FAQActivity"
+            android:exported="false" />
+
+        <!-- Màn hình chính -->
         <activity
             android:name=".ui.plan.ExerciseDetailActivity"
             android:exported="false" />
