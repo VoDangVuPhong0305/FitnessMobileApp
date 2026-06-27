@@ -44,10 +44,17 @@ class NutritionDetailFragment : Fragment(R.layout.fragment_nutrition_detail) {
                 lAlt: String,
                 dAlt: String
             ) {
-                tvBreakfast.text = "🍳 Bữa sáng: $b\n(Thay thế: $bAlt)"
-                tvSnack.text = "🍎 Bữa nhẹ: $s\n(Thay thế: $sAlt)"
-                tvLunch.text = "🥗 Bữa trưa: $l\n(Thay thế: $lAlt)"
-                tvDinner.text = "🍲 Bữa tối: $d\n(Thay thế: $dAlt)"
+                tvBreakfast.text =
+                    "🍳 Bữa sáng\n\n• $b\n• $bAlt"
+
+                tvSnack.text =
+                    "🍎 Bữa nhẹ\n\n• $s\n• $sAlt"
+
+                tvLunch.text =
+                    "🥗 Bữa trưa\n\n• $l\n• $lAlt"
+
+                tvDinner.text =
+                    "🍲 Bữa tối\n\n• $d\n• $dAlt"
             }
 
             // Hiển thị mặc định (Tiêu chuẩn)
@@ -64,6 +71,15 @@ class NutritionDetailFragment : Fragment(R.layout.fragment_nutrition_detail) {
 
             // Nút Tiêu chuẩn
             btnStandard.setOnClickListener {
+
+                btnStandard.backgroundTintList =
+                    android.content.res.ColorStateList.valueOf(Color.parseColor("#4CAF50"))
+                btnVegetarian.backgroundTintList =
+                    android.content.res.ColorStateList.valueOf(Color.WHITE)
+
+                btnStandard.setTextColor(Color.WHITE)
+                btnVegetarian.setTextColor(Color.parseColor("#4CAF50"))
+
                 showMenu(
                     item.breakfastStd,
                     item.snackStd,
@@ -74,10 +90,26 @@ class NutritionDetailFragment : Fragment(R.layout.fragment_nutrition_detail) {
                     item.lunchAlt,
                     item.dinnerAlt
                 )
+                btnStandard.backgroundTintList =
+                    android.content.res.ColorStateList.valueOf(Color.parseColor("#4CAF50"))
+                btnStandard.setTextColor(Color.WHITE)
+
+                btnVegetarian.backgroundTintList =
+                    android.content.res.ColorStateList.valueOf(Color.WHITE)
+                btnVegetarian.setTextColor(Color.parseColor("#4CAF50"))
             }
 
-            // Nút Ăn chay
+// Nút Ăn chay
             btnVegetarian.setOnClickListener {
+
+                btnVegetarian.backgroundTintList =
+                    android.content.res.ColorStateList.valueOf(Color.parseColor("#4CAF50"))
+                btnStandard.backgroundTintList =
+                    android.content.res.ColorStateList.valueOf(Color.WHITE)
+
+                btnVegetarian.setTextColor(Color.WHITE)
+                btnStandard.setTextColor(Color.parseColor("#4CAF50"))
+
                 showMenu(
                     item.breakfastVeg,
                     item.snackVeg,
@@ -99,25 +131,31 @@ class NutritionDetailFragment : Fragment(R.layout.fragment_nutrition_detail) {
         // Nút hoàn thành
         btnCheck.setOnClickListener {
 
-            btnCheck.setImageResource(R.drawable.ic_check_green)
-            btnCheck.setColorFilter(Color.GREEN)
 
-            AlertDialog.Builder(requireContext())
-                .setTitle("Thông báo")
-                .setMessage("Đã kết thúc")
-                .setPositiveButton("OK") { dialog, _ ->
-                    dialog.dismiss()
+                btnCheck.setImageResource(android.R.drawable.checkbox_on_background)
+
+                btnCheck.setColorFilter(Color.parseColor("#4CAF50"))
+
+                btnCheck.backgroundTintList =
+                    android.content.res.ColorStateList.valueOf(
+                        Color.parseColor("#E8F5E9")
+                    )
+                AlertDialog.Builder(requireContext())
+                    .setTitle("Thông báo")
+                    .setMessage("Đã kết thúc")
+                    .setPositiveButton("OK") { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .show()
+
+                data?.let { item ->
+                    val prefs =
+                        requireActivity().getSharedPreferences("user_prefs", 0)
+
+                    prefs.edit()
+                        .putBoolean("day_${item.day}_done", true)
+                        .apply()
                 }
-                .show()
-
-            data?.let { item ->
-                val prefs =
-                    requireActivity().getSharedPreferences("user_prefs", 0)
-
-                prefs.edit()
-                    .putBoolean("day_${item.day}_done", true)
-                    .apply()
             }
         }
     }
-}

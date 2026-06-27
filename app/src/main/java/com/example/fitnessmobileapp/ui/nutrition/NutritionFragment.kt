@@ -90,6 +90,12 @@ class NutritionFragment : Fragment(R.layout.fragment_nutrition) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        view.findViewById<View>(R.id.btnShoppingList)?.setOnClickListener {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, ShoppingFragment())
+                .addToBackStack(null)
+                .commit()
+        }
 
         for (i in 1..30) {
 
