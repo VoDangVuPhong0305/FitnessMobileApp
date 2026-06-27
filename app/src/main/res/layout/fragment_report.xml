@@ -1,33 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Kim Tuyền - Fragment Báo cáo -->
+<!-- Kim Tuyền - Màn hình Báo cáo tiếng Việt -->
 
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#EEEEEE">
+    android:background="#FBF8FF">
 
-    <!-- Nền xanh phía trên -->
+    <!-- Nền tím nhạt phía trên -->
     <View
-        android:id="@+id/headerBackground"
+        android:id="@+id/topGradient"
         android:layout_width="0dp"
-        android:layout_height="300dp"
-        android:background="#343B5C"
+        android:layout_height="260dp"
+        android:background="#F4E9FF"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <!-- Header -->
     <LinearLayout
-        android:id="@+id/headerFixed"
+        android:id="@+id/headerReport"
         android:layout_width="0dp"
-        android:layout_height="175dp"
-        android:background="#343B5C"
+        android:layout_height="160dp"
         android:orientation="vertical"
-        android:paddingStart="24dp"
-        android:paddingEnd="24dp"
-        android:paddingTop="50dp"
+        android:paddingStart="26dp"
+        android:paddingEnd="26dp"
+        android:paddingTop="46dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -36,12 +35,12 @@
             android:id="@+id/txtReportTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Hãy phát huy!"
-            android:textColor="#FFFFFF"
-            android:textSize="30sp"
+            android:text="Báo cáo"
+            android:textColor="#111111"
+            android:textSize="36sp"
             android:textStyle="bold" />
 
-        <!-- Tab Lịch / Cân nặng -->
+        <!-- Tab Lịch / Dữ liệu -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -52,46 +51,48 @@
                 android:id="@+id/tabCalendar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:orientation="vertical"
                 android:clickable="true"
-                android:focusable="true"
-                android:orientation="vertical">
+                android:focusable="true">
 
                 <TextView
                     android:id="@+id/txtTabCalendar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Lịch"
-                    android:textColor="#FFFFFF"
-                    android:textSize="20sp" />
+                    android:textColor="#111111"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
 
                 <View
                     android:id="@+id/lineCalendar"
-                    android:layout_width="46dp"
+                    android:layout_width="48dp"
                     android:layout_height="5dp"
                     android:layout_marginTop="8dp"
-                    android:background="#F6E96B" />
+                    android:background="#111111" />
             </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/tabWeight"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="42dp"
+                android:layout_marginStart="46dp"
+                android:orientation="vertical"
                 android:clickable="true"
-                android:focusable="true"
-                android:orientation="vertical">
+                android:focusable="true">
 
                 <TextView
                     android:id="@+id/txtTabWeight"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Cân nặng"
-                    android:textColor="#FFFFFF"
-                    android:textSize="20sp" />
+                    android:text="Dữ liệu"
+                    android:textColor="#999999"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
 
                 <View
                     android:id="@+id/lineWeight"
-                    android:layout_width="78dp"
+                    android:layout_width="72dp"
                     android:layout_height="5dp"
                     android:layout_marginTop="8dp"
                     android:background="#00FFFFFF" />
@@ -106,37 +107,36 @@
         android:layout_height="0dp"
         android:clipToPadding="false"
         android:fillViewport="false"
-        android:paddingBottom="90dp"
-        android:overScrollMode="always"
-        app:layout_constraintTop_toBottomOf="@id/headerFixed"
+        android:paddingBottom="100dp"
+        app:layout_constraintTop_toBottomOf="@id/headerReport"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
         <LinearLayout
-            android:id="@+id/layoutReportContent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
-            android:paddingBottom="28dp">
+            android:paddingBottom="30dp">
 
-            <!-- ================= PHẦN LỊCH ================= -->
+            <!-- ================= TAB LỊCH ================= -->
             <LinearLayout
                 android:id="@+id/sectionCalendar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <!-- Card thống kê nhanh -->
+                <!-- Tổng quan -->
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/cardSummary"
                     android:layout_width="match_parent"
-                    android:layout_height="110dp"
+                    android:layout_height="108dp"
                     app:cardBackgroundColor="#FFFFFF"
-                    app:cardCornerRadius="18dp"
-                    app:cardElevation="5dp">
+                    app:cardCornerRadius="24dp"
+                    app:cardElevation="4dp"
+                    app:strokeWidth="0dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -152,25 +152,25 @@
                             android:orientation="vertical">
 
                             <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Tập luyện"
-                                android:textColor="#666666"
-                                android:textSize="16sp" />
-
-                            <TextView
                                 android:id="@+id/txtTotalDays"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="0"
-                                android:textColor="#222222"
+                                android:textColor="#18C27A"
                                 android:textSize="34sp"
                                 android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Buổi tập"
+                                android:textColor="#111111"
+                                android:textSize="15sp" />
                         </LinearLayout>
 
                         <View
                             android:layout_width="1dp"
-                            android:layout_height="55dp"
+                            android:layout_height="50dp"
                             android:background="#EEEEEE" />
 
                         <LinearLayout
@@ -179,27 +179,27 @@
                             android:layout_weight="1"
                             android:gravity="center"
                             android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Calo"
-                                android:textColor="#666666"
-                                android:textSize="16sp" />
 
                             <TextView
                                 android:id="@+id/txtTotalCalories"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="0.0"
-                                android:textColor="#222222"
+                                android:text="0"
+                                android:textColor="#18C27A"
                                 android:textSize="34sp"
                                 android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Kcal"
+                                android:textColor="#111111"
+                                android:textSize="15sp" />
                         </LinearLayout>
 
                         <View
                             android:layout_width="1dp"
-                            android:layout_height="55dp"
+                            android:layout_height="50dp"
                             android:background="#EEEEEE" />
 
                         <LinearLayout
@@ -208,117 +208,41 @@
                             android:layout_weight="1"
                             android:gravity="center"
                             android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Thời gian"
-                                android:textColor="#666666"
-                                android:textSize="16sp" />
 
                             <TextView
                                 android:id="@+id/txtTotalMinutes"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="0"
-                                android:textColor="#222222"
+                                android:textColor="#18C27A"
                                 android:textSize="34sp"
                                 android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Phút"
+                                android:textColor="#111111"
+                                android:textSize="15sp" />
                         </LinearLayout>
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- Card lịch chọn ngày -->
+                <!-- Thành tựu -->
                 <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/cardCalendar"
+                    android:id="@+id/cardAchievements"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="22dp"
                     app:cardBackgroundColor="#FFFFFF"
-                    app:cardCornerRadius="18dp"
-                    app:cardElevation="5dp">
+                    app:cardCornerRadius="24dp"
+                    app:cardElevation="4dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:padding="20dp">
-
-                        <TextView
-                            android:id="@+id/txtSelectedDate"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Lịch tập hôm nay"
-                            android:textColor="#222222"
-                            android:textSize="22sp"
-                            android:textStyle="bold" />
-
-                        <CalendarView
-                            android:id="@+id/calendarView"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="12dp"
-                            android:nestedScrollingEnabled="false" />
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-
-                <!-- Card lịch sử tập luyện -->
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/cardHistory"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="22dp"
-                    app:cardBackgroundColor="#FFFFFF"
-                    app:cardCornerRadius="18dp"
-                    app:cardElevation="5dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="20dp">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Lịch sử tập luyện"
-                            android:textColor="#222222"
-                            android:textSize="22sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/txtWorkoutHistory"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="16dp"
-                            android:text="Chưa có dữ liệu"
-                            android:textColor="#555555"
-                            android:textSize="17sp" />
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-            </LinearLayout>
-
-            <!-- ================= PHẦN CÂN NẶNG ================= -->
-            <LinearLayout
-                android:id="@+id/sectionWeight"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="22dp"
-                android:orientation="vertical">
-
-                <!-- Card cân nặng -->
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:cardBackgroundColor="#FFFFFF"
-                    app:cardCornerRadius="18dp"
-                    app:cardElevation="5dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="20dp">
+                        android:padding="22dp">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -330,42 +254,327 @@
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:text="Cân nặng  (kg)"
-                                android:textColor="#222222"
+                                android:text="Thành tựu"
+                                android:textColor="#111111"
+                                android:textSize="24sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Xem tất cả"
+                                android:textColor="#18C27A"
+                                android:textSize="17sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="20dp"
+                            android:orientation="horizontal"
+                            android:weightSum="3">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="74dp"
+                                    android:layout_height="74dp"
+                                    android:background="#6C4DFF"
+                                    android:gravity="center"
+                                    android:text="3"
+                                    android:textColor="#FFFFFF"
+                                    android:textSize="32sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="12dp"
+                                    android:gravity="center"
+                                    android:text="Tập 3 ngày"
+                                    android:textColor="#111111"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="74dp"
+                                    android:layout_height="74dp"
+                                    android:background="#6C4DFF"
+                                    android:gravity="center"
+                                    android:text="2"
+                                    android:textColor="#FFFFFF"
+                                    android:textSize="32sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="12dp"
+                                    android:gravity="center"
+                                    android:text="Tập 2 ngày"
+                                    android:textColor="#111111"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="74dp"
+                                    android:layout_height="74dp"
+                                    android:background="#6C4DFF"
+                                    android:gravity="center"
+                                    android:text="1"
+                                    android:textColor="#FFFFFF"
+                                    android:textSize="32sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="12dp"
+                                    android:gravity="center"
+                                    android:text="Ngày đầu"
+                                    android:textColor="#111111"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
+                        </LinearLayout>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Lịch -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardCalendar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="22dp"
+                    app:cardBackgroundColor="#FFFFFF"
+                    app:cardCornerRadius="24dp"
+                    app:cardElevation="4dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="22dp">
+
+                        <TextView
+                            android:id="@+id/txtSelectedDate"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Hôm nay"
+                            android:textColor="#111111"
+                            android:textSize="24sp"
+                            android:gravity="center"
+                            android:textStyle="bold" />
+
+                        <CalendarView
+                            android:id="@+id/calendarView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:nestedScrollingEnabled="false" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Lịch sử -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardHistory"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="22dp"
+                    app:cardBackgroundColor="#FFFFFF"
+                    app:cardCornerRadius="24dp"
+                    app:cardElevation="4dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="22dp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Lịch sử tập luyện"
+                            android:textColor="#111111"
+                            android:textSize="24sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/txtWorkoutHistory"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="14dp"
+                            android:text="Chưa có dữ liệu"
+                            android:textColor="#555555"
+                            android:textSize="17sp" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+
+            <!-- ================= TAB DỮ LIỆU ================= -->
+            <LinearLayout
+                android:id="@+id/sectionData"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <!-- Cân nặng -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardWeight"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardBackgroundColor="#FFFFFF"
+                    app:cardCornerRadius="24dp"
+                    app:cardElevation="4dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="22dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Cân nặng (kg)"
+                                android:textColor="#111111"
                                 android:textSize="22sp"
                                 android:textStyle="bold" />
 
                             <TextView
-                                android:id="@+id/btnAddWeight"
-                                android:layout_width="42dp"
-                                android:layout_height="42dp"
-                                android:clickable="true"
-                                android:focusable="true"
+                                android:id="@+id/btnEditWeight"
+                                android:layout_width="76dp"
+                                android:layout_height="40dp"
+                                android:background="#18C27A"
                                 android:gravity="center"
-                                android:text="+"
-                                android:textColor="#222222"
-                                android:textSize="28sp"
-                                android:textStyle="bold" />
+                                android:text="Sửa ✎"
+                                android:textColor="#FFFFFF"
+                                android:textSize="15sp"
+                                android:textStyle="bold"
+                                android:clickable="true"
+                                android:focusable="true" />
                         </LinearLayout>
 
-                        <TextView
-                            android:id="@+id/txtWeightInfo"
+                        <!-- Thống kê cân nặng gọn -->
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="18dp"
-                            android:text="Hiện tại: 76.0 kg\n30 ngày trước: 77.5 kg\nĐã giảm: 1.5 kg"
-                            android:textColor="#222222"
-                            android:textSize="18sp" />
+                            android:orientation="horizontal"
+                            android:weightSum="3">
 
-                        <!-- Biểu đồ cân nặng cập nhật bằng Kotlin -->
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Hiện tại"
+                                    android:textColor="#777777"
+                                    android:textSize="12sp" />
+
+                                <TextView
+                                    android:id="@+id/txtCurrentWeight"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="75.5"
+                                    android:textColor="#111111"
+                                    android:textSize="28sp"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="30 ngày"
+                                    android:textColor="#777777"
+                                    android:textSize="12sp" />
+
+                                <TextView
+                                    android:id="@+id/txtLast30Days"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="2.0"
+                                    android:textColor="#111111"
+                                    android:textSize="28sp"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="TB năm"
+                                    android:textColor="#777777"
+                                    android:textSize="12sp" />
+
+                                <TextView
+                                    android:id="@+id/txtAverageWeight"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="76.5"
+                                    android:textColor="#111111"
+                                    android:textSize="28sp"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <!-- Biểu đồ cân nặng -->
                         <LinearLayout
                             android:id="@+id/layoutWeightChart"
                             android:layout_width="match_parent"
-                            android:layout_height="180dp"
+                            android:layout_height="170dp"
                             android:layout_marginTop="18dp"
                             android:gravity="bottom"
                             android:orientation="horizontal"
-                            android:padding="10dp">
+                            android:padding="8dp">
 
                             <LinearLayout
                                 android:layout_width="0dp"
@@ -376,8 +585,8 @@
 
                                 <View
                                     android:id="@+id/barWeight1"
-                                    android:layout_width="26dp"
-                                    android:layout_height="120dp"
+                                    android:layout_width="28dp"
+                                    android:layout_height="85dp"
                                     android:background="#5F93FF" />
 
                                 <TextView
@@ -385,6 +594,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="10/6"
+                                    android:textColor="#999999"
                                     android:textSize="12sp" />
                             </LinearLayout>
 
@@ -397,8 +607,8 @@
 
                                 <View
                                     android:id="@+id/barWeight2"
-                                    android:layout_width="26dp"
-                                    android:layout_height="105dp"
+                                    android:layout_width="28dp"
+                                    android:layout_height="110dp"
                                     android:background="#61D4D6" />
 
                                 <TextView
@@ -406,6 +616,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="12/6"
+                                    android:textColor="#999999"
                                     android:textSize="12sp" />
                             </LinearLayout>
 
@@ -418,8 +629,8 @@
 
                                 <View
                                     android:id="@+id/barWeight3"
-                                    android:layout_width="26dp"
-                                    android:layout_height="92dp"
+                                    android:layout_width="28dp"
+                                    android:layout_height="95dp"
                                     android:background="#52B36B" />
 
                                 <TextView
@@ -427,6 +638,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="16/6"
+                                    android:textColor="#999999"
                                     android:textSize="12sp" />
                             </LinearLayout>
 
@@ -439,8 +651,8 @@
 
                                 <View
                                     android:id="@+id/barWeight4"
-                                    android:layout_width="26dp"
-                                    android:layout_height="80dp"
+                                    android:layout_width="28dp"
+                                    android:layout_height="75dp"
                                     android:background="#F2D65C" />
 
                                 <TextView
@@ -448,57 +660,81 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="19/6"
+                                    android:textColor="#999999"
                                     android:textSize="12sp" />
                             </LinearLayout>
                         </LinearLayout>
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- Card BMI -->
+                <!-- BMI -->
                 <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardBmi"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="18dp"
+                    android:layout_marginTop="22dp"
                     app:cardBackgroundColor="#FFFFFF"
-                    app:cardCornerRadius="18dp"
-                    app:cardElevation="5dp">
+                    app:cardCornerRadius="24dp"
+                    app:cardElevation="4dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:padding="20dp">
+                        android:padding="22dp">
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="BMI  (kg/m²)"
-                            android:textColor="#222222"
+                            android:text="BMI (kg/m²)"
+                            android:textColor="#111111"
                             android:textSize="22sp"
                             android:textStyle="bold" />
 
-                        <FrameLayout
-                            android:id="@+id/bmiScaleContainer"
+                        <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="75dp"
-                            android:layout_marginTop="18dp">
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="12dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
 
                             <TextView
                                 android:id="@+id/txtBMIValue"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:background="#5F6774"
-                                android:paddingStart="16dp"
-                                android:paddingEnd="16dp"
-                                android:paddingTop="6dp"
-                                android:paddingBottom="6dp"
-                                android:text="26.3"
-                                android:textColor="#FFFFFF"
-                                android:textSize="16sp" />
+                                android:text="22.0"
+                                android:textColor="#000000"
+                                android:textSize="42sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/txtBMIStatus"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="14dp"
+                                android:text="Bình thường"
+                                android:textColor="#63D44B"
+                                android:textSize="17sp" />
+                        </LinearLayout>
+
+                        <FrameLayout
+                            android:id="@+id/bmiScaleContainer"
+                            android:layout_width="match_parent"
+                            android:layout_height="55dp"
+                            android:layout_marginTop="16dp">
+
+                            <TextView
+                                android:id="@+id/txtBMIMarker"
+                                android:layout_width="28dp"
+                                android:layout_height="28dp"
+                                android:gravity="center"
+                                android:text="●"
+                                android:textColor="#18C27A"
+                                android:textSize="24sp" />
 
                             <LinearLayout
                                 android:layout_width="match_parent"
-                                android:layout_height="18dp"
+                                android:layout_height="14dp"
                                 android:layout_gravity="bottom"
                                 android:orientation="horizontal">
 
@@ -518,7 +754,7 @@
                                     android:layout_width="0dp"
                                     android:layout_height="match_parent"
                                     android:layout_weight="2"
-                                    android:background="#61D4D6" />
+                                    android:background="#63D44B" />
 
                                 <View
                                     android:layout_width="0dp"
@@ -543,53 +779,54 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:text="15   16   18.5        25        30        35        40"
+                            android:text="15     16     18.5        25        30        35        40"
                             android:textColor="#999999"
-                            android:textSize="15sp" />
-
-                        <TextView
-                            android:id="@+id/txtBMIStatus"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="18dp"
-                            android:text="●  Thừa cân"
-                            android:textColor="#222222"
-                            android:textSize="18sp" />
+                            android:textSize="13sp" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- Card calo -->
+                <!-- Calo -->
                 <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardCalories"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="18dp"
+                    android:layout_marginTop="22dp"
                     app:cardBackgroundColor="#FFFFFF"
-                    app:cardCornerRadius="18dp"
-                    app:cardElevation="5dp">
+                    app:cardCornerRadius="24dp"
+                    app:cardElevation="4dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:padding="20dp">
+                        android:padding="22dp">
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Lượng calo được đốt cháy  (Calo)"
-                            android:textColor="#222222"
+                            android:text="Calo đã đốt ước tính (Kcal)"
+                            android:textColor="#111111"
                             android:textSize="22sp"
                             android:textStyle="bold" />
 
-                        <!-- Biểu đồ calo mẫu -->
+                        <TextView
+                            android:id="@+id/txtCaloriesToday"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="Hôm nay: 0 Kcal"
+                            android:textColor="#18C27A"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
                         <LinearLayout
+                            android:id="@+id/layoutCaloriesChart"
                             android:layout_width="match_parent"
                             android:layout_height="220dp"
                             android:layout_marginTop="18dp"
                             android:gravity="bottom"
                             android:orientation="horizontal"
-                            android:padding="10dp">
+                            android:padding="8dp">
 
                             <LinearLayout
                                 android:layout_width="0dp"
@@ -599,17 +836,20 @@
                                 android:orientation="vertical">
 
                                 <TextView
+                                    android:id="@+id/txtCalValue1"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="100"
-                                    android:textSize="12sp" />
+                                    android:text="0"
+                                    android:textSize="11sp" />
 
                                 <View
-                                    android:layout_width="28dp"
-                                    android:layout_height="80dp"
-                                    android:background="#F4511E" />
+                                    android:id="@+id/barCal1"
+                                    android:layout_width="24dp"
+                                    android:layout_height="40dp"
+                                    android:background="#18C27A" />
 
                                 <TextView
+                                    android:id="@+id/txtCalDay1"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="T2"
@@ -624,17 +864,20 @@
                                 android:orientation="vertical">
 
                                 <TextView
+                                    android:id="@+id/txtCalValue2"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="150"
-                                    android:textSize="12sp" />
+                                    android:text="0"
+                                    android:textSize="11sp" />
 
                                 <View
-                                    android:layout_width="28dp"
-                                    android:layout_height="120dp"
-                                    android:background="#F4511E" />
+                                    android:id="@+id/barCal2"
+                                    android:layout_width="24dp"
+                                    android:layout_height="40dp"
+                                    android:background="#18C27A" />
 
                                 <TextView
+                                    android:id="@+id/txtCalDay2"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="T3"
@@ -649,17 +892,20 @@
                                 android:orientation="vertical">
 
                                 <TextView
+                                    android:id="@+id/txtCalValue3"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="120"
-                                    android:textSize="12sp" />
+                                    android:text="0"
+                                    android:textSize="11sp" />
 
                                 <View
-                                    android:layout_width="28dp"
-                                    android:layout_height="95dp"
-                                    android:background="#F4511E" />
+                                    android:id="@+id/barCal3"
+                                    android:layout_width="24dp"
+                                    android:layout_height="40dp"
+                                    android:background="#18C27A" />
 
                                 <TextView
+                                    android:id="@+id/txtCalDay3"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="T4"
@@ -674,20 +920,107 @@
                                 android:orientation="vertical">
 
                                 <TextView
+                                    android:id="@+id/txtCalValue4"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="180"
-                                    android:textSize="12sp" />
+                                    android:text="0"
+                                    android:textSize="11sp" />
 
                                 <View
-                                    android:layout_width="28dp"
-                                    android:layout_height="145dp"
-                                    android:background="#F4511E" />
+                                    android:id="@+id/barCal4"
+                                    android:layout_width="24dp"
+                                    android:layout_height="40dp"
+                                    android:background="#18C27A" />
 
                                 <TextView
+                                    android:id="@+id/txtCalDay4"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="T5"
+                                    android:textSize="12sp" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:gravity="bottom|center_horizontal"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/txtCalValue5"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="0"
+                                    android:textSize="11sp" />
+
+                                <View
+                                    android:id="@+id/barCal5"
+                                    android:layout_width="24dp"
+                                    android:layout_height="40dp"
+                                    android:background="#18C27A" />
+
+                                <TextView
+                                    android:id="@+id/txtCalDay5"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="T6"
+                                    android:textSize="12sp" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:gravity="bottom|center_horizontal"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/txtCalValue6"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="0"
+                                    android:textSize="11sp" />
+
+                                <View
+                                    android:id="@+id/barCal6"
+                                    android:layout_width="24dp"
+                                    android:layout_height="40dp"
+                                    android:background="#18C27A" />
+
+                                <TextView
+                                    android:id="@+id/txtCalDay6"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="T7"
+                                    android:textSize="12sp" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:gravity="bottom|center_horizontal"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/txtCalValue7"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="0"
+                                    android:textSize="11sp" />
+
+                                <View
+                                    android:id="@+id/barCal7"
+                                    android:layout_width="24dp"
+                                    android:layout_height="40dp"
+                                    android:background="#18C27A" />
+
+                                <TextView
+                                    android:id="@+id/txtCalDay7"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="CN"
                                     android:textSize="12sp" />
                             </LinearLayout>
                         </LinearLayout>
@@ -696,5 +1029,4 @@
             </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
-
 </androidx.constraintlayout.widget.ConstraintLayout>
