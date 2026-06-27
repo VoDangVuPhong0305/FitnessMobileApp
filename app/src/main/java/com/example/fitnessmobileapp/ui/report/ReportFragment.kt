@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CalendarView
 import android.widget.EditText
-import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -22,18 +21,10 @@ import kotlin.math.roundToInt
 
 class ReportFragment : Fragment() {
 
-    private lateinit var tabCalendar: LinearLayout
-    private lateinit var tabWeight: LinearLayout
-    private lateinit var txtTabCalendar: TextView
-    private lateinit var txtTabWeight: TextView
-    private lateinit var lineCalendar: View
-    private lateinit var lineWeight: View
-    private lateinit var sectionCalendar: LinearLayout
-    private lateinit var sectionData: LinearLayout
-
     private lateinit var txtTotalDays: TextView
     private lateinit var txtTotalCalories: TextView
     private lateinit var txtTotalMinutes: TextView
+
     private lateinit var calendarView: CalendarView
     private lateinit var txtSelectedDate: TextView
     private lateinit var txtWorkoutHistory: TextView
@@ -52,12 +43,14 @@ class ReportFragment : Fragment() {
     private lateinit var barWeight2: View
     private lateinit var barWeight3: View
     private lateinit var barWeight4: View
+
     private lateinit var txtWeightDate1: TextView
     private lateinit var txtWeightDate2: TextView
     private lateinit var txtWeightDate3: TextView
     private lateinit var txtWeightDate4: TextView
 
     private lateinit var txtCaloriesToday: TextView
+
     private lateinit var barCal1: View
     private lateinit var barCal2: View
     private lateinit var barCal3: View
@@ -98,7 +91,6 @@ class ReportFragment : Fragment() {
         initViews(view)
         setupEvents()
         loadReportData()
-        showCalendarSection()
 
         return view
     }
@@ -112,19 +104,10 @@ class ReportFragment : Fragment() {
     }
 
     private fun initViews(view: View) {
-        tabCalendar = view.findViewById(R.id.tabCalendar)
-        tabWeight = view.findViewById(R.id.tabWeight)
-        txtTabCalendar = view.findViewById(R.id.txtTabCalendar)
-        txtTabWeight = view.findViewById(R.id.txtTabWeight)
-        lineCalendar = view.findViewById(R.id.lineCalendar)
-        lineWeight = view.findViewById(R.id.lineWeight)
-
-        sectionCalendar = view.findViewById(R.id.sectionCalendar)
-        sectionData = view.findViewById(R.id.sectionData)
-
         txtTotalDays = view.findViewById(R.id.txtTotalDays)
         txtTotalCalories = view.findViewById(R.id.txtTotalCalories)
         txtTotalMinutes = view.findViewById(R.id.txtTotalMinutes)
+
         calendarView = view.findViewById(R.id.calendarView)
         txtSelectedDate = view.findViewById(R.id.txtSelectedDate)
         txtWorkoutHistory = view.findViewById(R.id.txtWorkoutHistory)
@@ -169,14 +152,6 @@ class ReportFragment : Fragment() {
     }
 
     private fun setupEvents() {
-        tabCalendar.setOnClickListener {
-            showCalendarSection()
-        }
-
-        tabWeight.setOnClickListener {
-            showDataSection()
-        }
-
         calendarView.setOnDateChangeListener { _, year, month, dayOfMonth ->
             val selectedDate = String.format(
                 Locale.getDefault(),
@@ -245,24 +220,50 @@ class ReportFragment : Fragment() {
     }
 
     private fun showAddWeightDialog() {
-        val input = EditText(requireContext())
-        input.hint = "Nhập cân nặng, ví dụ: 65.5"
-        input.inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
+        val input = EditText(requireContext()).apply {
+            hint = "Nhập cân nặng, ví dụ: 65.5"
+            inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
+            setPadding(34, 20, 34, 20)
+            textSize = 15f
+        }
 
-        AlertDialog.Builder(requireContext())
+        val dialog = AlertDialog.Builder(requireContext())
             .setTitle("Cập nhật cân nặng")
             .setMessage("Nhập cân nặng hôm nay")
             .setView(input)
-            .setPositiveButton("Lưu") { _, _ ->
+            .setPositiveButton("Lưu", null)
+            .setNegativeButton("Hủy", null)
+            .create()
+
+        dialog.setOnShowListener {
+            dialog.window?.setBackgroundDrawableResource(R.drawable.bg_dialog_rounded)
+
+            val btnSave = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+            val btnCancel = dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+
+            btnSave.setTextColor(0xFF18C27A.toInt())
+            btnCancel.setTextColor(0xFF777777.toInt())
+
+            btnSave.setOnClickListener {
                 val weight = input.text.toString().trim().toDoubleOrNull()
 
                 if (weight == null || weight <= 0) {
-                    Toast.makeText(requireContext(), "Cân nặng không hợp lệ", Toast.LENGTH_SHORT).show()
-                    return@setPositiveButton
+                    Toast.makeText(
+                        requireContext(),
+                        "Cân nặng không hợp lệ",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    return@setOnClickListener
                 }
 
                 val today = SimpleDateFormat("d/M", Locale.getDefault()).format(Date())
-                weightList.add(WeightRecord(today, weight))
+
+                weightList.add(
+                    WeightRecord(
+                        date = today,
+                        weight = weight
+                    )
+                )
 
                 while (weightList.size > 4) {
                     weightList.removeAt(0)
@@ -271,10 +272,17 @@ class ReportFragment : Fragment() {
                 updateWeightInfo()
                 updateWeightChart()
 
-                Toast.makeText(requireContext(), "Đã cập nhật cân nặng", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    "Đã cập nhật cân nặng",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+                dialog.dismiss()
             }
-            .setNegativeButton("Hủy", null)
-            .show()
+        }
+
+        dialog.show()
     }
 
     private fun updateWeightInfo() {
@@ -370,6 +378,7 @@ class ReportFragment : Fragment() {
         }
 
         val bars = listOf(barCal1, barCal2, barCal3, barCal4, barCal5, barCal6, barCal7)
+
         val values = listOf(
             txtCalValue1,
             txtCalValue2,
@@ -399,26 +408,6 @@ class ReportFragment : Fragment() {
         txtCaloriesToday.text = "Hôm nay: $todayCalories Kcal"
     }
 
-    private fun showCalendarSection() {
-        sectionCalendar.visibility = View.VISIBLE
-        sectionData.visibility = View.GONE
-
-        txtTabCalendar.setTextColor(0xFF111111.toInt())
-        txtTabWeight.setTextColor(0xFF999999.toInt())
-        lineCalendar.setBackgroundColor(0xFF111111.toInt())
-        lineWeight.setBackgroundColor(0x00FFFFFF)
-    }
-
-    private fun showDataSection() {
-        sectionCalendar.visibility = View.GONE
-        sectionData.visibility = View.VISIBLE
-
-        txtTabCalendar.setTextColor(0xFF999999.toInt())
-        txtTabWeight.setTextColor(0xFF111111.toInt())
-        lineCalendar.setBackgroundColor(0x00FFFFFF)
-        lineWeight.setBackgroundColor(0xFF111111.toInt())
-    }
-
     private fun secondsToMinutes(seconds: Int): Int {
         return seconds / 60
     }
@@ -434,7 +423,12 @@ class ReportFragment : Fragment() {
             val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
             val outputFormat = SimpleDateFormat("d/M/yyyy", Locale.getDefault())
             val parsedDate = inputFormat.parse(date)
-            if (parsedDate != null) outputFormat.format(parsedDate) else date
+
+            if (parsedDate != null) {
+                outputFormat.format(parsedDate)
+            } else {
+                date
+            }
         } catch (e: Exception) {
             date
         }
