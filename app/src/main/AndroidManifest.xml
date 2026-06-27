@@ -11,15 +11,58 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.FitnessMobileApp">
+
+        <!-- Màn hình kế hoạch -->
+        <activity
+            android:name=".ui.plan.PlanDayDetailActivity"
+            android:exported="false" />
+
+        <!-- Các màn hình phần Cá nhân / Của tôi -->
+        <activity
+            android:name=".ui.profile.ProfileActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.profile.ReminderActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.profile.SoundActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.profile.FeedbackActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.profile.FAQActivity"
+            android:exported="false" />
+
+        <!-- Màn hình chính -->
+        <activity
+            android:name=".ui.plan.ExerciseDetailActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.plan.WorkoutSessionActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.plan.WorkoutCompletedActivity"
+            android:exported="false" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
+
     </application>
 
 </manifest>

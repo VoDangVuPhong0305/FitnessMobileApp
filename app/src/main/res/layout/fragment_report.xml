@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- Kim Tuyền - Fragment Báo cáo -->
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#EEEEEE">
 
-    <!-- NỀN XANH KÉO DÀI XUỐNG DƯỚI -->
+    <!-- Nền xanh phía trên -->
     <View
         android:id="@+id/headerBackground"
         android:layout_width="0dp"
@@ -15,12 +18,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- HEADER CỐ ĐỊNH: phần này không bị cuộn và không bị card che -->
+    <!-- Header -->
     <LinearLayout
         android:id="@+id/headerFixed"
         android:layout_width="0dp"
         android:layout_height="175dp"
-        android:elevation="0dp"
         android:background="#343B5C"
         android:orientation="vertical"
         android:paddingStart="24dp"
@@ -36,8 +38,10 @@
             android:layout_height="wrap_content"
             android:text="Hãy phát huy!"
             android:textColor="#FFFFFF"
-            android:textSize="30sp" />
+            android:textSize="30sp"
+            android:textStyle="bold" />
 
+        <!-- Tab Lịch / Cân nặng -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -95,13 +99,15 @@
         </LinearLayout>
     </LinearLayout>
 
-    <!-- NỘI DUNG CUỘN: bắt đầu bên dưới Lịch/Cân nặng nên không che tab nữa -->
+    <!-- Nội dung cuộn -->
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollReport"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:clipToPadding="false"
-        android:fillViewport="true"
+        android:fillViewport="false"
+        android:paddingBottom="90dp"
+        android:overScrollMode="always"
         app:layout_constraintTop_toBottomOf="@id/headerFixed"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -114,17 +120,16 @@
             android:orientation="vertical"
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
-            android:paddingTop="0dp"
             android:paddingBottom="28dp">
 
-            <!-- PHẦN LỊCH -->
+            <!-- ================= PHẦN LỊCH ================= -->
             <LinearLayout
                 android:id="@+id/sectionCalendar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <!-- CARD THỐNG KÊ NHANH -->
+                <!-- Card thống kê nhanh -->
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/cardSummary"
                     android:layout_width="match_parent"
@@ -154,6 +159,7 @@
                                 android:textSize="16sp" />
 
                             <TextView
+                                android:id="@+id/txtTotalDays"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="0"
@@ -182,6 +188,7 @@
                                 android:textSize="16sp" />
 
                             <TextView
+                                android:id="@+id/txtTotalCalories"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="0.0"
@@ -210,6 +217,7 @@
                                 android:textSize="16sp" />
 
                             <TextView
+                                android:id="@+id/txtTotalMinutes"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="0"
@@ -220,7 +228,7 @@
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- CARD LỊCH THÁNG -->
+                <!-- Card lịch chọn ngày -->
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/cardCalendar"
                     android:layout_width="match_parent"
@@ -237,71 +245,24 @@
                         android:padding="20dp">
 
                         <TextView
+                            android:id="@+id/txtSelectedDate"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:text="thg 6 2026"
+                            android:text="Lịch tập hôm nay"
                             android:textColor="#222222"
-                            android:textSize="24sp"
+                            android:textSize="22sp"
                             android:textStyle="bold" />
 
-                        <GridLayout
+                        <CalendarView
+                            android:id="@+id/calendarView"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="18dp"
-                            android:columnCount="7"
-                            android:useDefaultMargins="true">
-
-                            <!-- Hàng thứ -->
-                            <TextView android:layout_width="0dp" android:layout_height="40dp" android:layout_columnWeight="1" android:gravity="center" android:text="CN" android:textColor="#888888" android:textSize="15sp" />
-                            <TextView android:layout_width="0dp" android:layout_height="40dp" android:layout_columnWeight="1" android:gravity="center" android:text="Th2" android:textColor="#888888" android:textSize="15sp" />
-                            <TextView android:layout_width="0dp" android:layout_height="40dp" android:layout_columnWeight="1" android:gravity="center" android:text="Th3" android:textColor="#888888" android:textSize="15sp" />
-                            <TextView android:layout_width="0dp" android:layout_height="40dp" android:layout_columnWeight="1" android:gravity="center" android:text="Th4" android:textColor="#888888" android:textSize="15sp" />
-                            <TextView android:layout_width="0dp" android:layout_height="40dp" android:layout_columnWeight="1" android:gravity="center" android:text="Th5" android:textColor="#888888" android:textSize="15sp" />
-                            <TextView android:layout_width="0dp" android:layout_height="40dp" android:layout_columnWeight="1" android:gravity="center" android:text="Th6" android:textColor="#888888" android:textSize="15sp" />
-                            <TextView android:layout_width="0dp" android:layout_height="40dp" android:layout_columnWeight="1" android:gravity="center" android:text="Th7" android:textColor="#888888" android:textSize="15sp" />
-
-                            <!-- Ngày trong tháng -->
-                            <TextView android:layout_width="0dp" android:layout_height="50dp" android:layout_columnWeight="1" android:gravity="center" android:text="" />
-                            <TextView android:layout_width="0dp" android:layout_height="50dp" android:layout_columnWeight="1" android:gravity="center" android:text="1" android:textColor="#999999" android:textSize="18sp" />
-                            <TextView android:layout_width="0dp" android:layout_height="50dp" android:layout_columnWeight="1" android:gravity="center" android:text="2" android:textColor="#999999" android:textSize="18sp" />
-                            <TextView android:layout_width="0dp" android:layout_height="50dp" android:layout_columnWeight="1" android:gravity="center" android:text="3" android:textColor="#999999" android:textSize="18sp" />
-                            <TextView android:layout_width="0dp" android:layout_height="50dp" android:layout_columnWeight="1" android:gravity="center" android:text="4" android:textColor="#999999" android:textSize="18sp" />
-                            <TextView android:layout_width="0dp" android:layout_height="50dp" android:layout_columnWeight="1" android:gravity="center" android:text="5" android:textColor="#999999" android:textSize="18sp" />
-                            <TextView android:layout_width="0dp" android:layout_height="50dp" android:layout_columnWeight="1" android:gravity="center" android:text="6" android:textColor="#999999" android:textSize="18sp" />
-
-                            <TextView android:layout_width="0dp" android:layout_height="50dp" android:layout_columnWeight="1" android:gravity="center" android:text="7" android:textColor="#999999" android:textSize="18sp" />
-                            <TextView android:layout_width="0dp" android:layout_height="50dp" android:layout_columnWeight="1" android:gravity="center" android:text="8" android:textColor="#999999" android:textSize="18sp" />
-                            <TextView android:layout_width="0dp" android:layout_height="50dp" android:layout_columnWeight="1" android:gravity="center" android:text="9" android:textColor="#999999" android:textSize="18sp" />
-                            <TextView android:layout_width="0dp" android:layout_height="50dp" android:layout_columnWeight="1" android:gravity="center" android:text="10" android:textColor="#222222" android:textSize="20sp" android:textStyle="bold" />
-                            <TextView android:layout_width="0dp" android:layout_height="50dp" android:layout_columnWeight="1" android:gravity="center" android:text="11" android:textColor="#999999" android:textSize="18sp" />
-                            <TextView android:layout_width="0dp" android:layout_height="50dp" android:layout_columnWeight="1" android:gravity="center" android:text="12" android:textColor="#999999" android:textSize="18sp" />
-                            <TextView android:layout_width="0dp" android:layout_height="50dp" android:layout_columnWeight="1" android:gravity="center" android:text="13" android:textColor="#999999" android:textSize="18sp" />
-
-                            <TextView android:layout_width="0dp" android:layout_height="50dp" android:layout_columnWeight="1" android:gravity="center" android:text="14" android:textColor="#999999" android:textSize="18sp" />
-                            <TextView android:layout_width="0dp" android:layout_height="50dp" android:layout_columnWeight="1" android:gravity="center" android:text="15" android:textColor="#999999" android:textSize="18sp" />
-                            <TextView android:layout_width="0dp" android:layout_height="50dp" android:layout_columnWeight="1" android:gravity="center" android:text="16" android:textColor="#999999" android:textSize="18sp" />
-                            <TextView android:layout_width="0dp" android:layout_height="50dp" android:layout_columnWeight="1" android:gravity="center" android:text="17" android:textColor="#999999" android:textSize="18sp" />
-                            <TextView android:layout_width="0dp" android:layout_height="50dp" android:layout_columnWeight="1" android:gravity="center" android:text="18" android:textColor="#999999" android:textSize="18sp" />
-                            <TextView android:layout_width="0dp" android:layout_height="50dp" android:layout_columnWeight="1" android:gravity="center" android:text="19" android:textColor="#999999" android:textSize="18sp" />
-                            <TextView android:layout_width="0dp" android:layout_height="50dp" android:layout_columnWeight="1" android:gravity="center" android:text="20" android:textColor="#999999" android:textSize="18sp" />
-
-                            <TextView android:layout_width="0dp" android:layout_height="50dp" android:layout_columnWeight="1" android:gravity="center" android:text="21" android:textColor="#999999" android:textSize="18sp" />
-                            <TextView android:layout_width="0dp" android:layout_height="50dp" android:layout_columnWeight="1" android:gravity="center" android:text="22" android:textColor="#999999" android:textSize="18sp" />
-                            <TextView android:layout_width="0dp" android:layout_height="50dp" android:layout_columnWeight="1" android:gravity="center" android:text="23" android:textColor="#999999" android:textSize="18sp" />
-                            <TextView android:layout_width="0dp" android:layout_height="50dp" android:layout_columnWeight="1" android:gravity="center" android:text="24" android:textColor="#999999" android:textSize="18sp" />
-                            <TextView android:layout_width="0dp" android:layout_height="50dp" android:layout_columnWeight="1" android:gravity="center" android:text="25" android:textColor="#999999" android:textSize="18sp" />
-                            <TextView android:layout_width="0dp" android:layout_height="50dp" android:layout_columnWeight="1" android:gravity="center" android:text="26" android:textColor="#999999" android:textSize="18sp" />
-                            <TextView android:layout_width="0dp" android:layout_height="50dp" android:layout_columnWeight="1" android:gravity="center" android:text="27" android:textColor="#999999" android:textSize="18sp" />
-
-                            <TextView android:layout_width="0dp" android:layout_height="50dp" android:layout_columnWeight="1" android:gravity="center" android:text="28" android:textColor="#999999" android:textSize="18sp" />
-                            <TextView android:layout_width="0dp" android:layout_height="50dp" android:layout_columnWeight="1" android:gravity="center" android:text="29" android:textColor="#999999" android:textSize="18sp" />
-                            <TextView android:layout_width="0dp" android:layout_height="50dp" android:layout_columnWeight="1" android:gravity="center" android:text="30" android:textColor="#999999" android:textSize="18sp" />
-                        </GridLayout>
+                            android:layout_marginTop="12dp"
+                            android:nestedScrollingEnabled="false" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- CARD LỊCH SỬ TẬP LUYỆN -->
+                <!-- Card lịch sử tập luyện -->
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/cardHistory"
                     android:layout_width="match_parent"
@@ -317,129 +278,27 @@
                         android:orientation="vertical"
                         android:padding="20dp">
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="Lịch sử"
-                                android:textColor="#222222"
-                                android:textSize="22sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Xem tất cả"
-                                android:textColor="#52B36B"
-                                android:textSize="18sp" />
-                        </LinearLayout>
-
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:layout_marginTop="16dp"
-                            android:background="#EEEEEE" />
-
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="18dp"
-                            android:text="7 thg 6 - 13 thg 6          3 Lần tập 01:08"
-                            android:textColor="#999999"
-                            android:textSize="16sp" />
+                            android:text="Lịch sử tập luyện"
+                            android:textColor="#222222"
+                            android:textSize="22sp"
+                            android:textStyle="bold" />
 
-                        <!-- Item lịch sử 1 -->
-                        <LinearLayout
+                        <TextView
+                            android:id="@+id/txtWorkoutHistory"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="20dp"
-                            android:orientation="horizontal">
-
-                            <ImageView
-                                android:layout_width="72dp"
-                                android:layout_height="72dp"
-                                android:scaleType="centerCrop"
-                                android:src="@android:drawable/ic_menu_gallery" />
-
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="16dp"
-                                android:layout_weight="1"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Tập Toàn Thân Ngày 1"
-                                    android:textColor="#222222"
-                                    android:textSize="20sp"
-                                    android:textStyle="bold" />
-
-                                <TextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="10dp"
-                                    android:text="20:49      00:10      0.0 Calo"
-                                    android:textColor="#777777"
-                                    android:textSize="16sp" />
-                            </LinearLayout>
-                        </LinearLayout>
-
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:layout_marginTop="18dp"
-                            android:background="#EEEEEE" />
-
-                        <!-- Item lịch sử 2 -->
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="18dp"
-                            android:orientation="horizontal">
-
-                            <ImageView
-                                android:layout_width="72dp"
-                                android:layout_height="72dp"
-                                android:scaleType="centerCrop"
-                                android:src="@android:drawable/ic_menu_gallery" />
-
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="16dp"
-                                android:layout_weight="1"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Tập Toàn Thân Ngày 1"
-                                    android:textColor="#222222"
-                                    android:textSize="20sp"
-                                    android:textStyle="bold" />
-
-                                <TextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="10dp"
-                                    android:text="20:44      00:41      12.6 Calo"
-                                    android:textColor="#777777"
-                                    android:textSize="16sp" />
-                            </LinearLayout>
-                        </LinearLayout>
+                            android:layout_marginTop="16dp"
+                            android:text="Chưa có dữ liệu"
+                            android:textColor="#555555"
+                            android:textSize="17sp" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
-
             </LinearLayout>
 
-            <!-- PHẦN CÂN NẶNG -->
+            <!-- ================= PHẦN CÂN NẶNG ================= -->
             <LinearLayout
                 android:id="@+id/sectionWeight"
                 android:layout_width="match_parent"
@@ -447,7 +306,7 @@
                 android:layout_marginTop="22dp"
                 android:orientation="vertical">
 
-                <!-- CARD CÂN NẶNG -->
+                <!-- Card cân nặng -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -461,59 +320,141 @@
                         android:orientation="vertical"
                         android:padding="20dp">
 
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Cân nặng  (kg)        +"
-                            android:textColor="#222222"
-                            android:textSize="22sp"
-                            android:textStyle="bold" />
-
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="18dp"
+                            android:gravity="center_vertical"
                             android:orientation="horizontal">
 
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:gravity="center"
-                                android:text="Hiện tại\n76.0"
+                                android:text="Cân nặng  (kg)"
                                 android:textColor="#222222"
-                                android:textSize="18sp" />
+                                android:textSize="22sp"
+                                android:textStyle="bold" />
 
                             <TextView
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
+                                android:id="@+id/btnAddWeight"
+                                android:layout_width="42dp"
+                                android:layout_height="42dp"
+                                android:clickable="true"
+                                android:focusable="true"
                                 android:gravity="center"
-                                android:text="30 ngày trước\n0.0"
+                                android:text="+"
                                 android:textColor="#222222"
-                                android:textSize="18sp" />
-
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:gravity="center"
-                                android:text="Trung bình năm\n76.0"
-                                android:textColor="#222222"
-                                android:textSize="18sp" />
+                                android:textSize="28sp"
+                                android:textStyle="bold" />
                         </LinearLayout>
 
                         <TextView
+                            android:id="@+id/txtWeightInfo"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="18dp"
+                            android:text="Hiện tại: 76.0 kg\n30 ngày trước: 77.5 kg\nĐã giảm: 1.5 kg"
+                            android:textColor="#222222"
+                            android:textSize="18sp" />
+
+                        <!-- Biểu đồ cân nặng cập nhật bằng Kotlin -->
+                        <LinearLayout
+                            android:id="@+id/layoutWeightChart"
                             android:layout_width="match_parent"
                             android:layout_height="180dp"
-                            android:gravity="center"
-                            android:text="Biểu đồ cân nặng"
-                            android:textColor="#AAAAAA"
-                            android:textSize="16sp" />
+                            android:layout_marginTop="18dp"
+                            android:gravity="bottom"
+                            android:orientation="horizontal"
+                            android:padding="10dp">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:gravity="bottom|center_horizontal"
+                                android:orientation="vertical">
+
+                                <View
+                                    android:id="@+id/barWeight1"
+                                    android:layout_width="26dp"
+                                    android:layout_height="120dp"
+                                    android:background="#5F93FF" />
+
+                                <TextView
+                                    android:id="@+id/txtWeightDate1"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="10/6"
+                                    android:textSize="12sp" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:gravity="bottom|center_horizontal"
+                                android:orientation="vertical">
+
+                                <View
+                                    android:id="@+id/barWeight2"
+                                    android:layout_width="26dp"
+                                    android:layout_height="105dp"
+                                    android:background="#61D4D6" />
+
+                                <TextView
+                                    android:id="@+id/txtWeightDate2"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="12/6"
+                                    android:textSize="12sp" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:gravity="bottom|center_horizontal"
+                                android:orientation="vertical">
+
+                                <View
+                                    android:id="@+id/barWeight3"
+                                    android:layout_width="26dp"
+                                    android:layout_height="92dp"
+                                    android:background="#52B36B" />
+
+                                <TextView
+                                    android:id="@+id/txtWeightDate3"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="16/6"
+                                    android:textSize="12sp" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:gravity="bottom|center_horizontal"
+                                android:orientation="vertical">
+
+                                <View
+                                    android:id="@+id/barWeight4"
+                                    android:layout_width="26dp"
+                                    android:layout_height="80dp"
+                                    android:background="#F2D65C" />
+
+                                <TextView
+                                    android:id="@+id/txtWeightDate4"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="19/6"
+                                    android:textSize="12sp" />
+                            </LinearLayout>
+                        </LinearLayout>
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- CARD BMI -->
+                <!-- Card BMI -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -528,106 +469,87 @@
                         android:orientation="vertical"
                         android:padding="20dp">
 
-                        <LinearLayout
+                        <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal">
+                            android:text="BMI  (kg/m²)"
+                            android:textColor="#222222"
+                            android:textSize="22sp"
+                            android:textStyle="bold" />
+
+                        <FrameLayout
+                            android:id="@+id/bmiScaleContainer"
+                            android:layout_width="match_parent"
+                            android:layout_height="75dp"
+                            android:layout_marginTop="18dp">
 
                             <TextView
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="BMI  (kg/m²)"
-                                android:textColor="#222222"
-                                android:textSize="22sp"
-                                android:textStyle="bold" />
-
-                            <TextView
+                                android:id="@+id/txtBMIValue"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Chỉnh sửa"
-                                android:textColor="#999999"
+                                android:background="#5F6774"
+                                android:paddingStart="16dp"
+                                android:paddingEnd="16dp"
+                                android:paddingTop="6dp"
+                                android:paddingBottom="6dp"
+                                android:text="26.3"
+                                android:textColor="#FFFFFF"
                                 android:textSize="16sp" />
-                        </LinearLayout>
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_horizontal"
-                            android:layout_marginTop="18dp"
-                            android:background="#5F6774"
-                            android:paddingStart="16dp"
-                            android:paddingEnd="16dp"
-                            android:paddingTop="6dp"
-                            android:paddingBottom="6dp"
-                            android:text="26.3"
-                            android:textColor="#FFFFFF"
-                            android:textSize="16sp" />
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="18dp"
+                                android:layout_gravity="bottom"
+                                android:orientation="horizontal">
 
-                        <!-- DẢI MÀU BMI -->
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="18dp"
-                            android:layout_marginTop="18dp"
-                            android:orientation="horizontal">
+                                <View
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1"
+                                    android:background="#496BFF" />
 
-                            <com.google.android.material.card.MaterialCardView
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:layout_marginEnd="4dp"
-                                android:layout_weight="1"
-                                app:cardBackgroundColor="#496BFF"
-                                app:cardCornerRadius="9dp" />
+                                <View
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1"
+                                    android:background="#5F93FF" />
 
-                            <com.google.android.material.card.MaterialCardView
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:layout_marginEnd="4dp"
-                                android:layout_weight="1"
-                                app:cardBackgroundColor="#5F93FF"
-                                app:cardCornerRadius="9dp" />
+                                <View
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="2"
+                                    android:background="#61D4D6" />
 
-                            <com.google.android.material.card.MaterialCardView
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:layout_marginEnd="4dp"
-                                android:layout_weight="2"
-                                app:cardBackgroundColor="#61D4D6"
-                                app:cardCornerRadius="9dp" />
+                                <View
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1"
+                                    android:background="#F2D65C" />
 
-                            <com.google.android.material.card.MaterialCardView
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:layout_marginEnd="4dp"
-                                android:layout_weight="1.5"
-                                app:cardBackgroundColor="#F2D65C"
-                                app:cardCornerRadius="9dp" />
+                                <View
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1"
+                                    android:background="#F2AB45" />
 
-                            <com.google.android.material.card.MaterialCardView
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:layout_marginEnd="4dp"
-                                android:layout_weight="1.5"
-                                app:cardBackgroundColor="#F2AB45"
-                                app:cardCornerRadius="9dp" />
-
-                            <com.google.android.material.card.MaterialCardView
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:layout_weight="1.5"
-                                app:cardBackgroundColor="#F05066"
-                                app:cardCornerRadius="9dp" />
-                        </LinearLayout>
+                                <View
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1"
+                                    android:background="#F05066" />
+                            </LinearLayout>
+                        </FrameLayout>
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
+                            android:layout_marginTop="8dp"
                             android:text="15   16   18.5        25        30        35        40"
                             android:textColor="#999999"
                             android:textSize="15sp" />
 
                         <TextView
+                            android:id="@+id/txtBMIStatus"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="18dp"
@@ -637,7 +559,7 @@
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- CARD CALO ĐỐT CHÁY -->
+                <!-- Card calo -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -660,18 +582,118 @@
                             android:textSize="22sp"
                             android:textStyle="bold" />
 
-                        <TextView
+                        <!-- Biểu đồ calo mẫu -->
+                        <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="260dp"
-                            android:gravity="center"
-                            android:text="Biểu đồ calo đốt cháy"
-                            android:textColor="#AAAAAA"
-                            android:textSize="16sp" />
+                            android:layout_height="220dp"
+                            android:layout_marginTop="18dp"
+                            android:gravity="bottom"
+                            android:orientation="horizontal"
+                            android:padding="10dp">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:gravity="bottom|center_horizontal"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="100"
+                                    android:textSize="12sp" />
+
+                                <View
+                                    android:layout_width="28dp"
+                                    android:layout_height="80dp"
+                                    android:background="#F4511E" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="T2"
+                                    android:textSize="12sp" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:gravity="bottom|center_horizontal"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="150"
+                                    android:textSize="12sp" />
+
+                                <View
+                                    android:layout_width="28dp"
+                                    android:layout_height="120dp"
+                                    android:background="#F4511E" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="T3"
+                                    android:textSize="12sp" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:gravity="bottom|center_horizontal"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="120"
+                                    android:textSize="12sp" />
+
+                                <View
+                                    android:layout_width="28dp"
+                                    android:layout_height="95dp"
+                                    android:background="#F4511E" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="T4"
+                                    android:textSize="12sp" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:gravity="bottom|center_horizontal"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="180"
+                                    android:textSize="12sp" />
+
+                                <View
+                                    android:layout_width="28dp"
+                                    android:layout_height="145dp"
+                                    android:background="#F4511E" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="T5"
+                                    android:textSize="12sp" />
+                            </LinearLayout>
+                        </LinearLayout>
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
-
             </LinearLayout>
-
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
