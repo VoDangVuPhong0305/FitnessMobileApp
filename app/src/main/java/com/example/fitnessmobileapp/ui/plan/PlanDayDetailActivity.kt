@@ -2,7 +2,9 @@ package com.example.fitnessmobileapp.ui.plan
 
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.graphics.Typeface
+import android.graphics.drawable.GradientDrawable
 import android.media.MediaMetadataRetriever
 import android.os.Bundle
 import android.view.Gravity
@@ -38,6 +40,10 @@ class PlanDayDetailActivity : AppCompatActivity() {
     private var isCompletedDay: Boolean = false
     private var canStartWorkout: Boolean = true
 
+    // Chức năng: lưu màu riêng của kế hoạch hiện tại.
+    private var planStartColor: String = "#7B61FF"
+    private var planEndColor: String = "#91A8FF"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_plan_day_detail)
@@ -55,6 +61,7 @@ class PlanDayDetailActivity : AppCompatActivity() {
         setupButtons()
     }
 
+    // Chức năng: nhận dữ liệu ngày tập và màu kế hoạch từ PlanFragment.
     private fun getIntentData() {
         dayNumber = intent.getIntExtra("DAY_NUMBER", 1)
         dayTitle = intent.getStringExtra("DAY_TITLE") ?: "Ngày $dayNumber"
@@ -63,16 +70,22 @@ class PlanDayDetailActivity : AppCompatActivity() {
         exerciseType = intent.getStringExtra("EXERCISE_TYPE") ?: "abs"
         exerciseIds = intent.getStringArrayListExtra("EXERCISE_IDS") ?: arrayListOf()
 
+        // Chức năng: nhận màu riêng của từng kế hoạch.
+        planStartColor = intent.getStringExtra("PLAN_START_COLOR") ?: "#7B61FF"
+        planEndColor = intent.getStringExtra("PLAN_END_COLOR") ?: "#91A8FF"
+
         isCompletedDay = intent.getBooleanExtra("IS_COMPLETED_DAY", false)
         canStartWorkout = intent.getBooleanExtra("CAN_START_WORKOUT", true)
     }
 
+    // Chức năng: hiển thị tiêu đề ngày, tên nhóm bài tập và tổng thời gian.
     private fun showHeaderInfo() {
         txtDayTitle.text = dayTitle.uppercase()
         txtWorkoutInfo.text = getWorkoutTitle()
         txtWorkoutSummary.text = "$durationMinutes phút, $exerciseCount bài tập"
     }
 
+    // Chức năng: đổi exerciseType thành tên dễ đọc trên giao diện.
     private fun getWorkoutTitle(): String {
         return when (exerciseType) {
             "full_body" -> "Tập Toàn Thân"
@@ -96,6 +109,10 @@ class PlanDayDetailActivity : AppCompatActivity() {
         }
 
         btnStartWorkout.visibility = View.VISIBLE
+
+        // Chức năng: đổi màu nút BẮT ĐẦU/TẬP LẠI theo màu của kế hoạch.
+        btnStartWorkout.background = createPlanButtonBackground()
+
         btnStartWorkout.text = if (isCompletedDay) {
             "TẬP LẠI"
         } else {
@@ -111,6 +128,7 @@ class PlanDayDetailActivity : AppCompatActivity() {
         }
     }
 
+    // Chức năng: hiển thị danh sách bài tập của ngày hiện tại.
     private fun showExerciseList() {
         layoutExerciseList.removeAllViews()
 
@@ -130,6 +148,7 @@ class PlanDayDetailActivity : AppCompatActivity() {
         }
     }
 
+    // Chức năng: lấy danh sách bài tập theo nhóm kế hoạch.
     private fun getExercisesByType(): List<Exercise> {
         return when (exerciseType) {
             "abs" -> WorkoutDataReader.getAbsExercises(this)
@@ -140,6 +159,7 @@ class PlanDayDetailActivity : AppCompatActivity() {
         }
     }
 
+    // Chức năng: tạo từng dòng bài tập gồm ảnh, tên bài và thời lượng/số lần.
     private fun createExerciseItem(exercise: Exercise): LinearLayout {
         val root = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
@@ -184,11 +204,7 @@ class PlanDayDetailActivity : AppCompatActivity() {
         }
 
         val txtDuration = TextView(this).apply {
-            // Chức năng: hiển thị mục tiêu bài tập.
-            // Bài theo thời gian: 30 s.
-            // Bài theo số lần: x12, x14, x16...
             text = getExerciseTargetText(exercise)
-
             textSize = 16f
             setTextColor(0xFF777777.toInt())
             setPadding(0, dp(6), 0, 0)
@@ -226,26 +242,39 @@ class PlanDayDetailActivity : AppCompatActivity() {
         }
     }
 
-    // Bấm từng bài trong danh sách thì vẫn mở màn chi tiết bài tập
+    // Chức năng: bấm từng bài trong danh sách thì mở màn chi tiết bài tập.
+    // Đồng thời truyền màu kế hoạch sang ExerciseDetailActivity.
     private fun openExerciseDetail(exercise: Exercise) {
         val intent = Intent(this, ExerciseDetailActivity::class.java)
         intent.putExtra("DAY_NUMBER", dayNumber)
         intent.putExtra("EXERCISE_ID", exercise.id)
         intent.putExtra("EXERCISE_TYPE", exerciseType)
         intent.putStringArrayListExtra("EXERCISE_IDS", exerciseIds)
+
+        // Chức năng: truyền màu kế hoạch sang màn chi tiết bài tập.
+        intent.putExtra("PLAN_START_COLOR", planStartColor)
+        intent.putExtra("PLAN_END_COLOR", planEndColor)
+
         startActivity(intent)
     }
 
-    // Bấm nút BẮT ĐẦU thì mở màn tập thật
+    // Chức năng: bấm nút BẮT ĐẦU/TẬP LẠI thì mở màn tập thật.
+    // Đồng thời truyền màu kế hoạch sang WorkoutSessionActivity.
     private fun openWorkoutSession() {
         val intent = Intent(this, WorkoutSessionActivity::class.java)
         intent.putExtra("DAY_NUMBER", dayNumber)
         intent.putExtra("DAY_TITLE", dayTitle)
         intent.putExtra("EXERCISE_TYPE", exerciseType)
         intent.putStringArrayListExtra("EXERCISE_IDS", exerciseIds)
+
+        // Chức năng: truyền màu kế hoạch sang màn tập thật.
+        intent.putExtra("PLAN_START_COLOR", planStartColor)
+        intent.putExtra("PLAN_END_COLOR", planEndColor)
+
         startActivity(intent)
     }
 
+    // Chức năng: lấy ảnh thumbnail từ video trong assets.
     private fun getVideoThumbnail(assetPath: String): Bitmap? {
         return try {
             val cachedFile = copyAssetVideoToCache(assetPath)
@@ -262,6 +291,7 @@ class PlanDayDetailActivity : AppCompatActivity() {
         }
     }
 
+    // Chức năng: copy video từ assets sang cache để hệ thống đọc được video.
     private fun copyAssetVideoToCache(assetPath: String): File {
         val fileName = assetPath.replace("/", "_")
         val cachedFile = File(cacheDir, fileName)
@@ -277,6 +307,20 @@ class PlanDayDetailActivity : AppCompatActivity() {
         return cachedFile
     }
 
+    // Chức năng: tạo nền gradient theo màu của từng kế hoạch.
+    private fun createPlanButtonBackground(radiusDp: Int = 28): GradientDrawable {
+        return GradientDrawable(
+            GradientDrawable.Orientation.LEFT_RIGHT,
+            intArrayOf(
+                Color.parseColor(planStartColor),
+                Color.parseColor(planEndColor)
+            )
+        ).apply {
+            cornerRadius = dp(radiusDp).toFloat()
+        }
+    }
+
+    // Chức năng: định dạng số giây thành chữ hiển thị.
     private fun formatDuration(seconds: Int): String {
         return if (seconds < 60) {
             "$seconds s"
@@ -292,6 +336,7 @@ class PlanDayDetailActivity : AppCompatActivity() {
         }
     }
 
+    // Chức năng: đổi dp sang pixel.
     private fun dp(value: Int): Int {
         return (value * resources.displayMetrics.density).toInt()
     }

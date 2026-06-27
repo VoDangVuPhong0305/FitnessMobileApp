@@ -1,6 +1,8 @@
 package com.example.fitnessmobileapp.ui.plan
 
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
@@ -12,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.fitnessmobileapp.R
 import com.example.fitnessmobileapp.data.model.Exercise
 import com.example.fitnessmobileapp.data.repository.ExerciseTargetHelper
+import com.example.fitnessmobileapp.data.repository.ExerciseYoutubeLinkHelper
 import com.example.fitnessmobileapp.data.repository.WorkoutDataReader
 import java.io.File
 import java.io.FileOutputStream
@@ -28,6 +31,9 @@ class ExerciseDetailActivity : AppCompatActivity() {
     private lateinit var lineYoutube: View
 
     private lateinit var videoExercise: VideoView
+    private lateinit var layoutYoutubePreview: LinearLayout
+    private lateinit var txtYoutubeTitle: TextView
+    private lateinit var txtYoutubeHint: TextView
     private lateinit var txtVideoEmpty: TextView
 
     private lateinit var txtExerciseName: TextView
@@ -46,6 +52,10 @@ class ExerciseDetailActivity : AppCompatActivity() {
     private var exerciseType: String = "abs"
     private var exerciseIds: ArrayList<String> = arrayListOf()
 
+    // Chức năng: lưu màu riêng của kế hoạch hiện tại.
+    private var planStartColor: String = "#7B61FF"
+    private var planEndColor: String = "#91A8FF"
+
     private var exerciseList: List<Exercise> = emptyList()
     private var currentIndex: Int = 0
     private var currentExercise: Exercise? = null
@@ -61,17 +71,20 @@ class ExerciseDetailActivity : AppCompatActivity() {
         30
     )
 
+    // Chức năng: khởi tạo màn chi tiết bài tập.
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_exercise_detail)
 
         bindViews()
         getIntentData()
+        applyPlanColors()
         loadExerciseList()
         setupButtons()
         showExerciseByIndex()
     }
 
+    // Chức năng: ánh xạ View từ XML sang Kotlin.
     private fun bindViews() {
         btnBackExercise = findViewById(R.id.btnBackExercise)
 
@@ -83,6 +96,9 @@ class ExerciseDetailActivity : AppCompatActivity() {
         lineYoutube = findViewById(R.id.lineYoutube)
 
         videoExercise = findViewById(R.id.videoExercise)
+        layoutYoutubePreview = findViewById(R.id.layoutYoutubePreview)
+        txtYoutubeTitle = findViewById(R.id.txtYoutubeTitle)
+        txtYoutubeHint = findViewById(R.id.txtYoutubeHint)
         txtVideoEmpty = findViewById(R.id.txtVideoEmpty)
 
         txtExerciseName = findViewById(R.id.txtExerciseName)
@@ -98,13 +114,19 @@ class ExerciseDetailActivity : AppCompatActivity() {
         btnCloseExercise = findViewById(R.id.btnCloseExercise)
     }
 
+    // Chức năng: lấy dữ liệu được truyền từ màn chi tiết ngày.
     private fun getIntentData() {
         dayNumber = intent.getIntExtra("DAY_NUMBER", 1)
         exerciseId = intent.getStringExtra("EXERCISE_ID") ?: ""
         exerciseType = intent.getStringExtra("EXERCISE_TYPE") ?: "abs"
         exerciseIds = intent.getStringArrayListExtra("EXERCISE_IDS") ?: arrayListOf()
+
+        // Chức năng: nhận màu riêng của kế hoạch từ PlanDayDetailActivity.
+        planStartColor = intent.getStringExtra("PLAN_START_COLOR") ?: "#7B61FF"
+        planEndColor = intent.getStringExtra("PLAN_END_COLOR") ?: "#91A8FF"
     }
 
+    // Chức năng: lấy danh sách bài tập đúng theo nhóm và đúng các bài trong ngày.
     private fun loadExerciseList() {
         val allExercises = getExercisesByType()
 
@@ -129,6 +151,7 @@ class ExerciseDetailActivity : AppCompatActivity() {
         }
     }
 
+    // Chức năng: lấy danh sách bài tập theo loại kế hoạch.
     private fun getExercisesByType(): List<Exercise> {
         return when (exerciseType) {
             "abs" -> WorkoutDataReader.getAbsExercises(this)
@@ -139,6 +162,7 @@ class ExerciseDetailActivity : AppCompatActivity() {
         }
     }
 
+    // Chức năng: xử lý các nút bấm trong màn chi tiết bài tập.
     private fun setupButtons() {
         btnBackExercise.setOnClickListener {
             finish()
@@ -153,7 +177,11 @@ class ExerciseDetailActivity : AppCompatActivity() {
         }
 
         tabYoutube.setOnClickListener {
-            openYoutubeVideo()
+            showYoutubeTab()
+        }
+
+        layoutYoutubePreview.setOnClickListener {
+            openYoutubeExternal()
         }
 
         // Chức năng: giảm thời lượng hoặc số lần.
@@ -187,6 +215,7 @@ class ExerciseDetailActivity : AppCompatActivity() {
         }
     }
 
+    // Chức năng: hiển thị bài tập theo vị trí hiện tại.
     private fun showExerciseByIndex() {
         if (exerciseList.isEmpty()) {
             Toast.makeText(this, "Không có bài tập", Toast.LENGTH_SHORT).show()
@@ -202,7 +231,7 @@ class ExerciseDetailActivity : AppCompatActivity() {
         // Chức năng: xác định bài này là bài theo thời gian hay bài theo số lần.
         // Ví dụ:
         // Bật nhảy -> Thời lượng 00:30
-        // Gánh đùi -> Lần lặp lại x12
+        // Gánh đùi -> Lần lặp lại x12.
         currentTarget = ExerciseTargetHelper.getTarget(
             exerciseId = exercise.id,
             exerciseName = exercise.name,
@@ -223,16 +252,19 @@ class ExerciseDetailActivity : AppCompatActivity() {
         showAnimationTab()
     }
 
+    // Chức năng: cập nhật chữ “Thời lượng/Lần lặp lại” và giá trị 00:30/x12.
     private fun updateTargetUI() {
         txtTargetLabel.text = ExerciseTargetHelper.getTargetLabel(currentTarget)
         txtExerciseDuration.text = ExerciseTargetHelper.getTargetText(currentTarget)
     }
 
+    // Chức năng: làm mờ nút trước/sau nếu đang ở bài đầu hoặc bài cuối.
     private fun updateNavigationButtons() {
         btnPreviousExercise.alpha = if (currentIndex == 0) 0.35f else 1f
         btnNextExercise.alpha = if (currentIndex == exerciseList.size - 1) 0.35f else 1f
     }
 
+    // Chức năng: hiển thị tab Hoạt hình và phát video offline trong assets.
     private fun showAnimationTab() {
         txtTabAnimation.setTextColor(0xFF222222.toInt())
         txtTabYoutube.setTextColor(0xFF777777.toInt())
@@ -240,10 +272,16 @@ class ExerciseDetailActivity : AppCompatActivity() {
         lineAnimation.visibility = View.VISIBLE
         lineYoutube.visibility = View.INVISIBLE
 
+        layoutYoutubePreview.visibility = View.GONE
+        txtVideoEmpty.visibility = View.GONE
+        videoExercise.visibility = View.VISIBLE
+
         playAnimationVideo()
     }
 
-    private fun openYoutubeVideo() {
+    // Chức năng: hiển thị tab Video bằng khung xem YouTube ổn định.
+    // Không nhúng YouTube trong WebView để tránh lỗi 152-4 / 153.
+    private fun showYoutubeTab() {
         val exercise = currentExercise ?: return
 
         txtTabAnimation.setTextColor(0xFF777777.toInt())
@@ -252,16 +290,56 @@ class ExerciseDetailActivity : AppCompatActivity() {
         lineAnimation.visibility = View.INVISIBLE
         lineYoutube.visibility = View.VISIBLE
 
-        if (exercise.youtubeUrl.isBlank()) {
+        videoExercise.stopPlayback()
+        videoExercise.visibility = View.GONE
+        txtVideoEmpty.visibility = View.GONE
+        layoutYoutubePreview.visibility = View.VISIBLE
+
+        val youtubeUrl = getCurrentYoutubeUrl()
+
+        if (youtubeUrl.isBlank()) {
+            txtYoutubeTitle.text = "Chưa có video hướng dẫn"
+            txtYoutubeHint.text = "Bài tập này chưa được thêm link YouTube"
+            layoutYoutubePreview.isEnabled = false
+            layoutYoutubePreview.alpha = 0.7f
+        } else {
+            txtYoutubeTitle.text = "Video hướng dẫn ${exercise.name}"
+            txtYoutubeHint.text = "Nhấn để xem trên YouTube"
+            layoutYoutubePreview.isEnabled = true
+            layoutYoutubePreview.alpha = 1f
+        }
+    }
+
+    // Chức năng: mở video YouTube bằng app YouTube hoặc trình duyệt.
+    private fun openYoutubeExternal() {
+        val youtubeUrl = getCurrentYoutubeUrl()
+
+        if (youtubeUrl.isBlank()) {
             Toast.makeText(this, "Chưa có video YouTube", Toast.LENGTH_SHORT).show()
-            showAnimationTab()
             return
         }
 
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(exercise.youtubeUrl))
-        startActivity(intent)
+        try {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(youtubeUrl))
+            startActivity(intent)
+        } catch (e: Exception) {
+            Toast.makeText(this, "Không thể mở YouTube", Toast.LENGTH_SHORT).show()
+        }
     }
 
+    // Chức năng: lấy link YouTube của bài hiện tại.
+    // Ưu tiên link trong JSON, nếu chưa có thì lấy từ ExerciseYoutubeLinkHelper.
+    private fun getCurrentYoutubeUrl(): String {
+        val exercise = currentExercise ?: return ""
+
+        return ExerciseYoutubeLinkHelper.getYoutubeUrl(
+            exerciseId = exercise.id,
+            exerciseName = exercise.name,
+            defaultUrl = exercise.youtubeUrl
+        )
+    }
+
+    // Chức năng: phát video hoạt hình offline của bài tập.
     private fun playAnimationVideo() {
         val exercise = currentExercise ?: return
 
@@ -294,6 +372,7 @@ class ExerciseDetailActivity : AppCompatActivity() {
         }
     }
 
+    // Chức năng: copy video từ assets sang cache để VideoView có thể phát.
     private fun copyAssetVideoToCache(assetPath: String): File {
         val fileName = assetPath.replace("/", "_")
         val cachedFile = File(cacheDir, fileName)
@@ -309,11 +388,51 @@ class ExerciseDetailActivity : AppCompatActivity() {
         return cachedFile
     }
 
+    // Chức năng: áp dụng màu riêng của kế hoạch cho màn chi tiết bài tập.
+    private fun applyPlanColors() {
+        val startColor = Color.parseColor(planStartColor)
+
+        // Đổi màu gạch dưới tab Hoạt hình / Video.
+        lineAnimation.setBackgroundColor(startColor)
+        lineYoutube.setBackgroundColor(startColor)
+
+        // Đổi màu nút tăng/giảm thời lượng hoặc số lần.
+        btnMinus.setTextColor(startColor)
+        btnPlus.setTextColor(startColor)
+
+        // Đổi màu nút chuyển bài.
+        btnPreviousExercise.setTextColor(startColor)
+        btnNextExercise.setTextColor(startColor)
+
+        // Đổi màu nút ĐÓNG.
+        btnCloseExercise.background = createPlanButtonBackground()
+    }
+
+    // Chức năng: tạo nền gradient theo màu kế hoạch.
+    private fun createPlanButtonBackground(radiusDp: Int = 28): GradientDrawable {
+        return GradientDrawable(
+            GradientDrawable.Orientation.LEFT_RIGHT,
+            intArrayOf(
+                Color.parseColor(planStartColor),
+                Color.parseColor(planEndColor)
+            )
+        ).apply {
+            cornerRadius = dp(radiusDp).toFloat()
+        }
+    }
+
+    // Chức năng: đổi dp sang pixel.
+    private fun dp(value: Int): Int {
+        return (value * resources.displayMetrics.density).toInt()
+    }
+
+    // Chức năng: khi tạm dừng màn hình thì tạm dừng video offline.
     override fun onPause() {
         super.onPause()
         videoExercise.pause()
     }
 
+    // Chức năng: giải phóng tài nguyên khi thoát màn chi tiết bài tập.
     override fun onDestroy() {
         super.onDestroy()
         videoExercise.stopPlayback()

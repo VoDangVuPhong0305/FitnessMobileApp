@@ -1,6 +1,7 @@
 package com.example.fitnessmobileapp.ui.plan
 
 import android.app.Dialog
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -672,6 +673,7 @@ class WorkoutSessionActivity : AppCompatActivity(), TextToSpeech.OnInitListener 
     }
 
     // Chức năng: xử lý khi người dùng hoàn thành toàn bộ bài trong ngày.
+    // Sau khi hoàn thành sẽ lưu tiến độ, lưu báo cáo và mở màn chúc mừng kết thúc.
     private fun showWorkoutCompleted() {
         countDownTimer?.cancel()
         mainHandler.removeCallbacksAndMessages(null)
@@ -687,13 +689,20 @@ class WorkoutSessionActivity : AppCompatActivity(), TextToSpeech.OnInitListener 
 
         saveWorkoutReport()
 
-        AlertDialog.Builder(this)
-            .setTitle("Hoàn thành")
-            .setMessage("Bạn đã hoàn thành $dayTitle.")
-            .setPositiveButton("OK") { _, _ ->
-                finish()
-            }
-            .show()
+        val totalDurationSeconds = calculateTotalDurationSeconds()
+        val totalCalories = calculateTotalCalories()
+
+        val intent = Intent(this, WorkoutCompletedActivity::class.java).apply {
+            putExtra("DAY_NUMBER", dayNumber)
+            putExtra("DAY_TITLE", dayTitle)
+            putExtra("EXERCISE_TYPE", exerciseType)
+            putExtra("EXERCISE_COUNT", exerciseList.size)
+            putExtra("DURATION_SECONDS", totalDurationSeconds)
+            putExtra("CALORIES", totalCalories)
+        }
+
+        startActivity(intent)
+        finish()
     }
 
     // Chức năng: lưu dữ liệu buổi tập để màn Báo cáo có thể thống kê.
