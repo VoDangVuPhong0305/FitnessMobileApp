@@ -1,7 +1,6 @@
 package com.example.fitnessmobileapp.ui.plan
 
 import android.app.Dialog
-import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -17,15 +16,17 @@ import android.widget.TextView
 import android.widget.Toast
 import android.widget.VideoView
 import androidx.activity.OnBackPressedCallback
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.fitnessmobileapp.R
 import com.example.fitnessmobileapp.data.model.Exercise
+import com.example.fitnessmobileapp.data.repository.ExerciseTargetHelper
 import com.example.fitnessmobileapp.data.repository.PlanProgressManager
 import com.example.fitnessmobileapp.data.repository.WorkoutDataReader
+import com.example.fitnessmobileapp.data.repository.WorkoutReportManager
 import java.io.File
 import java.io.FileOutputStream
 import java.util.Locale
-import com.example.fitnessmobileapp.data.repository.WorkoutReportManager
 
 class WorkoutSessionActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
@@ -68,6 +69,7 @@ class WorkoutSessionActivity : AppCompatActivity(), TextToSpeech.OnInitListener 
     private var textToSpeech: TextToSpeech? = null
     private var isTtsReady: Boolean = false
     private var pendingSpeech: String? = null
+
     private val spokenVoiceMarks = mutableSetOf<Int>()
     private val spokenExerciseEndMarks = mutableSetOf<Int>()
 
@@ -84,6 +86,7 @@ class WorkoutSessionActivity : AppCompatActivity(), TextToSpeech.OnInitListener 
         REST
     }
 
+    // Chức năng: khởi tạo màn tập luyện, nhận dữ liệu bài tập và bắt đầu pha chuẩn bị.
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_workout_session)
@@ -104,7 +107,7 @@ class WorkoutSessionActivity : AppCompatActivity(), TextToSpeech.OnInitListener 
         startPreparePhase()
     }
 
-    // Chức năng: ánh xạ toàn bộ View trong XML sang biến Kotlin để điều khiển màn tập.
+    // Chức năng: ánh xạ các View từ file XML sang biến Kotlin để điều khiển giao diện.
     private fun bindViews() {
         btnCloseSession = findViewById(R.id.btnCloseSession)
         txtSessionInfo = findViewById(R.id.txtSessionInfo)
@@ -129,12 +132,12 @@ class WorkoutSessionActivity : AppCompatActivity(), TextToSpeech.OnInitListener 
         txtRestNextEmpty = findViewById(R.id.txtRestNextEmpty)
     }
 
-    // Chức năng: khởi tạo TextToSpeech để đọc hướng dẫn bằng giọng nói.
+    // Chức năng: khởi tạo TextToSpeech để app có thể đọc tên bài và đếm ngược bằng giọng nói.
     private fun initTextToSpeech() {
         textToSpeech = TextToSpeech(this, this)
     }
 
-    // Chức năng: thiết lập tiếng Việt cho TextToSpeech sau khi khởi tạo xong.
+    // Chức năng: xử lý khi TextToSpeech khởi tạo xong.
     override fun onInit(status: Int) {
         if (status == TextToSpeech.SUCCESS) {
             val result = textToSpeech?.setLanguage(Locale("vi", "VN"))
@@ -175,7 +178,7 @@ class WorkoutSessionActivity : AppCompatActivity(), TextToSpeech.OnInitListener 
         textToSpeech?.stop()
     }
 
-    // Chức năng: nhận dữ liệu ngày tập được gửi từ PlanDayDetailActivity.
+    // Chức năng: lấy dữ liệu được truyền từ màn chi tiết ngày sang.
     private fun getIntentData() {
         dayNumber = intent.getIntExtra("DAY_NUMBER", 1)
         dayTitle = intent.getStringExtra("DAY_TITLE") ?: "Ngày $dayNumber"
@@ -183,12 +186,13 @@ class WorkoutSessionActivity : AppCompatActivity(), TextToSpeech.OnInitListener 
         exerciseIds = intent.getStringArrayListExtra("EXERCISE_IDS") ?: arrayListOf()
     }
 
-    // Chức năng: lấy đúng danh sách bài tập trong ngày hiện tại dựa theo exerciseIds.
+    // Chức năng: đọc danh sách bài tập theo nhóm và lọc đúng các bài của ngày hiện tại.
     private fun loadExerciseList() {
         val allExercises = when (exerciseType) {
             "abs" -> WorkoutDataReader.getAbsExercises(this)
             "legs" -> WorkoutDataReader.getLegExercises(this)
             "arms_chest" -> WorkoutDataReader.getArmsChestExercises(this)
+            "full_body" -> WorkoutDataReader.getFullBodyExercises(this)
             else -> WorkoutDataReader.getAllExercises(this)
         }
 
@@ -201,7 +205,7 @@ class WorkoutSessionActivity : AppCompatActivity(), TextToSpeech.OnInitListener 
         }
     }
 
-    // Chức năng: xử lý các nút trên màn tập và màn nghỉ.
+    // Chức năng: gắn sự kiện cho các nút trong màn tập luyện.
     private fun setupButtons() {
         btnCloseSession.setOnClickListener {
             showPauseDialog()
@@ -215,10 +219,12 @@ class WorkoutSessionActivity : AppCompatActivity(), TextToSpeech.OnInitListener 
             when (currentPhase) {
                 SessionPhase.PREPARE -> startVoiceGuidePhase()
                 SessionPhase.REST -> goToNextExerciseVoiceGuide()
+
                 SessionPhase.VOICE_GUIDE -> {
                     speak("Bắt đầu")
                     startExercisePhaseAfterShortDelay()
                 }
+
                 SessionPhase.EXERCISE -> {}
             }
         }
@@ -234,8 +240,6 @@ class WorkoutSessionActivity : AppCompatActivity(), TextToSpeech.OnInitListener 
                 stopSpeech()
                 currentIndex--
                 startVoiceGuidePhase()
-            } else {
-                Toast.makeText(this, "Đây là bài đầu tiên", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -264,7 +268,7 @@ class WorkoutSessionActivity : AppCompatActivity(), TextToSpeech.OnInitListener 
         }
     }
 
-    // Chức năng: xử lý nút back vật lý/gesture bằng cách hiện bảng tạm dừng.
+    // Chức năng: khi người dùng bấm nút Back của điện thoại thì mở dialog tạm dừng thay vì thoát ngay.
     private fun setupBackHandler() {
         onBackPressedDispatcher.addCallback(
             this,
@@ -276,13 +280,13 @@ class WorkoutSessionActivity : AppCompatActivity(), TextToSpeech.OnInitListener 
         )
     }
 
-    // Chức năng: ẩn giao diện nghỉ khi chuyển sang chuẩn bị/tập.
+    // Chức năng: ẩn màn nghỉ và dừng video xem trước bài tiếp theo.
     private fun hideRestScreen() {
         layoutRestScreen.visibility = View.GONE
         videoRestNextExercise.stopPlayback()
     }
 
-    // Chức năng: giai đoạn chuẩn bị 10 giây đầu tiên trước bài đầu tiên.
+    // Chức năng: bắt đầu pha chuẩn bị trước khi vào bài đầu tiên.
     private fun startPreparePhase() {
         hideRestScreen()
 
@@ -308,8 +312,7 @@ class WorkoutSessionActivity : AppCompatActivity(), TextToSpeech.OnInitListener 
         startTimer()
     }
 
-    // Chức năng: giai đoạn giọng đọc 6 giây trước khi tập.
-    // Giao diện vẫn là màn tập 00:30 nhưng timer chưa chạy.
+    // Chức năng: pha hướng dẫn ngắn trước mỗi bài, đọc tên bài và mục tiêu bài tập.
     private fun startVoiceGuidePhase() {
         hideRestScreen()
 
@@ -323,18 +326,21 @@ class WorkoutSessionActivity : AppCompatActivity(), TextToSpeech.OnInitListener 
 
         txtPhaseTitle.visibility = View.GONE
         txtSessionExerciseName.text = exercise.name
-        txtSessionTimer.text = formatTime(exercise.duration)
+        txtSessionTimer.text = getExerciseTargetText(exercise)
 
         btnStartNow.visibility = View.GONE
         layoutExerciseControls.visibility = View.VISIBLE
         btnPauseResume.text = "Ⅱ  TẠM DỪNG"
+        btnSkip.text = "Bỏ qua  →"
 
         updatePreviousButton()
         playMainExerciseVideo(exercise)
         startTimer()
     }
 
-    // Chức năng: giai đoạn tập thật, lúc này timer 00:30 mới bắt đầu đếm ngược.
+    // Chức năng: bắt đầu bài tập chính.
+    // Nếu bài theo thời gian thì đếm ngược.
+    // Nếu bài theo số lần thì hiện x lần và chờ người dùng bấm TIẾP TỤC.
     private fun startExercisePhase() {
         hideRestScreen()
 
@@ -342,14 +348,12 @@ class WorkoutSessionActivity : AppCompatActivity(), TextToSpeech.OnInitListener 
         spokenExerciseEndMarks.clear()
 
         val exercise = exerciseList[currentIndex]
-
-        secondsLeft = exercise.duration
+        val target = getExerciseTarget(exercise)
 
         txtSessionInfo.text = "${currentIndex + 1}/${exerciseList.size}"
 
         txtPhaseTitle.visibility = View.GONE
         txtSessionExerciseName.text = exercise.name
-        txtSessionTimer.text = formatTime(secondsLeft)
 
         btnStartNow.visibility = View.GONE
         layoutExerciseControls.visibility = View.VISIBLE
@@ -357,13 +361,28 @@ class WorkoutSessionActivity : AppCompatActivity(), TextToSpeech.OnInitListener 
 
         updatePreviousButton()
         playMainExerciseVideo(exercise)
-        startTimer()
+
+        if (target.type == ExerciseTargetHelper.TYPE_REPS) {
+            countDownTimer?.cancel()
+            secondsLeft = 0
+            txtSessionTimer.text = "x${target.value}"
+            btnSkip.text = "Bỏ qua  →"
+
+            speak("Thực hiện ${target.value} lần")
+        } else {
+            secondsLeft = target.value
+            txtSessionTimer.text = formatTime(secondsLeft)
+            btnSkip.text = "Bỏ qua  →"
+
+            startTimer()
+        }
     }
 
-    // Chức năng: đọc đếm ngược 3 2 1 ở cuối thời gian tập thật.
-// Khi bài tập còn 3 giây, 2 giây, 1 giây thì app sẽ đọc tương ứng.
+    // Chức năng: đọc 3, 2, 1 ở cuối bài tập theo thời gian.
+    // Bài theo số lần thì không cần đọc đếm ngược cuối bài.
     private fun handleExerciseEndingCue(second: Int) {
         if (currentPhase != SessionPhase.EXERCISE) return
+        if (isCurrentExerciseReps()) return
         if (spokenExerciseEndMarks.contains(second)) return
 
         when (second) {
@@ -384,7 +403,7 @@ class WorkoutSessionActivity : AppCompatActivity(), TextToSpeech.OnInitListener 
         }
     }
 
-    // Chức năng: chờ ngắn sau khi đọc "Bắt đầu", rồi mới chạy timer tập thật.
+    // Chức năng: sau khi đọc “Bắt đầu”, chờ một chút rồi chuyển sang pha tập thật.
     private fun startExercisePhaseAfterShortDelay() {
         mainHandler.removeCallbacksAndMessages(null)
 
@@ -393,8 +412,7 @@ class WorkoutSessionActivity : AppCompatActivity(), TextToSpeech.OnInitListener 
         }, 900)
     }
 
-    // Chức năng: giai đoạn nghỉ 10 giây giữa hai bài.
-    // Có giao diện riêng, có +20s, bỏ qua, và gợi ý bài tiếp theo.
+    // Chức năng: hiển thị màn nghỉ giữa 2 bài và xem trước bài tiếp theo.
     private fun startRestPhase() {
         currentPhase = SessionPhase.REST
         secondsLeft = restSeconds
@@ -409,7 +427,7 @@ class WorkoutSessionActivity : AppCompatActivity(), TextToSpeech.OnInitListener 
         val nextNumber = currentIndex + 2
 
         txtRestNextInfo.text = "Tiếp theo $nextNumber/${exerciseList.size}"
-        txtRestNextName.text = "${nextExercise.name} ${formatTime(nextExercise.duration)}"
+        txtRestNextName.text = "${nextExercise.name} ${getExerciseTargetText(nextExercise)}"
 
         playRestNextExerciseVideo(nextExercise)
 
@@ -417,7 +435,7 @@ class WorkoutSessionActivity : AppCompatActivity(), TextToSpeech.OnInitListener 
         startTimer()
     }
 
-    // Chức năng: cộng thêm 20 giây vào thời gian nghỉ hiện tại.
+    // Chức năng: cộng thêm 20 giây nghỉ khi người dùng bấm nút +20s.
     private fun addRestTime() {
         if (currentPhase != SessionPhase.REST) return
 
@@ -427,22 +445,17 @@ class WorkoutSessionActivity : AppCompatActivity(), TextToSpeech.OnInitListener 
         startTimer()
     }
 
-    // Chức năng: chạy timer cho chuẩn bị, giọng đọc, tập và nghỉ.
-// Trong VOICE_GUIDE: đọc tên bài + 3 2 1.
-// Trong EXERCISE: đọc 3 2 1 ở 3 giây cuối bài.
+    // Chức năng: chạy bộ đếm thời gian cho pha chuẩn bị, hướng dẫn, bài time và nghỉ.
     private fun startTimer() {
         countDownTimer?.cancel()
         updateTimerText()
-
         handleVoiceGuideCue(secondsLeft)
         handleExerciseEndingCue(secondsLeft)
 
         countDownTimer = object : CountDownTimer(secondsLeft * 1000L, 1000L) {
             override fun onTick(millisUntilFinished: Long) {
                 secondsLeft = ((millisUntilFinished + 999L) / 1000L).toInt()
-
                 updateTimerText()
-
                 handleVoiceGuideCue(secondsLeft)
                 handleExerciseEndingCue(secondsLeft)
             }
@@ -467,17 +480,23 @@ class WorkoutSessionActivity : AppCompatActivity(), TextToSpeech.OnInitListener 
         }.start()
     }
 
-    // Chức năng: xử lý giọng đọc trong 6 giây trước khi tập.
+    // Chức năng: đọc tên bài, mục tiêu và đếm 3 2 1 trong pha hướng dẫn.
     private fun handleVoiceGuideCue(second: Int) {
         if (currentPhase != SessionPhase.VOICE_GUIDE) return
         if (spokenVoiceMarks.contains(second)) return
 
         val exercise = exerciseList[currentIndex]
+        val target = getExerciseTarget(exercise)
 
         when (second) {
             6 -> {
                 spokenVoiceMarks.add(second)
-                speak("${exercise.name}, ${exercise.duration} giây")
+
+                if (target.type == ExerciseTargetHelper.TYPE_REPS) {
+                    speak("${exercise.name}, ${target.value} lần")
+                } else {
+                    speak("${exercise.name}, ${target.value} giây")
+                }
             }
 
             3 -> {
@@ -497,7 +516,7 @@ class WorkoutSessionActivity : AppCompatActivity(), TextToSpeech.OnInitListener 
         }
     }
 
-    // Chức năng: cập nhật đồng hồ theo từng giai đoạn.
+    // Chức năng: cập nhật chữ hiển thị bộ đếm hoặc số lần trên màn hình.
     private fun updateTimerText() {
         when (currentPhase) {
             SessionPhase.PREPARE -> {
@@ -506,11 +525,18 @@ class WorkoutSessionActivity : AppCompatActivity(), TextToSpeech.OnInitListener 
 
             SessionPhase.VOICE_GUIDE -> {
                 val exercise = exerciseList[currentIndex]
-                txtSessionTimer.text = formatTime(exercise.duration)
+                txtSessionTimer.text = getExerciseTargetText(exercise)
             }
 
             SessionPhase.EXERCISE -> {
-                txtSessionTimer.text = formatTime(secondsLeft)
+                val exercise = exerciseList[currentIndex]
+                val target = getExerciseTarget(exercise)
+
+                txtSessionTimer.text = if (target.type == ExerciseTargetHelper.TYPE_REPS) {
+                    "x${target.value}"
+                } else {
+                    formatTime(secondsLeft)
+                }
             }
 
             SessionPhase.REST -> {
@@ -519,7 +545,8 @@ class WorkoutSessionActivity : AppCompatActivity(), TextToSpeech.OnInitListener 
         }
     }
 
-    // Chức năng: sau khi tập xong một bài thì chuyển sang nghỉ, nếu là bài cuối thì hoàn thành ngày.
+    // Chức năng: kết thúc bài hiện tại.
+    // Nếu là bài cuối thì hoàn thành buổi tập, nếu chưa thì chuyển sang màn nghỉ.
     private fun finishExerciseAndMoveNext() {
         if (currentIndex == exerciseList.size - 1) {
             showWorkoutCompleted()
@@ -528,7 +555,7 @@ class WorkoutSessionActivity : AppCompatActivity(), TextToSpeech.OnInitListener 
         }
     }
 
-    // Chức năng: sau khi nghỉ xong hoặc bấm bỏ qua, chuyển sang bài tiếp theo.
+    // Chức năng: sau khi nghỉ xong, chuyển sang bài tiếp theo.
     private fun goToNextExerciseVoiceGuide() {
         if (currentIndex < exerciseList.size - 1) {
             currentIndex++
@@ -538,7 +565,7 @@ class WorkoutSessionActivity : AppCompatActivity(), TextToSpeech.OnInitListener 
         }
     }
 
-    // Chức năng: hiện bảng tạm dừng phủ lên màn hình.
+    // Chức năng: hiển thị dialog tạm dừng khi người dùng muốn thoát, tập lại hoặc tiếp tục.
     private fun showPauseDialog() {
         countDownTimer?.cancel()
         mainHandler.removeCallbacksAndMessages(null)
@@ -581,7 +608,7 @@ class WorkoutSessionActivity : AppCompatActivity(), TextToSpeech.OnInitListener 
         )
     }
 
-    // Chức năng: khởi động lại giai đoạn hiện tại.
+    // Chức năng: tập lại từ đầu pha hiện tại.
     private fun restartCurrentExercise() {
         countDownTimer?.cancel()
         mainHandler.removeCallbacksAndMessages(null)
@@ -595,7 +622,8 @@ class WorkoutSessionActivity : AppCompatActivity(), TextToSpeech.OnInitListener 
         }
     }
 
-    // Chức năng: tiếp tục buổi tập từ thời gian đang dừng.
+    // Chức năng: tiếp tục buổi tập sau khi tạm dừng.
+    // Nếu là bài theo số lần thì không chạy timer lại.
     private fun continueCurrentWorkout() {
         when (currentPhase) {
             SessionPhase.EXERCISE,
@@ -609,10 +637,15 @@ class WorkoutSessionActivity : AppCompatActivity(), TextToSpeech.OnInitListener 
             }
         }
 
+        if (currentPhase == SessionPhase.EXERCISE && isCurrentExerciseReps()) {
+            txtSessionTimer.text = getExerciseTargetText(exerciseList[currentIndex])
+            return
+        }
+
         startTimer()
     }
 
-    // Chức năng: tạm dừng video đang chạy tùy theo giai đoạn hiện tại.
+    // Chức năng: tạm dừng video đang phát.
     private fun pauseCurrentVideo() {
         if (currentPhase == SessionPhase.REST) {
             videoRestNextExercise.pause()
@@ -621,22 +654,29 @@ class WorkoutSessionActivity : AppCompatActivity(), TextToSpeech.OnInitListener 
         }
     }
 
-    // Chức năng: làm mờ nút "Trước đó" nếu đang ở bài đầu tiên.
+    // Chức năng: cập nhật trạng thái nút Trước đó.
+    // Nếu đang ở bài đầu tiên thì vẫn hiển thị đủ chữ nhưng làm nhạt màu.
+    // Nếu không phải bài đầu tiên thì nút hiện rõ để quay về bài trước.
     private fun updatePreviousButton() {
-        btnPreviousExercise.alpha = if (currentIndex == 0) 0.35f else 1f
+        btnPreviousExercise.text = "←  Trước đó"
+
+        if (currentIndex == 0) {
+            btnPreviousExercise.alpha = 1f
+            btnPreviousExercise.isEnabled = false
+            btnPreviousExercise.setTextColor(0xFFD6D6D6.toInt())
+        } else {
+            btnPreviousExercise.alpha = 1f
+            btnPreviousExercise.isEnabled = true
+            btnPreviousExercise.setTextColor(0xFF777777.toInt())
+        }
     }
 
-    // Chức năng: xử lý khi người dùng hoàn thành toàn bộ bài tập trong ngày.
-    // Hàm này sẽ dừng timer, dừng video, lưu tiến độ ngày tập,
-    // tính tổng số bài, tổng calo, tổng thời gian,
-    // sau đó chuyển sang màn hình chúc mừng WorkoutCompletedActivity.
+    // Chức năng: xử lý khi người dùng hoàn thành toàn bộ bài trong ngày.
     private fun showWorkoutCompleted() {
         countDownTimer?.cancel()
         mainHandler.removeCallbacksAndMessages(null)
-
         videoSessionExercise.stopPlayback()
         videoRestNextExercise.stopPlayback()
-
         stopSpeech()
 
         PlanProgressManager.completeDay(
@@ -645,39 +685,33 @@ class WorkoutSessionActivity : AppCompatActivity(), TextToSpeech.OnInitListener 
             dayNumber = dayNumber
         )
 
-        val totalExercises = exerciseList.size
+        saveWorkoutReport()
 
-        val totalCalories = exerciseList.sumOf { exercise ->
-            exercise.calories
-        }
+        AlertDialog.Builder(this)
+            .setTitle("Hoàn thành")
+            .setMessage("Bạn đã hoàn thành $dayTitle.")
+            .setPositiveButton("OK") { _, _ ->
+                finish()
+            }
+            .show()
+    }
 
-        val totalDurationSeconds = exerciseList.sumOf { exercise ->
-            exercise.duration
-        }
+    // Chức năng: lưu dữ liệu buổi tập để màn Báo cáo có thể thống kê.
+    private fun saveWorkoutReport() {
+        val totalDurationSeconds = calculateTotalDurationSeconds()
+        val totalCalories = calculateTotalCalories()
 
-        // Chức năng: lưu lịch sử tập luyện để màn Báo cáo có dữ liệu thống kê.
-        // Mỗi lần hoàn thành một vòng tập sẽ lưu một bản ghi mới.
         WorkoutReportManager.saveCompletedWorkout(
             context = this,
             dayNumber = dayNumber,
             exerciseType = exerciseType,
-            exerciseCount = totalExercises,
+            exerciseCount = exerciseList.size,
             durationSeconds = totalDurationSeconds,
             calories = totalCalories
         )
-
-        val intent = Intent(this, WorkoutCompletedActivity::class.java)
-        intent.putExtra("DAY_NUMBER", dayNumber)
-        intent.putExtra("EXERCISE_COUNT", totalExercises)
-        intent.putExtra("TOTAL_CALORIES", totalCalories)
-        intent.putExtra("TOTAL_DURATION_SECONDS", totalDurationSeconds)
-
-        startActivity(intent)
-        finish()
     }
 
-
-    // Chức năng: phát video bài tập ở màn chính.
+    // Chức năng: phát video bài tập chính.
     private fun playMainExerciseVideo(exercise: Exercise) {
         playVideoToView(
             videoView = videoSessionExercise,
@@ -686,7 +720,7 @@ class WorkoutSessionActivity : AppCompatActivity(), TextToSpeech.OnInitListener 
         )
     }
 
-    // Chức năng: phát video bài tiếp theo trong màn nghỉ ngơi.
+    // Chức năng: phát video xem trước bài tiếp theo ở màn nghỉ.
     private fun playRestNextExerciseVideo(exercise: Exercise) {
         playVideoToView(
             videoView = videoRestNextExercise,
@@ -695,7 +729,7 @@ class WorkoutSessionActivity : AppCompatActivity(), TextToSpeech.OnInitListener 
         )
     }
 
-    // Chức năng: phát video của bài tập vào một VideoView bất kỳ.
+    // Chức năng: phát video từ assets lên VideoView.
     private fun playVideoToView(
         videoView: VideoView,
         emptyText: TextView,
@@ -730,7 +764,7 @@ class WorkoutSessionActivity : AppCompatActivity(), TextToSpeech.OnInitListener 
         }
     }
 
-    // Chức năng: copy video từ assets ra cache để VideoView phát ổn định.
+    // Chức năng: copy video từ assets sang cache để VideoView có thể phát được.
     private fun copyAssetVideoToCache(assetPath: String): File {
         val fileName = assetPath.replace("/", "_")
         val cachedFile = File(cacheDir, fileName)
@@ -746,13 +780,67 @@ class WorkoutSessionActivity : AppCompatActivity(), TextToSpeech.OnInitListener 
         return cachedFile
     }
 
-    // Chức năng: đổi giây sang định dạng mm:ss.
+    // Chức năng: lấy mục tiêu của bài hiện tại.
+    // Bài time trả về 30 giây, bài reps trả về x số lần.
+    private fun getExerciseTarget(exercise: Exercise): ExerciseTargetHelper.ExerciseTarget {
+        return ExerciseTargetHelper.getTarget(
+            exerciseId = exercise.id,
+            exerciseName = exercise.name,
+            dayNumber = dayNumber
+        )
+    }
+
+    // Chức năng: đổi mục tiêu bài tập thành chữ để hiển thị.
+    // Ví dụ: 00:30 hoặc x12.
+    private fun getExerciseTargetText(exercise: Exercise): String {
+        val target = getExerciseTarget(exercise)
+
+        return if (target.type == ExerciseTargetHelper.TYPE_REPS) {
+            "x${target.value}"
+        } else {
+            formatTime(target.value)
+        }
+    }
+
+    // Chức năng: kiểm tra bài hiện tại có phải bài đếm số lần không.
+    private fun isCurrentExerciseReps(): Boolean {
+        if (exerciseList.isEmpty()) return false
+
+        val exercise = exerciseList[currentIndex]
+        val target = getExerciseTarget(exercise)
+
+        return target.type == ExerciseTargetHelper.TYPE_REPS
+    }
+
+    // Chức năng: tính tổng thời gian tập để lưu sang Báo cáo.
+    // Bài theo thời gian lấy đúng số giây, bài theo số lần tạm quy đổi theo duration gốc.
+    private fun calculateTotalDurationSeconds(): Int {
+        return exerciseList.sumOf { exercise ->
+            val target = getExerciseTarget(exercise)
+
+            if (target.type == ExerciseTargetHelper.TYPE_TIME) {
+                target.value
+            } else {
+                exercise.duration
+            }
+        }
+    }
+
+    // Chức năng: tính tổng calories của các bài trong ngày.
+    private fun calculateTotalCalories(): Int {
+        return exerciseList.sumOf { exercise ->
+            exercise.calories
+        }
+    }
+
+    // Chức năng: định dạng số giây thành dạng 00:30.
     private fun formatTime(seconds: Int): String {
         val minutes = seconds / 60
         val remainSeconds = seconds % 60
         return "%02d:%02d".format(minutes, remainSeconds)
     }
 
+    // Chức năng: khi app tạm dừng thì dừng timer, video và giọng đọc để tránh chạy ngầm.
     override fun onPause() {
         super.onPause()
         countDownTimer?.cancel()
@@ -762,6 +850,7 @@ class WorkoutSessionActivity : AppCompatActivity(), TextToSpeech.OnInitListener 
         stopSpeech()
     }
 
+    // Chức năng: giải phóng tài nguyên khi thoát màn tập luyện.
     override fun onDestroy() {
         super.onDestroy()
         countDownTimer?.cancel()

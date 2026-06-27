@@ -6,6 +6,7 @@ import android.graphics.Typeface
 import android.media.MediaMetadataRetriever
 import android.os.Bundle
 import android.view.Gravity
+import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -13,10 +14,10 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.fitnessmobileapp.R
 import com.example.fitnessmobileapp.data.model.Exercise
+import com.example.fitnessmobileapp.data.repository.ExerciseTargetHelper
 import com.example.fitnessmobileapp.data.repository.WorkoutDataReader
 import java.io.File
 import java.io.FileOutputStream
-import android.view.View
 
 class PlanDayDetailActivity : AppCompatActivity() {
 
@@ -26,6 +27,7 @@ class PlanDayDetailActivity : AppCompatActivity() {
     private lateinit var txtWorkoutSummary: TextView
     private lateinit var layoutExerciseList: LinearLayout
     private lateinit var btnStartWorkout: TextView
+
     private var dayNumber: Int = 1
     private var dayTitle: String = "Ngày 1"
     private var durationMinutes: Int = 6
@@ -35,7 +37,6 @@ class PlanDayDetailActivity : AppCompatActivity() {
     private var exercisesOfDay: List<Exercise> = emptyList()
     private var isCompletedDay: Boolean = false
     private var canStartWorkout: Boolean = true
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,12 +69,22 @@ class PlanDayDetailActivity : AppCompatActivity() {
 
     private fun showHeaderInfo() {
         txtDayTitle.text = dayTitle.uppercase()
-        txtWorkoutInfo.text = "Tập Cơ Bụng"
+        txtWorkoutInfo.text = getWorkoutTitle()
         txtWorkoutSummary.text = "$durationMinutes phút, $exerciseCount bài tập"
     }
 
+    private fun getWorkoutTitle(): String {
+        return when (exerciseType) {
+            "full_body" -> "Tập Toàn Thân"
+            "abs" -> "Tập Cơ Bụng"
+            "arms_chest" -> "Tập Tay & Ngực"
+            "legs" -> "Tập Chân"
+            else -> "Tập Luyện"
+        }
+    }
+
     // Chức năng: xử lý nút quay lại và nút bắt đầu/tập lại.
-// Nếu ngày chưa mở thì ẩn nút để người dùng chỉ xem trước danh sách bài.
+    // Nếu ngày chưa mở thì ẩn nút để người dùng chỉ xem trước danh sách bài.
     private fun setupButtons() {
         btnBack.setOnClickListener {
             finish()
@@ -124,6 +135,7 @@ class PlanDayDetailActivity : AppCompatActivity() {
             "abs" -> WorkoutDataReader.getAbsExercises(this)
             "legs" -> WorkoutDataReader.getLegExercises(this)
             "arms_chest" -> WorkoutDataReader.getArmsChestExercises(this)
+            "full_body" -> WorkoutDataReader.getFullBodyExercises(this)
             else -> WorkoutDataReader.getAllExercises(this)
         }
     }
@@ -172,7 +184,11 @@ class PlanDayDetailActivity : AppCompatActivity() {
         }
 
         val txtDuration = TextView(this).apply {
-            text = formatDuration(exercise.duration)
+            // Chức năng: hiển thị mục tiêu bài tập.
+            // Bài theo thời gian: 30 s.
+            // Bài theo số lần: x12, x14, x16...
+            text = getExerciseTargetText(exercise)
+
             textSize = 16f
             setTextColor(0xFF777777.toInt())
             setPadding(0, dp(6), 0, 0)
@@ -191,9 +207,29 @@ class PlanDayDetailActivity : AppCompatActivity() {
         return root
     }
 
+    // Chức năng: lấy nội dung hiển thị cho từng bài trong danh sách.
+    // Ví dụ:
+    // Bật nhảy -> 30 s
+    // Gánh đùi -> x12
+    // Chống đẩy -> x6
+    private fun getExerciseTargetText(exercise: Exercise): String {
+        val target = ExerciseTargetHelper.getTarget(
+            exerciseId = exercise.id,
+            exerciseName = exercise.name,
+            dayNumber = dayNumber
+        )
+
+        return if (target.type == ExerciseTargetHelper.TYPE_REPS) {
+            "x${target.value}"
+        } else {
+            formatDuration(target.value)
+        }
+    }
+
     // Bấm từng bài trong danh sách thì vẫn mở màn chi tiết bài tập
     private fun openExerciseDetail(exercise: Exercise) {
         val intent = Intent(this, ExerciseDetailActivity::class.java)
+        intent.putExtra("DAY_NUMBER", dayNumber)
         intent.putExtra("EXERCISE_ID", exercise.id)
         intent.putExtra("EXERCISE_TYPE", exerciseType)
         intent.putStringArrayListExtra("EXERCISE_IDS", exerciseIds)

@@ -11,6 +11,7 @@ import android.widget.VideoView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.fitnessmobileapp.R
 import com.example.fitnessmobileapp.data.model.Exercise
+import com.example.fitnessmobileapp.data.repository.ExerciseTargetHelper
 import com.example.fitnessmobileapp.data.repository.WorkoutDataReader
 import java.io.File
 import java.io.FileOutputStream
@@ -18,19 +19,24 @@ import java.io.FileOutputStream
 class ExerciseDetailActivity : AppCompatActivity() {
 
     private lateinit var btnBackExercise: TextView
+
     private lateinit var tabAnimation: LinearLayout
     private lateinit var tabYoutube: LinearLayout
     private lateinit var txtTabAnimation: TextView
     private lateinit var txtTabYoutube: TextView
     private lateinit var lineAnimation: View
     private lateinit var lineYoutube: View
+
     private lateinit var videoExercise: VideoView
     private lateinit var txtVideoEmpty: TextView
+
     private lateinit var txtExerciseName: TextView
+    private lateinit var txtTargetLabel: TextView
     private lateinit var btnMinus: TextView
     private lateinit var txtExerciseDuration: TextView
     private lateinit var btnPlus: TextView
     private lateinit var txtExerciseDescription: TextView
+
     private lateinit var btnPreviousExercise: TextView
     private lateinit var txtExerciseCounter: TextView
     private lateinit var btnNextExercise: TextView
@@ -43,7 +49,17 @@ class ExerciseDetailActivity : AppCompatActivity() {
     private var exerciseList: List<Exercise> = emptyList()
     private var currentIndex: Int = 0
     private var currentExercise: Exercise? = null
-    private var currentDuration: Int = 30
+
+    // Chức năng: lưu ngày hiện tại để tính số lần tăng dần theo lộ trình 30 ngày.
+    private var dayNumber = 1
+
+    // Chức năng: lưu mục tiêu hiện tại của bài.
+    // Bài time: 30 giây.
+    // Bài reps: x12, x14, x16...
+    private var currentTarget = ExerciseTargetHelper.ExerciseTarget(
+        ExerciseTargetHelper.TYPE_TIME,
+        30
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,6 +86,7 @@ class ExerciseDetailActivity : AppCompatActivity() {
         txtVideoEmpty = findViewById(R.id.txtVideoEmpty)
 
         txtExerciseName = findViewById(R.id.txtExerciseName)
+        txtTargetLabel = findViewById(R.id.txtTargetLabel)
         btnMinus = findViewById(R.id.btnMinus)
         txtExerciseDuration = findViewById(R.id.txtExerciseDuration)
         btnPlus = findViewById(R.id.btnPlus)
@@ -82,6 +99,7 @@ class ExerciseDetailActivity : AppCompatActivity() {
     }
 
     private fun getIntentData() {
+        dayNumber = intent.getIntExtra("DAY_NUMBER", 1)
         exerciseId = intent.getStringExtra("EXERCISE_ID") ?: ""
         exerciseType = intent.getStringExtra("EXERCISE_TYPE") ?: "abs"
         exerciseIds = intent.getStringArrayListExtra("EXERCISE_IDS") ?: arrayListOf()
@@ -116,6 +134,7 @@ class ExerciseDetailActivity : AppCompatActivity() {
             "abs" -> WorkoutDataReader.getAbsExercises(this)
             "legs" -> WorkoutDataReader.getLegExercises(this)
             "arms_chest" -> WorkoutDataReader.getArmsChestExercises(this)
+            "full_body" -> WorkoutDataReader.getFullBodyExercises(this)
             else -> WorkoutDataReader.getAllExercises(this)
         }
     }
@@ -137,16 +156,20 @@ class ExerciseDetailActivity : AppCompatActivity() {
             openYoutubeVideo()
         }
 
+        // Chức năng: giảm thời lượng hoặc số lần.
+        // Bài time: giảm 5 giây.
+        // Bài reps: giảm 1 lần.
         btnMinus.setOnClickListener {
-            if (currentDuration > 1) {
-                currentDuration -= 1
-                updateDurationText()
-            }
+            currentTarget = ExerciseTargetHelper.decreaseTarget(currentTarget)
+            updateTargetUI()
         }
 
+        // Chức năng: tăng thời lượng hoặc số lần.
+        // Bài time: tăng 5 giây.
+        // Bài reps: tăng 1 lần.
         btnPlus.setOnClickListener {
-            currentDuration += 1
-            updateDurationText()
+            currentTarget = ExerciseTargetHelper.increaseTarget(currentTarget)
+            updateTargetUI()
         }
 
         btnPreviousExercise.setOnClickListener {
@@ -176,8 +199,17 @@ class ExerciseDetailActivity : AppCompatActivity() {
 
         txtExerciseName.text = exercise.name
 
-        currentDuration = exercise.duration
-        updateDurationText()
+        // Chức năng: xác định bài này là bài theo thời gian hay bài theo số lần.
+        // Ví dụ:
+        // Bật nhảy -> Thời lượng 00:30
+        // Gánh đùi -> Lần lặp lại x12
+        currentTarget = ExerciseTargetHelper.getTarget(
+            exerciseId = exercise.id,
+            exerciseName = exercise.name,
+            dayNumber = dayNumber
+        )
+
+        updateTargetUI()
 
         txtExerciseDescription.text = if (exercise.description.isEmpty()) {
             "Chưa có mô tả bài tập."
@@ -189,6 +221,11 @@ class ExerciseDetailActivity : AppCompatActivity() {
 
         updateNavigationButtons()
         showAnimationTab()
+    }
+
+    private fun updateTargetUI() {
+        txtTargetLabel.text = ExerciseTargetHelper.getTargetLabel(currentTarget)
+        txtExerciseDuration.text = ExerciseTargetHelper.getTargetText(currentTarget)
     }
 
     private fun updateNavigationButtons() {
@@ -270,17 +307,6 @@ class ExerciseDetailActivity : AppCompatActivity() {
         }
 
         return cachedFile
-    }
-
-    private fun updateDurationText() {
-        txtExerciseDuration.text = formatDuration(currentDuration)
-    }
-
-    private fun formatDuration(seconds: Int): String {
-        val minutes = seconds / 60
-        val remainSeconds = seconds % 60
-
-        return "%02d:%02d".format(minutes, remainSeconds)
     }
 
     override fun onPause() {

@@ -436,6 +436,10 @@ class PlanFragment : Fragment(R.layout.fragment_plan) {
         val canStartWorkout = !planDay.isRestDay && planDay.dayNumber <= currentDay
 
         val intent = Intent(requireContext(), PlanDayDetailActivity::class.java)
+        val selectedPlan = WorkoutPlanCategories.getPlanById(selectedPlanId)
+
+        intent.putExtra("PLAN_START_COLOR", selectedPlan.startColor)
+        intent.putExtra("PLAN_END_COLOR", selectedPlan.endColor)
         intent.putExtra("DAY_NUMBER", planDay.dayNumber)
         intent.putExtra("DAY_TITLE", planDay.title)
         intent.putExtra("DURATION_MINUTES", planDay.durationMinutes)
