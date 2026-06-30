@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Màu xanh lá của nút -->
+    <solid android:color="#74D97F" />
+
+    <!-- Bo tròn nút -->
+    <corners android:radius="30dp" />
+
+</shape>

@@ -20,12 +20,17 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="18dp"
             android:layout_marginEnd="18dp"
-            android:paddingTop="22dp"
+            android:paddingTop="20dp"
             android:text="KẾ HOẠCH"
-            android:textColor="#222222"
-            android:textSize="32sp"
+            android:textColor="#202124"
+            android:textSize="28sp"
+            android:fontFamily="@font/anton_regular"
             android:textStyle="bold"
-            android:fontFamily="sans-serif"
+            android:letterSpacing="0.04"
+            android:shadowColor="#202124"
+            android:shadowDx="0.9"
+            android:shadowDy="0"
+            android:shadowRadius="0.1"
             android:includeFontPadding="false" />
 
         <!-- Dấu chấm vị trí -->
@@ -38,12 +43,18 @@
             android:gravity="start"
             android:orientation="horizontal" />
 
+        <!-- Bóng đổ nhẹ dưới phần tiêu đề -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="8dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/bg_shadow_bottom" />
+
         <!-- Card kế hoạch lớn kéo ngang -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerPlanHeader"
             android:layout_width="match_parent"
-            android:layout_height="185dp"
-            android:layout_marginTop="14dp"
+            android:layout_height="230dp"
             android:clipToPadding="false"
             android:overScrollMode="never"
             android:paddingStart="0dp"

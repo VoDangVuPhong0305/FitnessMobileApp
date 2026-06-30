@@ -28,7 +28,8 @@
                 android:fontFamily="sans-serif"
                 android:textColor="#FFFFFF"
                 android:textSize="28sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:letterSpacing="0.04" />
 
             <TextView
                 android:id="@+id/txtHeaderSubtitle"

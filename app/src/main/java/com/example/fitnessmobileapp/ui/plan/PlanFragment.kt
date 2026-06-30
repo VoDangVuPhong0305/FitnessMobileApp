@@ -159,10 +159,10 @@ class PlanFragment : Fragment(R.layout.fragment_plan) {
             val dotView = View(requireContext())
 
             dotView.layoutParams = LinearLayout.LayoutParams(
-                if (isSelected) dp(24) else dp(7),
-                dp(7)
+                if (isSelected) dp(18) else dp(5),
+                dp(5)
             ).apply {
-                marginEnd = dp(7)
+                marginEnd = dp(5)
             }
 
             val dotBackground = GradientDrawable().apply {

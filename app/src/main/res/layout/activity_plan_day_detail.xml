@@ -51,7 +51,8 @@
                     android:text="NGÀY 1"
                     android:textColor="#FFFFFF"
                     android:textSize="38sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:letterSpacing="0.04" />
 
                 <TextView
                     android:id="@+id/txtWorkoutInfo"
@@ -60,7 +61,8 @@
                     android:layout_marginTop="4dp"
                     android:text="Tập Cơ Bụng"
                     android:textColor="#FFFFFF"
-                    android:textSize="23sp" />
+                    android:textSize="23sp"
+                    android:letterSpacing="0.02" />
             </LinearLayout>
 
             <!-- Khối trắng chứa danh sách bài tập -->
