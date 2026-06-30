@@ -1,6 +1,11 @@
 package com.example.fitnessmobileapp.ui.report
 
 import android.app.AlertDialog
+import android.content.Context
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.Path
 import android.os.Bundle
 import android.text.InputType
 import android.view.LayoutInflater
@@ -8,8 +13,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CalendarView
 import android.widget.EditText
+import android.widget.FrameLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import com.example.fitnessmobileapp.R
 import com.example.fitnessmobileapp.data.repository.WorkoutReportManager
@@ -20,6 +27,17 @@ import java.util.Locale
 import kotlin.math.roundToInt
 
 class ReportFragment : Fragment() {
+
+    private lateinit var scrollReport: NestedScrollView
+    private lateinit var cardCalendar: View
+    private lateinit var cardWeight: View
+
+    private lateinit var tabCalendar: View
+    private lateinit var tabWeight: View
+    private lateinit var txtTabCalendar: TextView
+    private lateinit var txtTabWeight: TextView
+    private lateinit var lineCalendar: View
+    private lateinit var lineWeight: View
 
     private lateinit var txtTotalDays: TextView
     private lateinit var txtTotalCalories: TextView
@@ -33,21 +51,12 @@ class ReportFragment : Fragment() {
     private lateinit var txtCurrentWeight: TextView
     private lateinit var txtLast30Days: TextView
     private lateinit var txtAverageWeight: TextView
+    private lateinit var layoutWeightLineChart: FrameLayout
 
     private lateinit var txtBMIValue: TextView
     private lateinit var txtBMIStatus: TextView
     private lateinit var txtBMIMarker: TextView
     private lateinit var bmiScaleContainer: View
-
-    private lateinit var barWeight1: View
-    private lateinit var barWeight2: View
-    private lateinit var barWeight3: View
-    private lateinit var barWeight4: View
-
-    private lateinit var txtWeightDate1: TextView
-    private lateinit var txtWeightDate2: TextView
-    private lateinit var txtWeightDate3: TextView
-    private lateinit var txtWeightDate4: TextView
 
     private lateinit var txtCaloriesToday: TextView
 
@@ -66,6 +75,8 @@ class ReportFragment : Fragment() {
     private lateinit var txtCalValue5: TextView
     private lateinit var txtCalValue6: TextView
     private lateinit var txtCalValue7: TextView
+
+    private lateinit var weightLineChartView: WeightLineChartView
 
     private val heightM = 1.65
 
@@ -91,6 +102,7 @@ class ReportFragment : Fragment() {
         initViews(view)
         setupEvents()
         loadReportData()
+        selectCalendarTab()
 
         return view
     }
@@ -104,6 +116,17 @@ class ReportFragment : Fragment() {
     }
 
     private fun initViews(view: View) {
+        scrollReport = view.findViewById(R.id.scrollReport)
+        cardCalendar = view.findViewById(R.id.cardCalendar)
+        cardWeight = view.findViewById(R.id.cardWeight)
+
+        tabCalendar = view.findViewById(R.id.tabCalendar)
+        tabWeight = view.findViewById(R.id.tabWeight)
+        txtTabCalendar = view.findViewById(R.id.txtTabCalendar)
+        txtTabWeight = view.findViewById(R.id.txtTabWeight)
+        lineCalendar = view.findViewById(R.id.lineCalendar)
+        lineWeight = view.findViewById(R.id.lineWeight)
+
         txtTotalDays = view.findViewById(R.id.txtTotalDays)
         txtTotalCalories = view.findViewById(R.id.txtTotalCalories)
         txtTotalMinutes = view.findViewById(R.id.txtTotalMinutes)
@@ -116,21 +139,12 @@ class ReportFragment : Fragment() {
         txtCurrentWeight = view.findViewById(R.id.txtCurrentWeight)
         txtLast30Days = view.findViewById(R.id.txtLast30Days)
         txtAverageWeight = view.findViewById(R.id.txtAverageWeight)
+        layoutWeightLineChart = view.findViewById(R.id.layoutWeightLineChart)
 
         txtBMIValue = view.findViewById(R.id.txtBMIValue)
         txtBMIStatus = view.findViewById(R.id.txtBMIStatus)
         txtBMIMarker = view.findViewById(R.id.txtBMIMarker)
         bmiScaleContainer = view.findViewById(R.id.bmiScaleContainer)
-
-        barWeight1 = view.findViewById(R.id.barWeight1)
-        barWeight2 = view.findViewById(R.id.barWeight2)
-        barWeight3 = view.findViewById(R.id.barWeight3)
-        barWeight4 = view.findViewById(R.id.barWeight4)
-
-        txtWeightDate1 = view.findViewById(R.id.txtWeightDate1)
-        txtWeightDate2 = view.findViewById(R.id.txtWeightDate2)
-        txtWeightDate3 = view.findViewById(R.id.txtWeightDate3)
-        txtWeightDate4 = view.findViewById(R.id.txtWeightDate4)
 
         txtCaloriesToday = view.findViewById(R.id.txtCaloriesToday)
 
@@ -149,9 +163,29 @@ class ReportFragment : Fragment() {
         txtCalValue5 = view.findViewById(R.id.txtCalValue5)
         txtCalValue6 = view.findViewById(R.id.txtCalValue6)
         txtCalValue7 = view.findViewById(R.id.txtCalValue7)
+
+        weightLineChartView = WeightLineChartView(requireContext())
+        layoutWeightLineChart.removeAllViews()
+        layoutWeightLineChart.addView(
+            weightLineChartView,
+            FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT
+            )
+        )
     }
 
     private fun setupEvents() {
+        tabCalendar.setOnClickListener {
+            selectCalendarTab()
+            scrollToView(cardCalendar)
+        }
+
+        tabWeight.setOnClickListener {
+            selectWeightTab()
+            scrollToView(cardWeight)
+        }
+
         calendarView.setOnDateChangeListener { _, year, month, dayOfMonth ->
             val selectedDate = String.format(
                 Locale.getDefault(),
@@ -169,6 +203,26 @@ class ReportFragment : Fragment() {
         btnEditWeight.setOnClickListener {
             showAddWeightDialog()
         }
+    }
+
+    private fun scrollToView(targetView: View) {
+        scrollReport.post {
+            scrollReport.smoothScrollTo(0, targetView.top - 12)
+        }
+    }
+
+    private fun selectCalendarTab() {
+        txtTabCalendar.setTextColor(0xFF111111.toInt())
+        txtTabWeight.setTextColor(0xFF999999.toInt())
+        lineCalendar.setBackgroundColor(0xFF111111.toInt())
+        lineWeight.setBackgroundColor(0x00FFFFFF)
+    }
+
+    private fun selectWeightTab() {
+        txtTabCalendar.setTextColor(0xFF999999.toInt())
+        txtTabWeight.setTextColor(0xFF111111.toInt())
+        lineCalendar.setBackgroundColor(0x00FFFFFF)
+        lineWeight.setBackgroundColor(0xFF111111.toInt())
     }
 
     private fun loadReportData() {
@@ -265,7 +319,7 @@ class ReportFragment : Fragment() {
                     )
                 )
 
-                while (weightList.size > 4) {
+                while (weightList.size > 6) {
                     weightList.removeAt(0)
                 }
 
@@ -328,34 +382,7 @@ class ReportFragment : Fragment() {
     }
 
     private fun updateWeightChart() {
-        val bars = listOf(barWeight1, barWeight2, barWeight3, barWeight4)
-        val labels = listOf(txtWeightDate1, txtWeightDate2, txtWeightDate3, txtWeightDate4)
-
-        if (weightList.isEmpty()) return
-
-        val minWeight = weightList.minOf { it.weight }
-        val maxWeight = weightList.maxOf { it.weight }
-        val range = if (maxWeight - minWeight == 0.0) 1.0 else maxWeight - minWeight
-
-        for (index in bars.indices) {
-            if (index < weightList.size) {
-                val item = weightList[index]
-
-                val percent = (item.weight - minWeight) / range
-                val height = 55 + (percent * 100).roundToInt()
-
-                val params = bars[index].layoutParams
-                params.height = height
-                bars[index].layoutParams = params
-
-                labels[index].text = item.date
-                bars[index].visibility = View.VISIBLE
-                labels[index].visibility = View.VISIBLE
-            } else {
-                bars[index].visibility = View.INVISIBLE
-                labels[index].visibility = View.INVISIBLE
-            }
-        }
+        weightLineChartView.setData(weightList)
     }
 
     private fun updateCaloriesChart() {
@@ -440,6 +467,122 @@ class ReportFragment : Fragment() {
             bmi < 25 -> "Bình thường"
             bmi < 30 -> "Thừa cân"
             else -> "Béo phì"
+        }
+    }
+
+    class WeightLineChartView(context: Context) : View(context) {
+
+        private var data: List<WeightRecord> = emptyList()
+
+        private val gridPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = Color.parseColor("#E6E6E6")
+            strokeWidth = 2f
+        }
+
+        private val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = Color.parseColor("#9E9E9E")
+            textSize = 28f
+        }
+
+        private val linePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = Color.parseColor("#18C27A")
+            strokeWidth = 6f
+            style = Paint.Style.STROKE
+            strokeCap = Paint.Cap.ROUND
+            strokeJoin = Paint.Join.ROUND
+        }
+
+        private val fillPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = Color.parseColor("#3318C27A")
+            style = Paint.Style.FILL
+        }
+
+        private val pointPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = Color.parseColor("#18C27A")
+            style = Paint.Style.FILL
+        }
+
+        private val pointBorderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = Color.WHITE
+            style = Paint.Style.FILL
+        }
+
+        fun setData(newData: List<WeightRecord>) {
+            data = newData
+            invalidate()
+        }
+
+        override fun onDraw(canvas: Canvas) {
+            super.onDraw(canvas)
+
+            if (data.isEmpty()) {
+                canvas.drawText("Chưa có dữ liệu cân nặng", 30f, height / 2f, textPaint)
+                return
+            }
+
+            val left = 58f
+            val top = 28f
+            val right = width - 24f
+            val bottom = height - 48f
+            val chartWidth = right - left
+            val chartHeight = bottom - top
+
+            val weights = data.map { it.weight }
+            var minWeight = weights.minOrNull() ?: 0.0
+            var maxWeight = weights.maxOrNull() ?: 1.0
+
+            if (maxWeight - minWeight < 1.0) {
+                maxWeight += 1.0
+                minWeight -= 1.0
+            }
+
+            val range = maxWeight - minWeight
+
+            for (i in 0..4) {
+                val y = top + chartHeight * i / 4f
+                canvas.drawLine(left, y, right, y, gridPaint)
+
+                val labelValue = maxWeight - range * i / 4.0
+                canvas.drawText("%.0f".format(labelValue), 4f, y + 8f, textPaint)
+            }
+
+            val points = data.mapIndexed { index, record ->
+                val x = if (data.size == 1) {
+                    left + chartWidth / 2f
+                } else {
+                    left + chartWidth * index / (data.size - 1).toFloat()
+                }
+
+                val yPercent = ((record.weight - minWeight) / range).toFloat()
+                val y = bottom - chartHeight * yPercent
+
+                Pair(x, y)
+            }
+
+            val fillPath = Path()
+            fillPath.moveTo(points.first().first, bottom)
+            points.forEach { point ->
+                fillPath.lineTo(point.first, point.second)
+            }
+            fillPath.lineTo(points.last().first, bottom)
+            fillPath.close()
+            canvas.drawPath(fillPath, fillPaint)
+
+            val linePath = Path()
+            linePath.moveTo(points.first().first, points.first().second)
+            for (i in 1 until points.size) {
+                linePath.lineTo(points[i].first, points[i].second)
+            }
+            canvas.drawPath(linePath, linePaint)
+
+            points.forEachIndexed { index, point ->
+                canvas.drawCircle(point.first, point.second, 12f, pointBorderPaint)
+                canvas.drawCircle(point.first, point.second, 8f, pointPaint)
+
+                val label = data[index].date
+                val textWidth = textPaint.measureText(label)
+                canvas.drawText(label, point.first - textWidth / 2f, height - 10f, textPaint)
+            }
         }
     }
 }
