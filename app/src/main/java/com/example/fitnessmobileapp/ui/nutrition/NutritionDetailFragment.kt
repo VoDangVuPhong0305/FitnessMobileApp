@@ -9,14 +9,22 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.example.fitnessmobileapp.R
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import com.example.fitnessmobileapp.ui.nutrition.NutritionItem
 
 class NutritionDetailFragment : Fragment(R.layout.fragment_nutrition_detail) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val header = view.findViewById<View>(R.id.header)
+        ViewCompat.setOnApplyWindowInsetsListener(header) { v, insets ->
+            val statusBarHeight = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
+            v.setPadding(v.paddingLeft, statusBarHeight, v.paddingRight, v.paddingBottom)
+            insets
+        }
 
-        val tvTitle = view.findViewById<TextView>(R.id.tvTitle)
+        val tvTitle = view.findViewById<View>(R.id.header).findViewById<TextView>(R.id.tvTitle)
         val tvBreakfast = view.findViewById<TextView>(R.id.tvBreakfast)
         val tvSnack = view.findViewById<TextView>(R.id.tvSnack)
         val tvLunch = view.findViewById<TextView>(R.id.tvLunch)
@@ -33,6 +41,25 @@ class NutritionDetailFragment : Fragment(R.layout.fragment_nutrition_detail) {
         data?.let { item ->
 
             tvTitle.text = "NGÀY ${item.day}"
+            fun updateButtons(isStandard: Boolean) {
+                if (isStandard) {
+                    btnStandard.backgroundTintList =
+                        android.content.res.ColorStateList.valueOf(Color.parseColor("#20C76F"))
+                    btnStandard.setTextColor(Color.WHITE)
+
+                    btnVegetarian.backgroundTintList =
+                        android.content.res.ColorStateList.valueOf(Color.WHITE)
+                    btnVegetarian.setTextColor(Color.parseColor("#666666"))
+                } else {
+                    btnVegetarian.backgroundTintList =
+                        android.content.res.ColorStateList.valueOf(Color.parseColor("#20C76F"))
+                    btnVegetarian.setTextColor(Color.WHITE)
+
+                    btnStandard.backgroundTintList =
+                        android.content.res.ColorStateList.valueOf(Color.WHITE)
+                    btnStandard.setTextColor(Color.parseColor("#666666"))
+                }
+            }
 
             fun showMenu(
                 b: String,
@@ -68,17 +95,12 @@ class NutritionDetailFragment : Fragment(R.layout.fragment_nutrition_detail) {
                 item.lunchAlt,
                 item.dinnerAlt
             )
+            updateButtons(true)
 
             // Nút Tiêu chuẩn
             btnStandard.setOnClickListener {
 
-                btnStandard.backgroundTintList =
-                    android.content.res.ColorStateList.valueOf(Color.parseColor("#4CAF50"))
-                btnVegetarian.backgroundTintList =
-                    android.content.res.ColorStateList.valueOf(Color.WHITE)
-
-                btnStandard.setTextColor(Color.WHITE)
-                btnVegetarian.setTextColor(Color.parseColor("#4CAF50"))
+                updateButtons(true)
 
                 showMenu(
                     item.breakfastStd,
@@ -90,25 +112,12 @@ class NutritionDetailFragment : Fragment(R.layout.fragment_nutrition_detail) {
                     item.lunchAlt,
                     item.dinnerAlt
                 )
-                btnStandard.backgroundTintList =
-                    android.content.res.ColorStateList.valueOf(Color.parseColor("#4CAF50"))
-                btnStandard.setTextColor(Color.WHITE)
-
-                btnVegetarian.backgroundTintList =
-                    android.content.res.ColorStateList.valueOf(Color.WHITE)
-                btnVegetarian.setTextColor(Color.parseColor("#4CAF50"))
             }
 
 // Nút Ăn chay
             btnVegetarian.setOnClickListener {
 
-                btnVegetarian.backgroundTintList =
-                    android.content.res.ColorStateList.valueOf(Color.parseColor("#4CAF50"))
-                btnStandard.backgroundTintList =
-                    android.content.res.ColorStateList.valueOf(Color.WHITE)
-
-                btnVegetarian.setTextColor(Color.WHITE)
-                btnStandard.setTextColor(Color.parseColor("#4CAF50"))
+                updateButtons(false)
 
                 showMenu(
                     item.breakfastVeg,
@@ -132,9 +141,7 @@ class NutritionDetailFragment : Fragment(R.layout.fragment_nutrition_detail) {
         btnCheck.setOnClickListener {
 
 
-                btnCheck.setImageResource(android.R.drawable.checkbox_on_background)
-
-                btnCheck.setColorFilter(Color.parseColor("#4CAF50"))
+            btnCheck.setImageResource(R.drawable.ic_check_green)
 
                 btnCheck.backgroundTintList =
                     android.content.res.ColorStateList.valueOf(
