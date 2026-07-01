@@ -2,59 +2,135 @@ package com.example.fitnessmobileapp.ui.nutrition
 
 import android.os.Bundle
 import android.view.View
-import android.widget.RadioGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fitnessmobileapp.R
 import com.google.android.material.tabs.TabLayout
+import com.google.android.material.button.MaterialButton
+import android.content.res.ColorStateList
+import android.graphics.Color
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 
 class ShoppingFragment : Fragment(R.layout.fragment_shopping) {
 
     private var isVegetarian = false
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val toolbar = view.findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
-        toolbar.setNavigationOnClickListener {
-            requireActivity().onBackPressedDispatcher.onBackPressed()
+        val header = view.findViewById<View>(R.id.header)
+        val btnBack = header.findViewById<ImageView>(R.id.btnBack)
+        val tvTitle = header.findViewById<TextView>(R.id.tvTitle)
+        ViewCompat.setOnApplyWindowInsetsListener(header) { v, insets ->
+            val statusBarHeight = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
+            v.setPadding(v.paddingLeft, statusBarHeight, v.paddingRight, v.paddingBottom)
+            insets
+        }
+
+        tvTitle.text = "Danh sách mua sắm"
+
+        btnBack.setOnClickListener {
+            parentFragmentManager.popBackStack()
         }
 
         val rv = view.findViewById<RecyclerView>(R.id.shoppingRecyclerView)
         rv.layoutManager = LinearLayoutManager(requireContext())
 
         val tabLayout = view.findViewById<TabLayout>(R.id.tabLayout)
-        listOf("TUẦN 1", "TUẦN 2", "TUẦN 3", "TUẦN 4", "TUẦN 5").forEach {
-            tabLayout.addTab(tabLayout.newTab().setText(it))
+
+        if (tabLayout.tabCount == 0) {
+            repeat(5) {
+                tabLayout.addTab(
+                    tabLayout.newTab().setText("TUẦN ${it + 1}")
+                )
+            }
         }
 
-        // Load data ban đầu
-        rv.adapter = ShoppingAdapter(getData(week = 1, vegetarian = false))
+        val btnStandard = view.findViewById<MaterialButton>(R.id.btnStandard)
+        val btnVegetarian = view.findViewById<MaterialButton>(R.id.btnVegetarian)
 
-        // Xử lý đổi tab tuần
+        fun updateButtons(isStandard: Boolean) {
+
+            if (isStandard) {
+
+                btnStandard.backgroundTintList =
+                    ColorStateList.valueOf(Color.parseColor("#20C76F"))
+                btnStandard.setTextColor(Color.WHITE)
+
+                btnVegetarian.backgroundTintList =
+                    ColorStateList.valueOf(Color.WHITE)
+                btnVegetarian.setTextColor(Color.parseColor("#666666"))
+
+            } else {
+
+                btnVegetarian.backgroundTintList =
+                    ColorStateList.valueOf(Color.parseColor("#20C76F"))
+                btnVegetarian.setTextColor(Color.WHITE)
+
+                btnStandard.backgroundTintList =
+                    ColorStateList.valueOf(Color.WHITE)
+                btnStandard.setTextColor(Color.parseColor("#666666"))
+            }
+        }
+
+        // Mặc định
+        updateButtons(true)
+        rv.adapter = ShoppingAdapter(getData(1, false))
+
+        // Chuyển tuần
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+
             override fun onTabSelected(tab: TabLayout.Tab) {
-                rv.adapter =
-                    ShoppingAdapter(getData(week = tab.position + 1, vegetarian = isVegetarian))
+                rv.adapter = ShoppingAdapter(
+                    getData(
+                        week = tab.position + 1,
+                        vegetarian = isVegetarian
+                    )
+                )
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab) {}
+
             override fun onTabReselected(tab: TabLayout.Tab) {}
         })
 
-        // Xử lý đổi chế độ ăn
-        val rgDietMode = view.findViewById<RadioGroup>(R.id.rgDietMode)
-        rgDietMode.setOnCheckedChangeListener { _, checkedId ->
-            isVegetarian = checkedId == R.id.rbVegetarian
-            val currentWeek = tabLayout.selectedTabPosition + 1
-            rv.adapter = ShoppingAdapter(getData(week = currentWeek, vegetarian = isVegetarian))
+        // Chế độ tiêu chuẩn
+        btnStandard.setOnClickListener {
+
+            isVegetarian = false
+            updateButtons(true)
+
+            rv.adapter = ShoppingAdapter(
+                getData(
+                    week = tabLayout.selectedTabPosition + 1,
+                    vegetarian = false
+                )
+            )
+        }
+
+        // Chế độ ăn chay
+        btnVegetarian.setOnClickListener {
+
+            isVegetarian = true
+            updateButtons(false)
+
+            rv.adapter = ShoppingAdapter(
+                getData(
+                    week = tabLayout.selectedTabPosition + 1,
+                    vegetarian = true
+                )
+            )
         }
     }
-
-    private fun getData(week: Int, vegetarian: Boolean): List<ShoppingItem> {
-        return if (vegetarian) getVegetarianData(week) else getStandardData(week)
-    }
-
+        private fun getData(week: Int, vegetarian: Boolean): List<ShoppingItem> {
+            return if (vegetarian) {
+                getVegetarianData(week)
+            } else {
+                getStandardData(week)
+            }
+        }
     private fun getStandardData(week: Int): List<ShoppingItem> {
         val week1 = listOf(
             ShoppingItem("BÁNH QUY", isHeader = true),

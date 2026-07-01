@@ -24,32 +24,67 @@ class ShoppingAdapter(
         val txtDescription: TextView = view.findViewById(R.id.txtDescription)
     }
 
-    override fun getItemViewType(position: Int) = if (items[position].isHeader) 0 else 1
+    override fun getItemViewType(position: Int): Int {
+        return if (items[position].isHeader) 0 else 1
+    }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): RecyclerView.ViewHolder {
+
         val inflater = LayoutInflater.from(parent.context)
+
         return if (viewType == 0) {
-            HeaderViewHolder(inflater.inflate(R.layout.item_header, parent, false))
+            HeaderViewHolder(
+                inflater.inflate(R.layout.item_header, parent, false)
+            )
         } else {
-            ItemViewHolder(inflater.inflate(R.layout.item_row, parent, false))
+            ItemViewHolder(
+                inflater.inflate(R.layout.item_row, parent, false)
+            )
         }
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    override fun onBindViewHolder(
+        holder: RecyclerView.ViewHolder,
+        position: Int
+    ) {
+
         val item = items[position]
+
         if (holder is HeaderViewHolder) {
+
             holder.txtHeader.text = item.text
-            if (item.iconRes != 0) holder.imgIcon.setImageResource(item.iconRes)
+
+            if (item.iconRes != 0) {
+                holder.imgIcon.visibility = View.VISIBLE
+                holder.imgIcon.setImageResource(item.iconRes)
+            } else {
+                holder.imgIcon.visibility = View.GONE
+            }
+
         } else if (holder is ItemViewHolder) {
+
             holder.txtItemName.text = item.text
-            holder.txtDescription.text = item.description
-            holder.cbItem.isChecked = item.isChecked ?: false
+
+            if (item.description.isNotEmpty()) {
+                holder.txtDescription.visibility = View.VISIBLE
+                holder.txtDescription.text = item.description
+            } else {
+                holder.txtDescription.visibility = View.GONE
+            }
+
             holder.cbItem.setOnCheckedChangeListener(null)
-            holder.cbItem.setOnCheckedChangeListener { _, checked ->
-                // lưu trạng thái nếu cần
+            holder.cbItem.isChecked = item.isChecked
+
+            holder.cbItem.setOnCheckedChangeListener { _, _ ->
+                // Có thể lưu trạng thái nếu muốn
             }
         }
     }
 
-    override fun getItemCount() = items.size
+    override fun getItemCount(): Int {
+        return items.size
+    }
 }

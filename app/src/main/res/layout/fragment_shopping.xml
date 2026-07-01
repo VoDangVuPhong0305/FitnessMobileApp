@@ -1,63 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#EEEEEE">
+    android:background="#F5F5F5"
+    android:fitsSystemWindows="true">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="#4CAF50"
-        android:paddingTop="28dp"
-        app:navigationIcon="@drawable/ic_arrow_back"
-        app:title="DANH SÁCH MUA SẮM"
-        app:titleTextColor="#FFFFFF" />
+    <!-- Toolbar dùng chung -->
+    <include
+        android:id="@+id/header"
+        layout="@layout/toolbar" />
 
+    <!-- Tabs tuần -->
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#4CAF50"
-        android:paddingTop="28dp"
-        app:tabTextColor="#80FFFFFF"
-        app:tabSelectedTextColor="#FFFFFF"
-        app:tabIndicatorColor="#FFFFFF"
-        app:tabMode="fixed" />
+        android:background="#FFFFFF"
+        android:elevation="2dp"
+        app:tabGravity="fill"
+        app:tabMode="fixed"
+        app:tabIndicatorColor="#20C76F"
+        app:tabIndicatorHeight="3dp"
+        app:tabRippleColor="@android:color/transparent"
+        app:tabSelectedTextColor="#20C76F"
+        app:tabTextColor="#888888" />
 
-    <RadioGroup
-        android:id="@+id/rgDietMode"
+    <!-- Chọn chế độ ăn -->
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:background="#FFFFFF"
-        android:padding="8dp">
+        android:layout_margin="16dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="4dp">
 
-        <RadioButton
-            android:id="@+id/rbStandard"
-            android:layout_width="0dp"
-            android:layout_weight="1"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Chế độ ăn tiêu chuẩn"
-            android:checked="true"
-            android:buttonTint="#4CAF50" />
+            android:orientation="horizontal"
+            android:padding="12dp">
 
-        <RadioButton
-            android:id="@+id/rbVegetarian"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:text="Chế độ ăn chay"
-            android:buttonTint="#4CAF50" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnStandard"
+                android:layout_width="0dp"
+                android:layout_height="46dp"
+                android:layout_weight="1"
+                android:text="Tiêu chuẩn"
+                android:textAllCaps="false"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="#20C76F"
+                app:cornerRadius="23dp" />
 
-    </RadioGroup>
+            <Space
+                android:layout_width="10dp"
+                android:layout_height="1dp" />
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnVegetarian"
+                android:layout_width="0dp"
+                android:layout_height="46dp"
+                android:layout_weight="1"
+                android:text="Ăn chay"
+                android:textAllCaps="false"
+                android:textStyle="bold"
+                android:textColor="#666666"
+                android:backgroundTint="#FFFFFF"
+                app:strokeColor="#20C76F"
+                app:strokeWidth="1dp"
+                app:cornerRadius="23dp" />
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- Danh sách -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/shoppingRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#EEEEEE" />
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="#F5F5F5"
+        android:clipToPadding="false"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="16dp"
+        android:scrollbars="vertical" />
 
 </LinearLayout>
