@@ -2,6 +2,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- Quyền dùng Internet, dùng cho các phần app cần mạng -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- Quyền hiện thông báo, cần cho Android 13 trở lên -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <!-- Quyền cho phép app đặt báo thức chính xác đúng giờ -->
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -12,56 +21,82 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FitnessMobileApp">
 
-        <!-- Màn hình kế hoạch -->
+        <!-- Màn hình đăng nhập, đây là màn hình mở đầu app -->
         <activity
-            android:name=".ui.plan.PlanDayDetailActivity"
-            android:exported="false" />
-
-        <!-- Các màn hình phần Cá nhân / Của tôi -->
-        <activity
-            android:name=".ui.profile.ProfileActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".ui.profile.ReminderActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".ui.profile.SoundActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".ui.profile.FeedbackActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".ui.profile.FAQActivity"
-            android:exported="false" />
-
-        <!-- Màn hình chính -->
-        <activity
-            android:name=".ui.plan.ExerciseDetailActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".ui.plan.WorkoutSessionActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".ui.plan.WorkoutCompletedActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".MainActivity"
+            android:name=".LoginActivity"
             android:exported="true">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
         </activity>
+
+        <!--Màn hình đăng ký-->
+        <activity
+            android:name=".RegisterActivity"
+            android:exported="false" />
+
+        <!-- Màn hình chính sau khi đăng nhập thành công -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="false" />
+
+        <!-- Màn hình nhập thông tin ban đầu sau khi đăng nhập -->
+        <activity
+            android:name=".OnboardingActivity"
+            android:exported="false" />
+
+        <!-- Màn hình chi tiết ngày tập -->
+        <activity
+            android:name=".ui.plan.PlanDayDetailActivity"
+            android:exported="false" />
+
+        <!-- Màn hình chi tiết bài tập -->
+        <activity
+            android:name=".ui.plan.ExerciseDetailActivity"
+            android:exported="false" />
+
+        <!-- Màn hình đang tập luyện -->
+        <activity
+            android:name=".ui.plan.WorkoutSessionActivity"
+            android:exported="false" />
+
+        <!-- Màn hình hoàn thành buổi tập -->
+        <activity
+            android:name=".ui.plan.WorkoutCompletedActivity"
+            android:exported="false" />
+
+        <!-- Màn hình hồ sơ cá nhân -->
+        <activity
+            android:name=".ui.profile.ProfileActivity"
+            android:exported="false" />
+
+        <!-- Màn hình cài đặt nhắc nhở -->
+        <activity
+            android:name=".ui.profile.ReminderActivity"
+            android:exported="false" />
+
+        <!-- Receiver nhận báo thức và hiện thông báo nhắc nhở -->
+        <receiver
+            android:name=".ui.profile.ReminderReceiver"
+            android:exported="false" />
+
+        <!-- Màn hình chọn âm thanh -->
+        <activity
+            android:name=".ui.profile.SoundActivity"
+            android:exported="false" />
+
+        <!-- Màn hình phản hồi -->
+        <activity
+            android:name=".ui.profile.FeedbackActivity"
+            android:exported="false" />
+
+        <!-- Màn hình câu hỏi thường gặp -->
+        <activity
+            android:name=".ui.profile.FAQActivity"
+            android:exported="false" />
 
     </application>
 

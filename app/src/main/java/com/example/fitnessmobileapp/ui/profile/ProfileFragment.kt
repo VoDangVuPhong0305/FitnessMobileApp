@@ -45,6 +45,19 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         view.findViewById<View>(R.id.itemFAQ).setOnClickListener {
             startActivity(Intent(requireContext(), FAQActivity::class.java))
         }
+
+        view.findViewById<View>(R.id.btnLogout).setOnClickListener {
+            requireContext()
+                .getSharedPreferences("login_data", Context.MODE_PRIVATE)
+                .edit()
+                .putBoolean("remember_login", false)
+                .remove("current_user")
+                .apply()
+
+            val intent = Intent(requireContext(), com.example.fitnessmobileapp.LoginActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+        }
     }
 
     private fun showResetProgressDialog() {

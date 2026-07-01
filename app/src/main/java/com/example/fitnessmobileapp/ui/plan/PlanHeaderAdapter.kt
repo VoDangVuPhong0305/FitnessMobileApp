@@ -26,19 +26,17 @@ class PlanHeaderAdapter(
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_plan_header, parent, false)
 
-        // Chức năng: tạo khoảng cách giữa các card nhưng vẫn giữ tổng vùng item bằng chiều rộng màn hình.
-        // totalItemWidth là vùng canh giữa của mỗi item.
-        // cardWidth nhỏ hơn một chút để tạo khoảng hở trái/phải giữa các card.
-        val totalItemWidth = parent.resources.displayMetrics.widthPixels - dp(parent, 36)
-        val cardSpacing = dp(parent, 12)
-        val cardWidth = totalItemWidth - cardSpacing
+        // Chức năng: card có chiều rộng cố định nhỏ hơn màn hình một chút.
+        // Không ép bằng ô ngày nữa để tránh lỗi khuyết mép.
+        val cardWidth = parent.resources.displayMetrics.widthPixels - dp(parent, 48)
+        val cardGap = dp(parent, 14)
 
         view.layoutParams = RecyclerView.LayoutParams(
             cardWidth,
             RecyclerView.LayoutParams.MATCH_PARENT
         ).apply {
-            marginStart = cardSpacing / 2
-            marginEnd = cardSpacing / 2
+            marginStart = cardGap / 2
+            marginEnd = cardGap / 2
         }
 
         return PlanHeaderViewHolder(view)

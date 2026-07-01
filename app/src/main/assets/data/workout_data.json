@@ -1,6 +1,295 @@
 {
   "exerciseLibrary": {
-    "fullBody": [],
+    "fullBody": [
+      {
+        "id": "full_body_001",
+        "name": "Bật nhảy",
+        "category": "Toàn thân",
+        "duration": 30,
+        "calories": 7,
+        "level": "Beginner",
+        "intensity": "Medium",
+        "animationFile": "videos/legs/Bat_nhay.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Bắt đầu đứng hai chân để gần nhau, tay buông xuống hai bên.",
+          "Nhảy lên, dang hai chân ra và đưa tay lên cao trên đầu, sau đó trở lại tư thế ban đầu.",
+          "Bài tập này giúp làm nóng cơ thể và tác động đến nhiều nhóm cơ."
+        ]
+      },
+      {
+        "id": "full_body_002",
+        "name": "Gánh đùi",
+        "category": "Toàn thân",
+        "duration": 30,
+        "calories": 6,
+        "level": "Beginner",
+        "intensity": "Medium",
+        "animationFile": "videos/legs/Ganh_dui.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Đứng thẳng, hai chân rộng bằng vai, hai tay đưa ra phía trước.",
+          "Hạ thấp cơ thể cho đến khi đùi gần song song với sàn, sau đó đứng lên lại.",
+          "Bài tập giúp rèn luyện chân, mông và thân dưới."
+        ]
+      },
+      {
+        "id": "full_body_003",
+        "name": "Leo núi",
+        "category": "Toàn thân",
+        "duration": 30,
+        "calories": 7,
+        "level": "Beginner",
+        "intensity": "Medium",
+        "animationFile": "videos/legs/Leo_nui.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Bắt đầu ở tư thế chống đẩy thẳng tay.",
+          "Co một đầu gối về phía ngực, sau đó nhanh chóng đổi sang chân còn lại.",
+          "Bài tập giúp tăng nhịp tim và tác động đến bụng, chân, vai."
+        ]
+      },
+      {
+        "id": "full_body_004",
+        "name": "Chống đẩy",
+        "category": "Toàn thân",
+        "duration": 30,
+        "calories": 7,
+        "level": "Beginner",
+        "intensity": "Medium",
+        "animationFile": "videos/arms_chest/Chong_day.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Nằm sấp, chống hai tay xuống sàn để nâng cơ thể.",
+          "Giữ thân người thẳng, hạ người xuống rồi đẩy lên lại.",
+          "Bài tập giúp rèn luyện ngực, vai, tay sau và cơ trung tâm."
+        ]
+      },
+      {
+        "id": "full_body_005",
+        "name": "Gập người xe đạp đứng",
+        "category": "Toàn thân",
+        "duration": 30,
+        "calories": 6,
+        "level": "Beginner",
+        "intensity": "Medium",
+        "animationFile": "videos/abs/Gap_nguoi_xe_dap_dung.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Đứng thẳng, hai chân rộng bằng vai.",
+          "Nâng đầu gối lên và đưa khuỷu tay đối diện về gần đầu gối.",
+          "Đổi bên liên tục để tác động vào cơ bụng và toàn thân."
+        ]
+      },
+      {
+        "id": "full_body_006",
+        "name": "Tấn sau",
+        "category": "Toàn thân",
+        "duration": 30,
+        "calories": 6,
+        "level": "Beginner",
+        "intensity": "Medium",
+        "animationFile": "videos/legs/Tan_sau.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Đứng thẳng, hai tay đặt trên hông.",
+          "Bước một chân về sau rồi hạ thấp người xuống.",
+          "Trở lại tư thế ban đầu và đổi chân."
+        ]
+      },
+      {
+        "id": "full_body_007",
+        "name": "Đo sàn",
+        "category": "Toàn thân",
+        "duration": 30,
+        "calories": 5,
+        "level": "Beginner",
+        "intensity": "Low",
+        "animationFile": "videos/abs/Do_san.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Chống cẳng tay và mũi chân xuống sàn.",
+          "Giữ thân người thẳng từ đầu đến gót chân.",
+          "Bài tập giúp tăng sức mạnh cơ bụng, lưng và vai."
+        ]
+      },
+      {
+        "id": "full_body_008",
+        "name": "Chống đẩy cao tay",
+        "category": "Toàn thân",
+        "duration": 30,
+        "calories": 6,
+        "level": "Beginner",
+        "intensity": "Medium",
+        "animationFile": "videos/arms_chest/Chong_day_cao_tay.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Đặt hai tay lên ghế hoặc mặt phẳng cao.",
+          "Giữ người thẳng, hạ người xuống rồi đẩy lên lại.",
+          "Bài tập phù hợp cho người mới bắt đầu."
+        ]
+      },
+      {
+        "id": "full_body_009",
+        "name": "Đứng tấn",
+        "category": "Toàn thân",
+        "duration": 30,
+        "calories": 6,
+        "level": "Beginner",
+        "intensity": "Medium",
+        "animationFile": "videos/legs/Dung_tan.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Đứng hai chân rộng hơn vai một chút.",
+          "Hạ thấp cơ thể xuống rồi nâng lên lại.",
+          "Bài tập giúp rèn luyện cơ đùi, mông và thân dưới."
+        ]
+      },
+      {
+        "id": "full_body_010",
+        "name": "Đấm",
+        "category": "Toàn thân",
+        "duration": 30,
+        "calories": 5,
+        "level": "Beginner",
+        "intensity": "Medium",
+        "animationFile": "videos/arms_chest/Dam.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Đứng với một chân ở phía trước, hai đầu gối hơi cong.",
+          "Co khuỷu tay và đấm luân phiên về phía trước.",
+          "Bài tập giúp vận động tay, vai và tăng nhịp tim nhẹ."
+        ]
+      },
+      {
+        "id": "full_body_011",
+        "name": "Gập bụng đạp xe",
+        "category": "Toàn thân",
+        "duration": 30,
+        "calories": 6,
+        "level": "Beginner",
+        "intensity": "Medium",
+        "animationFile": "videos/abs/Gap_bung_dap_xe.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Nằm trên sàn, hai tay đặt sau tai.",
+          "Đưa khuỷu tay phải gần đầu gối trái, sau đó đổi bên.",
+          "Bài tập giúp tác động vào cơ bụng và cơ liên sườn."
+        ]
+      },
+      {
+        "id": "full_body_012",
+        "name": "Cây cầu mông",
+        "category": "Toàn thân",
+        "duration": 30,
+        "calories": 5,
+        "level": "Beginner",
+        "intensity": "Low",
+        "animationFile": "videos/legs/Cay_cau_mong.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Nằm ngửa, gập đầu gối và đặt bàn chân sát mặt sàn.",
+          "Nâng hông lên cao rồi hạ xuống từ từ.",
+          "Bài tập giúp rèn luyện mông, đùi sau và cơ trung tâm."
+        ]
+      },
+      {
+        "id": "full_body_013",
+        "name": "Tấm ván đi bộ ngang",
+        "category": "Toàn thân",
+        "duration": 30,
+        "calories": 7,
+        "level": "Medium",
+        "intensity": "Medium",
+        "animationFile": "videos/abs/Tam_van_di_bo_ngang.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Bắt đầu ở tư thế tấm ván thẳng tay.",
+          "Di chuyển tay và chân sang ngang vài bước, sau đó đổi hướng.",
+          "Bài tập giúp rèn luyện bụng, vai, tay và khả năng giữ thăng bằng."
+        ]
+      },
+      {
+        "id": "full_body_014",
+        "name": "Hít đất vỗ vai",
+        "category": "Toàn thân",
+        "duration": 30,
+        "calories": 7,
+        "level": "Medium",
+        "intensity": "Medium",
+        "animationFile": "videos/arms_chest/Hít đất vỗ vai.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Bắt đầu với tư thế hít đất thẳng tay.",
+          "Đưa một tay lên chạm vào vai đối diện rồi đặt tay xuống lại.",
+          "Đổi bên và lặp lại, giữ thân người ổn định."
+        ]
+      },
+      {
+        "id": "full_body_015",
+        "name": "Đứng tấn chân trái",
+        "category": "Toàn thân",
+        "duration": 30,
+        "calories": 6,
+        "level": "Beginner",
+        "intensity": "Medium",
+        "animationFile": "videos/legs/Dung_tan_chan_trai.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Bước chân trái về trước và giữ thân trên thẳng.",
+          "Hạ thấp người xuống rồi nâng lên lại.",
+          "Bài tập giúp rèn luyện chân và khả năng giữ thăng bằng."
+        ]
+      },
+      {
+        "id": "full_body_016",
+        "name": "Đứng tấn chân phải",
+        "category": "Toàn thân",
+        "duration": 30,
+        "calories": 6,
+        "level": "Beginner",
+        "intensity": "Medium",
+        "animationFile": "videos/legs/Dung_tan_chan_phai.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Bước chân phải về trước và giữ thân trên thẳng.",
+          "Hạ thấp người xuống rồi nâng lên lại.",
+          "Bài tập giúp rèn luyện chân và khả năng giữ thăng bằng."
+        ]
+      },
+      {
+        "id": "full_body_017",
+        "name": "Tung chân hít đất",
+        "category": "Toàn thân",
+        "duration": 30,
+        "calories": 7,
+        "level": "Medium",
+        "intensity": "High",
+        "animationFile": "videos/abs/Tung_chan_hit_dat.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Bắt đầu ở tư thế hít đất thẳng tay.",
+          "Lần lượt nâng và hạ chân trong khi giữ thân người ổn định.",
+          "Bài tập giúp tác động đến bụng, tay, vai và chân."
+        ]
+      },
+      {
+        "id": "full_body_018",
+        "name": "Cua bò",
+        "category": "Toàn thân",
+        "duration": 30,
+        "calories": 7,
+        "level": "Medium",
+        "intensity": "Medium",
+        "animationFile": "videos/arms_chest/Cua_bo.mp4",
+        "youtubeUrl": "",
+        "description": [
+          "Ngồi xuống, gập hai chân và đặt hai tay phía sau người.",
+          "Nâng hông lên và di chuyển bằng hai tay, hai chân.",
+          "Bài tập giúp vận động tay, chân, vai và cơ trung tâm."
+        ]
+      }
+    ],
     "armsChest": [
       {
         "id": "arms_chest_001",

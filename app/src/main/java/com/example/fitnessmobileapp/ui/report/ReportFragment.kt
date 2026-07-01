@@ -1,6 +1,11 @@
 package com.example.fitnessmobileapp.ui.report
 
 import android.app.AlertDialog
+import android.content.Context
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.Path
 import android.os.Bundle
 import android.text.InputType
 import android.view.LayoutInflater
@@ -8,26 +13,31 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CalendarView
 import android.widget.EditText
-import android.widget.LinearLayout
+import android.widget.FrameLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import com.example.fitnessmobileapp.R
+import com.example.fitnessmobileapp.data.repository.WorkoutReportManager
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 import kotlin.math.roundToInt
 
 class ReportFragment : Fragment() {
 
-    private lateinit var tabCalendar: LinearLayout
-    private lateinit var tabWeight: LinearLayout
+    private lateinit var scrollReport: NestedScrollView
+    private lateinit var cardCalendar: View
+    private lateinit var cardWeight: View
 
+    private lateinit var tabCalendar: View
+    private lateinit var tabWeight: View
+    private lateinit var txtTabCalendar: TextView
+    private lateinit var txtTabWeight: TextView
     private lateinit var lineCalendar: View
     private lateinit var lineWeight: View
-
-    private lateinit var sectionCalendar: LinearLayout
-    private lateinit var sectionWeight: LinearLayout
 
     private lateinit var txtTotalDays: TextView
     private lateinit var txtTotalCalories: TextView
@@ -37,23 +47,50 @@ class ReportFragment : Fragment() {
     private lateinit var txtSelectedDate: TextView
     private lateinit var txtWorkoutHistory: TextView
 
-    private lateinit var btnAddWeight: TextView
-    private lateinit var txtWeightInfo: TextView
+    private lateinit var btnEditWeight: TextView
+    private lateinit var txtCurrentWeight: TextView
+    private lateinit var txtLast30Days: TextView
+    private lateinit var txtAverageWeight: TextView
+    private lateinit var layoutWeightLineChart: FrameLayout
+
     private lateinit var txtBMIValue: TextView
     private lateinit var txtBMIStatus: TextView
+    private lateinit var txtBMIMarker: TextView
     private lateinit var bmiScaleContainer: View
 
-    private lateinit var barWeight1: View
-    private lateinit var barWeight2: View
-    private lateinit var barWeight3: View
-    private lateinit var barWeight4: View
+    private lateinit var txtCaloriesToday: TextView
 
-    private lateinit var txtWeightDate1: TextView
-    private lateinit var txtWeightDate2: TextView
-    private lateinit var txtWeightDate3: TextView
-    private lateinit var txtWeightDate4: TextView
+    private lateinit var barCal1: View
+    private lateinit var barCal2: View
+    private lateinit var barCal3: View
+    private lateinit var barCal4: View
+    private lateinit var barCal5: View
+    private lateinit var barCal6: View
+    private lateinit var barCal7: View
 
-    private val height = 1.70
+    private lateinit var txtCalValue1: TextView
+    private lateinit var txtCalValue2: TextView
+    private lateinit var txtCalValue3: TextView
+    private lateinit var txtCalValue4: TextView
+    private lateinit var txtCalValue5: TextView
+    private lateinit var txtCalValue6: TextView
+    private lateinit var txtCalValue7: TextView
+
+    private lateinit var weightLineChartView: WeightLineChartView
+
+    private val heightM = 1.65
+
+    private val weightList = mutableListOf(
+        WeightRecord("10/6", 77.5),
+        WeightRecord("12/6", 76.8),
+        WeightRecord("16/6", 76.0),
+        WeightRecord("19/6", 75.5)
+    )
+
+    data class WeightRecord(
+        val date: String,
+        val weight: Double
+    )
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -62,14 +99,33 @@ class ReportFragment : Fragment() {
     ): View {
         val view = inflater.inflate(R.layout.fragment_report, container, false)
 
+        initViews(view)
+        setupEvents()
+        loadReportData()
+        selectCalendarTab()
+
+        return view
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if (::txtTotalDays.isInitialized) {
+            loadReportData()
+        }
+    }
+
+    private fun initViews(view: View) {
+        scrollReport = view.findViewById(R.id.scrollReport)
+        cardCalendar = view.findViewById(R.id.cardCalendar)
+        cardWeight = view.findViewById(R.id.cardWeight)
+
         tabCalendar = view.findViewById(R.id.tabCalendar)
         tabWeight = view.findViewById(R.id.tabWeight)
-
+        txtTabCalendar = view.findViewById(R.id.txtTabCalendar)
+        txtTabWeight = view.findViewById(R.id.txtTabWeight)
         lineCalendar = view.findViewById(R.id.lineCalendar)
         lineWeight = view.findViewById(R.id.lineWeight)
-
-        sectionCalendar = view.findViewById(R.id.sectionCalendar)
-        sectionWeight = view.findViewById(R.id.sectionWeight)
 
         txtTotalDays = view.findViewById(R.id.txtTotalDays)
         txtTotalCalories = view.findViewById(R.id.txtTotalCalories)
@@ -79,143 +135,237 @@ class ReportFragment : Fragment() {
         txtSelectedDate = view.findViewById(R.id.txtSelectedDate)
         txtWorkoutHistory = view.findViewById(R.id.txtWorkoutHistory)
 
-        btnAddWeight = view.findViewById(R.id.btnAddWeight)
-        txtWeightInfo = view.findViewById(R.id.txtWeightInfo)
+        btnEditWeight = view.findViewById(R.id.btnEditWeight)
+        txtCurrentWeight = view.findViewById(R.id.txtCurrentWeight)
+        txtLast30Days = view.findViewById(R.id.txtLast30Days)
+        txtAverageWeight = view.findViewById(R.id.txtAverageWeight)
+        layoutWeightLineChart = view.findViewById(R.id.layoutWeightLineChart)
+
         txtBMIValue = view.findViewById(R.id.txtBMIValue)
         txtBMIStatus = view.findViewById(R.id.txtBMIStatus)
+        txtBMIMarker = view.findViewById(R.id.txtBMIMarker)
         bmiScaleContainer = view.findViewById(R.id.bmiScaleContainer)
 
-        barWeight1 = view.findViewById(R.id.barWeight1)
-        barWeight2 = view.findViewById(R.id.barWeight2)
-        barWeight3 = view.findViewById(R.id.barWeight3)
-        barWeight4 = view.findViewById(R.id.barWeight4)
+        txtCaloriesToday = view.findViewById(R.id.txtCaloriesToday)
 
-        txtWeightDate1 = view.findViewById(R.id.txtWeightDate1)
-        txtWeightDate2 = view.findViewById(R.id.txtWeightDate2)
-        txtWeightDate3 = view.findViewById(R.id.txtWeightDate3)
-        txtWeightDate4 = view.findViewById(R.id.txtWeightDate4)
+        barCal1 = view.findViewById(R.id.barCal1)
+        barCal2 = view.findViewById(R.id.barCal2)
+        barCal3 = view.findViewById(R.id.barCal3)
+        barCal4 = view.findViewById(R.id.barCal4)
+        barCal5 = view.findViewById(R.id.barCal5)
+        barCal6 = view.findViewById(R.id.barCal6)
+        barCal7 = view.findViewById(R.id.barCal7)
 
-        showSummaryData()
-        showCalendarSection()
-        showTodayHistory()
-        updateWeightInfo()
-        updateWeightChart()
+        txtCalValue1 = view.findViewById(R.id.txtCalValue1)
+        txtCalValue2 = view.findViewById(R.id.txtCalValue2)
+        txtCalValue3 = view.findViewById(R.id.txtCalValue3)
+        txtCalValue4 = view.findViewById(R.id.txtCalValue4)
+        txtCalValue5 = view.findViewById(R.id.txtCalValue5)
+        txtCalValue6 = view.findViewById(R.id.txtCalValue6)
+        txtCalValue7 = view.findViewById(R.id.txtCalValue7)
 
+        weightLineChartView = WeightLineChartView(requireContext())
+        layoutWeightLineChart.removeAllViews()
+        layoutWeightLineChart.addView(
+            weightLineChartView,
+            FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT
+            )
+        )
+    }
+
+    private fun setupEvents() {
         tabCalendar.setOnClickListener {
-            showCalendarSection()
+            selectCalendarTab()
+            scrollToView(cardCalendar)
         }
 
         tabWeight.setOnClickListener {
-            showWeightSection()
+            selectWeightTab()
+            scrollToView(cardWeight)
         }
 
         calendarView.setOnDateChangeListener { _, year, month, dayOfMonth ->
-            val selectedDate = "$dayOfMonth/${month + 1}/$year"
-            txtSelectedDate.text = "Lịch tập ngày $selectedDate"
+            val selectedDate = String.format(
+                Locale.getDefault(),
+                "%04d-%02d-%02d",
+                year,
+                month + 1,
+                dayOfMonth
+            )
+
+            val displayDate = "$dayOfMonth/${month + 1}/$year"
+            txtSelectedDate.text = displayDate
             showWorkoutHistory(selectedDate)
         }
 
-        btnAddWeight.setOnClickListener {
+        btnEditWeight.setOnClickListener {
             showAddWeightDialog()
         }
+    }
 
-        return view
+    private fun scrollToView(targetView: View) {
+        scrollReport.post {
+            scrollReport.smoothScrollTo(0, targetView.top - 12)
+        }
+    }
+
+    private fun selectCalendarTab() {
+        txtTabCalendar.setTextColor(0xFF111111.toInt())
+        txtTabWeight.setTextColor(0xFF999999.toInt())
+        lineCalendar.setBackgroundColor(0xFF111111.toInt())
+        lineWeight.setBackgroundColor(0x00FFFFFF)
+    }
+
+    private fun selectWeightTab() {
+        txtTabCalendar.setTextColor(0xFF999999.toInt())
+        txtTabWeight.setTextColor(0xFF111111.toInt())
+        lineCalendar.setBackgroundColor(0x00FFFFFF)
+        lineWeight.setBackgroundColor(0xFF111111.toInt())
+    }
+
+    private fun loadReportData() {
+        showSummaryData()
+        showTodayHistory()
+        updateWeightInfo()
+        updateWeightChart()
+        updateCaloriesChart()
     }
 
     private fun showSummaryData() {
-        txtTotalDays.text = ReportData.getTotalWorkoutDays().toString()
-        txtTotalCalories.text = "%.1f".format(ReportData.getTotalCalories())
-        txtTotalMinutes.text = ReportData.getWorkoutMinutes().toString()
+        val summary = WorkoutReportManager.getTotalSummary(requireContext())
+
+        txtTotalDays.text = summary.totalWorkouts.toString()
+        txtTotalCalories.text = summary.totalCalories.toString()
+        txtTotalMinutes.text = secondsToMinutes(summary.totalDurationSeconds).toString()
     }
 
     private fun showTodayHistory() {
-        val today = SimpleDateFormat("d/M/yyyy", Locale.getDefault()).format(Date())
-        txtSelectedDate.text = "Lịch tập ngày $today"
-        showWorkoutHistory(today)
+        val todayQuery = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+        val todayDisplay = SimpleDateFormat("d/M/yyyy", Locale.getDefault()).format(Date())
+
+        txtSelectedDate.text = todayDisplay
+        showWorkoutHistory(todayQuery)
     }
 
     private fun showWorkoutHistory(date: String) {
-        val historyList = ReportData.getWorkoutHistoryByDate(date)
+        val records = WorkoutReportManager.getRecordsByDate(requireContext(), date)
 
-        if (historyList.isEmpty()) {
-            txtWorkoutHistory.text = "Ngày này chưa có dữ liệu tập luyện."
+        if (records.isEmpty()) {
+            txtWorkoutHistory.text =
+                "Ngày này chưa có dữ liệu tập luyện.\n\nKhi người dùng hoàn thành bài tập, dữ liệu sẽ tự lưu vào báo cáo."
             return
         }
 
         val result = StringBuilder()
 
-        for (item in historyList) {
-            result.append("• ${item.exerciseName}\n")
-            result.append("  Thời gian: ${item.time}\n")
-            result.append("  Thời lượng: ${item.duration}\n")
-            result.append("  Calo: ${item.calories} Calo\n\n")
+        records.forEachIndexed { index, record ->
+            result.append("Lần tập ${index + 1}\n")
+            result.append("• Ngày tập: ${formatDateForDisplay(record.date)}\n")
+            result.append("• Ngày thứ: ${record.dayNumber}\n")
+            result.append("• Loại bài tập: ${record.exerciseType}\n")
+            result.append("• Số bài: ${record.exerciseCount}\n")
+            result.append("• Thời gian: ${formatDuration(record.durationSeconds)}\n")
+            result.append("• Calo: ${record.calories} Kcal\n\n")
         }
 
         txtWorkoutHistory.text = result.toString()
     }
 
     private fun showAddWeightDialog() {
-        val input = EditText(requireContext())
-        input.hint = "Nhập cân nặng, ví dụ: 75.5"
-        input.inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
+        val input = EditText(requireContext()).apply {
+            hint = "Nhập cân nặng, ví dụ: 65.5"
+            inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
+            setPadding(34, 20, 34, 20)
+            textSize = 15f
+        }
 
-        AlertDialog.Builder(requireContext())
-            .setTitle("Thêm cân nặng mới")
+        val dialog = AlertDialog.Builder(requireContext())
+            .setTitle("Cập nhật cân nặng")
             .setMessage("Nhập cân nặng hôm nay")
             .setView(input)
-            .setPositiveButton("Lưu") { _, _ ->
-                val weightText = input.text.toString().trim()
+            .setPositiveButton("Lưu", null)
+            .setNegativeButton("Hủy", null)
+            .create()
 
-                if (weightText.isEmpty()) {
-                    Toast.makeText(requireContext(), "Vui lòng nhập cân nặng", Toast.LENGTH_SHORT).show()
-                    return@setPositiveButton
-                }
+        dialog.setOnShowListener {
+            dialog.window?.setBackgroundDrawableResource(R.drawable.bg_dialog_rounded)
 
-                val weight = weightText.toDoubleOrNull()
+            val btnSave = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+            val btnCancel = dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+
+            btnSave.setTextColor(0xFF18C27A.toInt())
+            btnCancel.setTextColor(0xFF777777.toInt())
+
+            btnSave.setOnClickListener {
+                val weight = input.text.toString().trim().toDoubleOrNull()
 
                 if (weight == null || weight <= 0) {
-                    Toast.makeText(requireContext(), "Cân nặng không hợp lệ", Toast.LENGTH_SHORT).show()
-                    return@setPositiveButton
+                    Toast.makeText(
+                        requireContext(),
+                        "Cân nặng không hợp lệ",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    return@setOnClickListener
                 }
 
-                ReportData.addNewWeight(weight)
+                val today = SimpleDateFormat("d/M", Locale.getDefault()).format(Date())
+
+                weightList.add(
+                    WeightRecord(
+                        date = today,
+                        weight = weight
+                    )
+                )
+
+                while (weightList.size > 6) {
+                    weightList.removeAt(0)
+                }
 
                 updateWeightInfo()
                 updateWeightChart()
 
-                Toast.makeText(requireContext(), "Đã thêm cân nặng mới", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    "Đã cập nhật cân nặng",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+                dialog.dismiss()
             }
-            .setNegativeButton("Hủy", null)
-            .show()
+        }
+
+        dialog.show()
     }
 
     private fun updateWeightInfo() {
-        val currentWeight = ReportData.getCurrentWeight()
-        val oldWeight = ReportData.getOldWeight()
-        val changeWeight = ReportData.getWeightChange()
+        val currentWeight = weightList.lastOrNull()?.weight ?: 0.0
+        val oldWeight = weightList.firstOrNull()?.weight ?: currentWeight
 
-        val changeText = when {
-            changeWeight < 0 -> "Đã giảm: %.1f kg".format(-changeWeight)
-            changeWeight > 0 -> "Đã tăng: %.1f kg".format(changeWeight)
-            else -> "Không thay đổi"
-        }
+        val last30Days = oldWeight - currentWeight
+        val averageWeight = weightList.map { it.weight }.average()
 
-        txtWeightInfo.text =
-            "Hiện tại: %.1f kg\n30 ngày trước: %.1f kg\n%s"
-                .format(currentWeight, oldWeight, changeText)
+        txtCurrentWeight.text = "%.1f".format(currentWeight)
+        txtLast30Days.text = "%.1f".format(last30Days)
+        txtAverageWeight.text = "%.1f".format(averageWeight)
 
-        val bmi = currentWeight / (height * height)
+        val bmi = currentWeight / (heightM * heightM)
+
         txtBMIValue.text = "%.1f".format(bmi)
-        updateBMIPosition(bmi)
+        txtBMIStatus.text = getBMIStatus(bmi)
 
-        val status = when {
-            bmi < 18.5 -> "●  Gầy"
-            bmi < 25 -> "●  Bình thường"
-            bmi < 30 -> "●  Thừa cân"
-            else -> "●  Béo phì"
+        val statusColor = when {
+            bmi < 18.5 -> 0xFF5F93FF.toInt()
+            bmi < 25 -> 0xFF63D44B.toInt()
+            bmi < 30 -> 0xFFF2AB45.toInt()
+            else -> 0xFFF05066.toInt()
         }
 
-        txtBMIStatus.text = status
+        txtBMIStatus.setTextColor(statusColor)
+        txtBMIMarker.setTextColor(statusColor)
+
+        updateBMIPosition(bmi)
     }
 
     private fun updateBMIPosition(bmi: Double) {
@@ -226,60 +376,213 @@ class ReportFragment : Fragment() {
             val fixedBMI = bmi.coerceIn(minBMI, maxBMI)
             val percent = (fixedBMI - minBMI) / (maxBMI - minBMI)
 
-            val maxMove = bmiScaleContainer.width - txtBMIValue.width
-            val positionX = percent * maxMove
-
-            txtBMIValue.translationX = positionX.toFloat()
+            val maxMove = bmiScaleContainer.width - txtBMIMarker.width
+            txtBMIMarker.translationX = (percent * maxMove).toFloat()
         }
     }
 
     private fun updateWeightChart() {
-        val weightRecords = ReportData.getWeightRecords()
+        weightLineChartView.setData(weightList)
+    }
 
-        val bars = listOf(barWeight1, barWeight2, barWeight3, barWeight4)
-        val labels = listOf(txtWeightDate1, txtWeightDate2, txtWeightDate3, txtWeightDate4)
+    private fun updateCaloriesChart() {
+        val allRecords = WorkoutReportManager.getAllRecords(requireContext())
+        val calendar = Calendar.getInstance()
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
-        if (weightRecords.isEmpty()) return
+        val caloriesByDay = mutableListOf<Int>()
 
-        val minWeight = weightRecords.minOf { it.weight }
-        val maxWeight = weightRecords.maxOf { it.weight }
-        val range = if (maxWeight - minWeight == 0.0) 1.0 else maxWeight - minWeight
+        for (i in 6 downTo 0) {
+            calendar.time = Date()
+            calendar.add(Calendar.DAY_OF_YEAR, -i)
+
+            val date = dateFormat.format(calendar.time)
+            val calories = allRecords
+                .filter { it.date == date }
+                .sumOf { it.calories }
+
+            caloriesByDay.add(calories)
+        }
+
+        val bars = listOf(barCal1, barCal2, barCal3, barCal4, barCal5, barCal6, barCal7)
+
+        val values = listOf(
+            txtCalValue1,
+            txtCalValue2,
+            txtCalValue3,
+            txtCalValue4,
+            txtCalValue5,
+            txtCalValue6,
+            txtCalValue7
+        )
+
+        val maxCalories = caloriesByDay.maxOrNull() ?: 0
+        val safeMax = if (maxCalories == 0) 1 else maxCalories
 
         for (i in bars.indices) {
-            if (i < weightRecords.size) {
-                val item = weightRecords[i]
+            val calories = caloriesByDay[i]
+            val percent = calories.toDouble() / safeMax.toDouble()
+            val height = 35 + (percent * 130).roundToInt()
 
-                val percent = (item.weight - minWeight) / range
-                val barHeight = 70 + (percent * 80).roundToInt()
+            val params = bars[i].layoutParams
+            params.height = height
+            bars[i].layoutParams = params
 
-                val params = bars[i].layoutParams
-                params.height = barHeight
-                bars[i].layoutParams = params
+            values[i].text = calories.toString()
+        }
 
-                labels[i].text = item.date
+        val todayCalories = WorkoutReportManager.getTodaySummary(requireContext()).totalCalories
+        txtCaloriesToday.text = "Hôm nay: $todayCalories Kcal"
+    }
 
-                bars[i].visibility = View.VISIBLE
-                labels[i].visibility = View.VISIBLE
+    private fun secondsToMinutes(seconds: Int): Int {
+        return seconds / 60
+    }
+
+    private fun formatDuration(seconds: Int): String {
+        val minutes = seconds / 60
+        val remainSeconds = seconds % 60
+        return "%02d:%02d".format(minutes, remainSeconds)
+    }
+
+    private fun formatDateForDisplay(date: String): String {
+        return try {
+            val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            val outputFormat = SimpleDateFormat("d/M/yyyy", Locale.getDefault())
+            val parsedDate = inputFormat.parse(date)
+
+            if (parsedDate != null) {
+                outputFormat.format(parsedDate)
             } else {
-                bars[i].visibility = View.INVISIBLE
-                labels[i].visibility = View.INVISIBLE
+                date
             }
+        } catch (e: Exception) {
+            date
         }
     }
 
-    private fun showCalendarSection() {
-        sectionCalendar.visibility = View.VISIBLE
-        sectionWeight.visibility = View.GONE
-
-        lineCalendar.setBackgroundColor(0xFFF6E96B.toInt())
-        lineWeight.setBackgroundColor(0x00FFFFFF)
+    private fun getBMIStatus(bmi: Double): String {
+        return when {
+            bmi < 18.5 -> "Gầy"
+            bmi < 25 -> "Bình thường"
+            bmi < 30 -> "Thừa cân"
+            else -> "Béo phì"
+        }
     }
 
-    private fun showWeightSection() {
-        sectionCalendar.visibility = View.GONE
-        sectionWeight.visibility = View.VISIBLE
+    class WeightLineChartView(context: Context) : View(context) {
 
-        lineCalendar.setBackgroundColor(0x00FFFFFF)
-        lineWeight.setBackgroundColor(0xFFF6E96B.toInt())
+        private var data: List<WeightRecord> = emptyList()
+
+        private val gridPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = Color.parseColor("#E6E6E6")
+            strokeWidth = 2f
+        }
+
+        private val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = Color.parseColor("#9E9E9E")
+            textSize = 28f
+        }
+
+        private val linePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = Color.parseColor("#18C27A")
+            strokeWidth = 6f
+            style = Paint.Style.STROKE
+            strokeCap = Paint.Cap.ROUND
+            strokeJoin = Paint.Join.ROUND
+        }
+
+        private val fillPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = Color.parseColor("#3318C27A")
+            style = Paint.Style.FILL
+        }
+
+        private val pointPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = Color.parseColor("#18C27A")
+            style = Paint.Style.FILL
+        }
+
+        private val pointBorderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = Color.WHITE
+            style = Paint.Style.FILL
+        }
+
+        fun setData(newData: List<WeightRecord>) {
+            data = newData
+            invalidate()
+        }
+
+        override fun onDraw(canvas: Canvas) {
+            super.onDraw(canvas)
+
+            if (data.isEmpty()) {
+                canvas.drawText("Chưa có dữ liệu cân nặng", 30f, height / 2f, textPaint)
+                return
+            }
+
+            val left = 58f
+            val top = 28f
+            val right = width - 24f
+            val bottom = height - 48f
+            val chartWidth = right - left
+            val chartHeight = bottom - top
+
+            val weights = data.map { it.weight }
+            var minWeight = weights.minOrNull() ?: 0.0
+            var maxWeight = weights.maxOrNull() ?: 1.0
+
+            if (maxWeight - minWeight < 1.0) {
+                maxWeight += 1.0
+                minWeight -= 1.0
+            }
+
+            val range = maxWeight - minWeight
+
+            for (i in 0..4) {
+                val y = top + chartHeight * i / 4f
+                canvas.drawLine(left, y, right, y, gridPaint)
+
+                val labelValue = maxWeight - range * i / 4.0
+                canvas.drawText("%.0f".format(labelValue), 4f, y + 8f, textPaint)
+            }
+
+            val points = data.mapIndexed { index, record ->
+                val x = if (data.size == 1) {
+                    left + chartWidth / 2f
+                } else {
+                    left + chartWidth * index / (data.size - 1).toFloat()
+                }
+
+                val yPercent = ((record.weight - minWeight) / range).toFloat()
+                val y = bottom - chartHeight * yPercent
+
+                Pair(x, y)
+            }
+
+            val fillPath = Path()
+            fillPath.moveTo(points.first().first, bottom)
+            points.forEach { point ->
+                fillPath.lineTo(point.first, point.second)
+            }
+            fillPath.lineTo(points.last().first, bottom)
+            fillPath.close()
+            canvas.drawPath(fillPath, fillPaint)
+
+            val linePath = Path()
+            linePath.moveTo(points.first().first, points.first().second)
+            for (i in 1 until points.size) {
+                linePath.lineTo(points[i].first, points[i].second)
+            }
+            canvas.drawPath(linePath, linePaint)
+
+            points.forEachIndexed { index, point ->
+                canvas.drawCircle(point.first, point.second, 12f, pointBorderPaint)
+                canvas.drawCircle(point.first, point.second, 8f, pointPaint)
+
+                val label = data[index].date
+                val textWidth = textPaint.measureText(label)
+                canvas.drawText(label, point.first - textWidth / 2f, height - 10f, textPaint)
+            }
+        }
     }
 }

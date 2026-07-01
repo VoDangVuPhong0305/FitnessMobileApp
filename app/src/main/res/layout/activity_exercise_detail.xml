@@ -8,32 +8,34 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
-        android:paddingBottom="115dp">
+        android:paddingBottom="96dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingStart="22dp"
-            android:paddingTop="34dp"
+            android:paddingTop="24dp"
             android:paddingEnd="22dp"
-            android:paddingBottom="24dp">
+            android:paddingBottom="16dp">
 
             <TextView
                 android:id="@+id/btnBackExercise"
                 android:layout_width="wrap_content"
-                android:layout_height="48dp"
+                android:layout_height="42dp"
+                android:fontFamily="sans-serif"
                 android:gravity="center_vertical"
+                android:includeFontPadding="false"
                 android:text="←"
                 android:textColor="#333333"
-                android:textSize="40sp"
+                android:textSize="38sp"
                 android:textStyle="bold" />
 
             <!-- Tabs Hoạt hình / Video -->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="58dp"
-                android:layout_marginTop="18dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="10dp"
                 android:gravity="center"
                 android:orientation="horizontal">
 
@@ -49,16 +51,18 @@
                         android:id="@+id/txtTabAnimation"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
+                        android:includeFontPadding="false"
                         android:text="Hoạt hình"
                         android:textColor="#222222"
-                        android:textSize="22sp"
+                        android:textSize="20sp"
                         android:textStyle="bold" />
 
                     <View
                         android:id="@+id/lineAnimation"
                         android:layout_width="48dp"
                         android:layout_height="4dp"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="6dp"
                         android:background="#7B61FF" />
                 </LinearLayout>
 
@@ -74,44 +78,102 @@
                         android:id="@+id/txtTabYoutube"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
+                        android:includeFontPadding="false"
                         android:text="Video"
-                        android:textColor="#222222"
-                        android:textSize="22sp"
+                        android:textColor="#666666"
+                        android:textSize="20sp"
                         android:textStyle="bold" />
 
                     <View
                         android:id="@+id/lineYoutube"
                         android:layout_width="48dp"
                         android:layout_height="4dp"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="6dp"
                         android:background="#7B61FF"
                         android:visibility="invisible" />
                 </LinearLayout>
+
             </LinearLayout>
 
-            <!-- Khung video lớn -->
+            <!-- Khung hoạt hình | Video -->
             <FrameLayout
                 android:id="@+id/videoContainer"
                 android:layout_width="match_parent"
-                android:layout_height="260dp"
-                android:layout_marginTop="14dp"
+                android:layout_height="220dp"
+                android:layout_marginTop="12dp"
                 android:background="@drawable/bg_video_container"
                 android:padding="8dp">
 
+                <!-- Video hoạt hình offline -->
                 <VideoView
                     android:id="@+id/videoExercise"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center" />
 
+                <!-- Khung thay thế cho tab Video: bấm để mở YouTube -->
+                <LinearLayout
+                    android:id="@+id/layoutYoutubePreview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#111111"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    android:visibility="gone">
+
+                    <FrameLayout
+                        android:id="@+id/layoutYoutubePlayIcon"
+                        android:layout_width="82dp"
+                        android:layout_height="56dp"
+                        android:background="@drawable/bg_youtube_like">
+
+                        <ImageView
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_play_white" />
+
+                    </FrameLayout>
+
+                    <TextView
+                        android:id="@+id/txtYoutubeTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:fontFamily="sans-serif"
+                        android:gravity="center"
+                        android:includeFontPadding="false"
+                        android:text="Video hướng dẫn"
+                        android:textColor="#FFFFFF"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/txtYoutubeHint"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:fontFamily="sans-serif"
+                        android:gravity="center"
+                        android:includeFontPadding="false"
+                        android:text="Nhấn để xem trên YouTube"
+                        android:textColor="#DDDDDD"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
                 <TextView
                     android:id="@+id/txtVideoEmpty"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:fontFamily="sans-serif"
                     android:gravity="center"
                     android:text="Chưa có hoạt hình"
                     android:textColor="#999999"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     android:visibility="gone" />
             </FrameLayout>
 
@@ -119,59 +181,70 @@
                 android:id="@+id/txtExerciseName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="26dp"
+                android:layout_marginTop="20dp"
+                android:fontFamily="sans-serif"
+                android:includeFontPadding="false"
                 android:text="Tên bài tập"
                 android:textColor="#2D2D2D"
-                android:textSize="28sp"
+                android:textSize="25sp"
                 android:textStyle="bold" />
 
-            <!-- Dòng thời lượng -->
+            <!-- Dòng thời lượng / lần lặp lại -->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="58dp"
-                android:layout_marginTop="14dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="10dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
                 <TextView
+                    android:id="@+id/txtTargetLabel"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:fontFamily="sans-serif"
+                    android:includeFontPadding="false"
                     android:text="Thời lượng"
                     android:textColor="#333333"
-                    android:textSize="24sp"
+                    android:textSize="21sp"
                     android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/btnMinus"
-                    android:layout_width="44dp"
-                    android:layout_height="44dp"
+                    android:layout_width="42dp"
+                    android:layout_height="42dp"
                     android:background="@drawable/bg_time_button"
+                    android:fontFamily="sans-serif"
                     android:gravity="center"
+                    android:includeFontPadding="false"
                     android:text="−"
                     android:textColor="#7B61FF"
-                    android:textSize="30sp"
+                    android:textSize="28sp"
                     android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/txtExerciseDuration"
-                    android:layout_width="100dp"
+                    android:layout_width="92dp"
                     android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif"
                     android:gravity="center"
+                    android:includeFontPadding="false"
                     android:text="00:30"
                     android:textColor="#444444"
-                    android:textSize="26sp"
+                    android:textSize="24sp"
                     android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/btnPlus"
-                    android:layout_width="44dp"
-                    android:layout_height="44dp"
+                    android:layout_width="42dp"
+                    android:layout_height="42dp"
                     android:background="@drawable/bg_time_button"
+                    android:fontFamily="sans-serif"
                     android:gravity="center"
+                    android:includeFontPadding="false"
                     android:text="+"
                     android:textColor="#7B61FF"
-                    android:textSize="30sp"
+                    android:textSize="28sp"
                     android:textStyle="bold" />
             </LinearLayout>
 
@@ -179,11 +252,14 @@
                 android:id="@+id/txtExerciseDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:lineSpacingExtra="8dp"
+                android:layout_marginTop="12dp"
+                android:fontFamily="sans-serif"
+                android:includeFontPadding="false"
+                android:lineSpacingExtra="2dp"
+                android:lineSpacingMultiplier="1.0"
                 android:text="Mô tả bài tập"
                 android:textColor="#777777"
-                android:textSize="16sp" />
+                android:textSize="15sp" />
 
         </LinearLayout>
     </ScrollView>
@@ -192,14 +268,14 @@
     <LinearLayout
         android:id="@+id/layoutBottomNavigation"
         android:layout_width="match_parent"
-        android:layout_height="86dp"
+        android:layout_height="100dp"
         android:layout_gravity="bottom"
         android:background="#FFFFFF"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingStart="34dp"
         android:paddingEnd="28dp"
-        android:paddingBottom="16dp">
+        android:paddingBottom="40dp">
 
         <!-- Cụm chuyển bài bên trái -->
         <LinearLayout
@@ -212,6 +288,7 @@
                 android:id="@+id/btnPreviousExercise"
                 android:layout_width="30dp"
                 android:layout_height="42dp"
+                android:fontFamily="sans-serif"
                 android:gravity="center"
                 android:includeFontPadding="false"
                 android:text="←"
@@ -222,19 +299,21 @@
 
             <TextView
                 android:id="@+id/txtExerciseCounter"
-                android:layout_width="70dp"
+                android:layout_width="80dp"
                 android:layout_height="42dp"
+                android:fontFamily="sans-serif-black"
                 android:gravity="center"
                 android:includeFontPadding="false"
-                android:text="1 / 21"
-                android:textColor="#444444"
-                android:textSize="18sp"
+                android:text="1 / 7"
+                android:textColor="#111111"
+                android:textSize="21sp"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/btnNextExercise"
                 android:layout_width="30dp"
                 android:layout_height="42dp"
+                android:fontFamily="sans-serif"
                 android:gravity="center"
                 android:includeFontPadding="false"
                 android:text="→"
@@ -245,7 +324,6 @@
 
         </LinearLayout>
 
-        <!-- Khoảng cách lớn giữa cụm chuyển bài và nút ĐÓNG -->
         <Space
             android:layout_width="0dp"
             android:layout_height="1dp"
@@ -255,14 +333,15 @@
         <TextView
             android:id="@+id/btnCloseExercise"
             android:layout_width="168dp"
-            android:layout_height="54dp"
+            android:layout_height="52dp"
             android:background="@drawable/bg_start_button"
+            android:fontFamily="sans-serif"
             android:gravity="center"
+            android:includeFontPadding="false"
             android:text="ĐÓNG"
             android:textColor="#FFFFFF"
-            android:textSize="20sp"
+            android:textSize="19sp"
             android:textStyle="bold" />
-
     </LinearLayout>
 
 </FrameLayout>

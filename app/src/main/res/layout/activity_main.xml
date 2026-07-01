@@ -13,18 +13,25 @@
         android:layout_height="0dp"
         android:layout_weight="1" />
 
+    <!-- Bóng đổ nhẹ phía trên thanh menu dưới -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:background="@drawable/bg_shadow_top" />
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="72dp"
         android:background="@android:color/white"
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
-        app:itemIconSize="24dp"
+        app:itemIconSize="30dp"
         app:labelVisibilityMode="labeled"
         app:itemIconTint="@color/bottom_nav_color"
         app:itemTextColor="@color/bottom_nav_color"
+        app:itemTextAppearanceActive="@style/BottomNavAntonText"
+        app:itemTextAppearanceInactive="@style/BottomNavAntonText"
         app:menu="@menu/bottom_nav_menu" />
 
 </LinearLayout>
