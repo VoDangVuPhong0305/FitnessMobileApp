@@ -1,6 +1,7 @@
 package com.example.fitnessmobileapp.ui.report
 
 import android.app.AlertDialog
+import android.widget.ScrollView
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
@@ -11,7 +12,6 @@ import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CalendarView
 import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.TextView
@@ -32,7 +32,8 @@ import android.widget.LinearLayout
 import com.example.fitnessmobileapp.data.repository.WorkoutReportRecord
 import android.annotation.SuppressLint
 import android.view.MotionEvent
-import android.widget.ScrollView
+import android.widget.GridLayout
+
 
 class ReportFragment : Fragment() {
 
@@ -51,7 +52,8 @@ class ReportFragment : Fragment() {
     private lateinit var txtTotalCalories: TextView
     private lateinit var txtTotalMinutes: TextView
 
-    private lateinit var calendarView: CalendarView
+    private lateinit var txtCalendarMonth: TextView
+    private lateinit var gridReportCalendar: GridLayout
     private lateinit var txtSelectedDate: TextView
     private lateinit var layoutWorkoutHistory: LinearLayout
     private lateinit var scrollWorkoutHistory: ScrollView
@@ -88,6 +90,9 @@ class ReportFragment : Fragment() {
     private lateinit var weightLineChartView: WeightLineChartView
 
     private val heightM = 1.65
+    private val reportCalendar = Calendar.getInstance()
+    private val selectedCalendar = Calendar.getInstance()
+    private val reportDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
     private val weightList = mutableListOf(
         WeightRecord("10/6", 77.5),
@@ -141,7 +146,8 @@ class ReportFragment : Fragment() {
         txtTotalCalories = view.findViewById(R.id.txtTotalCalories)
         txtTotalMinutes = view.findViewById(R.id.txtTotalMinutes)
 
-        calendarView = view.findViewById(R.id.calendarView)
+        txtCalendarMonth = view.findViewById(R.id.txtCalendarMonth)
+        gridReportCalendar = view.findViewById(R.id.gridReportCalendar)
         txtSelectedDate = view.findViewById(R.id.txtSelectedDate)
         layoutWorkoutHistory = view.findViewById(R.id.layoutWorkoutHistory)
         scrollWorkoutHistory = view.findViewById(R.id.scrollWorkoutHistory)
@@ -218,20 +224,6 @@ class ReportFragment : Fragment() {
             scrollToView(cardWeight)
         }
 
-        calendarView.setOnDateChangeListener { _, year, month, dayOfMonth ->
-            val selectedDate = String.format(
-                Locale.getDefault(),
-                "%04d-%02d-%02d",
-                year,
-                month + 1,
-                dayOfMonth
-            )
-
-            val displayDate = "$dayOfMonth/${month + 1}/$year"
-            txtSelectedDate.text = displayDate
-            showWorkoutHistory(selectedDate)
-        }
-
         btnEditWeight.setOnClickListener {
             showAddWeightDialog()
         }
@@ -273,12 +265,176 @@ class ReportFragment : Fragment() {
         txtTotalMinutes.text = secondsToMinutes(summary.totalDurationSeconds).toString()
     }
 
+    // Chức năng: hiển thị lịch sử tập luyện của ngày hôm nay và render lịch tháng hiện tại.
     private fun showTodayHistory() {
-        val todayQuery = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+        selectedCalendar.time = Date()
+        reportCalendar.time = Date()
+
+        val todayQuery = reportDateFormat.format(Date())
         val todayDisplay = SimpleDateFormat("d/M/yyyy", Locale.getDefault()).format(Date())
 
         txtSelectedDate.text = todayDisplay
         showWorkoutHistory(todayQuery)
+        renderWorkoutCalendar()
+    }
+
+    // Chức năng: tự vẽ lịch tháng bằng GridLayout.
+// Ngày nào có dữ liệu tập luyện thì tô xanh lá.
+    private fun renderWorkoutCalendar() {
+        gridReportCalendar.removeAllViews()
+
+        val month = reportCalendar.get(Calendar.MONTH)
+        val year = reportCalendar.get(Calendar.YEAR)
+
+        txtCalendarMonth.text = "thg ${month + 1} $year"
+        txtCalendarMonth.typeface = Typeface.create("sans-serif", Typeface.NORMAL)
+        txtCalendarMonth.includeFontPadding = false
+
+        val completedDates = WorkoutReportManager.getAllRecords(requireContext())
+            .map { record -> record.date }
+            .toSet()
+
+        addCalendarWeekHeader()
+
+        val firstDayOfMonth = Calendar.getInstance().apply {
+            set(Calendar.YEAR, year)
+            set(Calendar.MONTH, month)
+            set(Calendar.DAY_OF_MONTH, 1)
+        }
+
+        val daysInMonth = firstDayOfMonth.getActualMaximum(Calendar.DAY_OF_MONTH)
+
+        val firstDayOfWeek = firstDayOfMonth.get(Calendar.DAY_OF_WEEK)
+
+        // Tính ô trống đầu hàng
+        val emptyDaysBeforeMonth = firstDayOfWeek - 1
+
+        repeat(emptyDaysBeforeMonth) {
+            addEmptyCalendarCell()
+        }
+
+        for (day in 1..daysInMonth) {
+            val dateString = String.format(
+                Locale.getDefault(),
+                "%04d-%02d-%02d",
+                year,
+                month + 1,
+                day
+            )
+
+            addCalendarDayCell(
+                day = day,
+                dateString = dateString,
+                hasWorkout = completedDates.contains(dateString)
+            )
+        }
+    }
+
+    // Chức năng: thêm hàng tiêu đề thứ trong tuần, chữ nhỏ gọn giống app mẫu.
+    private fun addCalendarWeekHeader() {
+        val weekDays = listOf("CN", "Th2", "Th3", "Th4", "Th5", "Th6", "Th7")
+
+        weekDays.forEach { dayName ->
+            val textView = TextView(requireContext()).apply {
+                text = dayName
+                gravity = Gravity.CENTER
+                setTextColor(Color.parseColor("#8F8F8F"))
+                textSize = 14f
+                typeface = Typeface.create("sans-serif", Typeface.NORMAL)
+                includeFontPadding = false
+
+                layoutParams = GridLayout.LayoutParams().apply {
+                    width = 0
+                    height = dp(28)
+                    columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f)
+                }
+            }
+
+            gridReportCalendar.addView(textView)
+        }
+    }
+
+    // Chức năng: thêm ô trống trước ngày đầu tháng để giữ đúng bố cục lịch.
+    private fun addEmptyCalendarCell() {
+        val emptyContainer = FrameLayout(requireContext()).apply {
+            layoutParams = GridLayout.LayoutParams().apply {
+                width = 0
+                height = dp(48)
+                columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f)
+            }
+        }
+
+        gridReportCalendar.addView(emptyContainer)
+    }
+
+    // Chức năng: thêm một ô ngày vào lịch với kích thước nhỏ gọn.
+    // Ngày đã tập là vòng tròn xanh, ngày chưa tập là vòng tròn xám nhạt.
+    private fun addCalendarDayCell(
+        day: Int,
+        dateString: String,
+        hasWorkout: Boolean
+    ) {
+        val cellContainer = FrameLayout(requireContext()).apply {
+            layoutParams = GridLayout.LayoutParams().apply {
+                width = 0
+                height = dp(48)
+                columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f)
+            }
+        }
+
+        val textColor = if (hasWorkout) {
+            Color.WHITE
+        } else {
+            Color.parseColor("#666666")
+        }
+
+        val dayView = TextView(requireContext()).apply {
+            text = day.toString()
+            gravity = Gravity.CENTER
+            setTextColor(textColor)
+            textSize = 15f
+            typeface = Typeface.create("sans-serif", Typeface.NORMAL)
+            includeFontPadding = false
+            background = createCircleDayBackground(hasWorkout)
+
+            layoutParams = FrameLayout.LayoutParams(
+                dp(38),
+                dp(38),
+                Gravity.CENTER
+            )
+
+            setOnClickListener {
+                selectedCalendar.set(
+                    reportCalendar.get(Calendar.YEAR),
+                    reportCalendar.get(Calendar.MONTH),
+                    day
+                )
+
+                txtSelectedDate.text =
+                    "$day/${reportCalendar.get(Calendar.MONTH) + 1}/${reportCalendar.get(Calendar.YEAR)}"
+
+                showWorkoutHistory(dateString)
+                renderWorkoutCalendar()
+            }
+        }
+
+        cellContainer.addView(dayView)
+        gridReportCalendar.addView(cellContainer)
+    }
+
+    // Chức năng: tạo nền hình tròn cho ngày trong lịch.
+    private fun createCircleDayBackground(hasWorkout: Boolean): GradientDrawable {
+        return GradientDrawable().apply {
+            shape = GradientDrawable.OVAL
+
+            if (hasWorkout) {
+                setColor(Color.parseColor("#16D878"))
+                setStroke(dp(1), Color.parseColor("#16D878"))
+            } else {
+                setColor(Color.parseColor("#F7F7F7"))
+                setStroke(dp(1), Color.parseColor("#F7F7F7"))
+            }
+        }
     }
 
     // Chức năng: hiển thị lịch sử tập luyện của ngày được chọn.

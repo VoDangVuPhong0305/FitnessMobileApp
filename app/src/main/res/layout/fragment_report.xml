@@ -220,189 +220,6 @@
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardAchievements"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="22dp"
-                app:cardBackgroundColor="#FFFFFF"
-                app:cardCornerRadius="24dp"
-                app:cardElevation="4dp"
-                app:strokeWidth="0dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="22dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Thành tựu"
-                            android:textColor="#111111"
-                            android:textSize="24sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Xem tất cả"
-                            android:textColor="#18C27A"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="18dp"
-                        android:gravity="center"
-                        android:orientation="horizontal"
-                        android:weightSum="3">
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:orientation="vertical">
-
-                            <FrameLayout
-                                android:layout_width="86dp"
-                                android:layout_height="86dp">
-
-                                <ImageView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:src="@drawable/ic_crown"
-                                    android:contentDescription="Vương miện 3 ngày" />
-
-                                <TextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:layout_marginTop="18dp"
-                                    android:gravity="center"
-                                    android:text="3"
-                                    android:textColor="#FFFFFF"
-                                    android:textSize="27sp"
-                                    android:textStyle="bold"
-                                    android:shadowColor="#8A5A00"
-                                    android:shadowDx="1"
-                                    android:shadowDy="1"
-                                    android:shadowRadius="2" />
-                            </FrameLayout>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="8dp"
-                                android:gravity="center"
-                                android:text="Tập luyện\n3 ngày"
-                                android:textAlignment="center"
-                                android:textColor="#222222"
-                                android:textSize="14sp"
-                                android:textStyle="bold" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:orientation="vertical">
-
-                            <FrameLayout
-                                android:layout_width="86dp"
-                                android:layout_height="86dp">
-
-                                <ImageView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:src="@drawable/ic_crown"
-                                    android:contentDescription="Vương miện 2 ngày" />
-
-                                <TextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:layout_marginTop="18dp"
-                                    android:gravity="center"
-                                    android:text="2"
-                                    android:textColor="#FFFFFF"
-                                    android:textSize="27sp"
-                                    android:textStyle="bold"
-                                    android:shadowColor="#8A5A00"
-                                    android:shadowDx="1"
-                                    android:shadowDy="1"
-                                    android:shadowRadius="2" />
-                            </FrameLayout>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="8dp"
-                                android:gravity="center"
-                                android:text="Tập luyện\n2 ngày"
-                                android:textAlignment="center"
-                                android:textColor="#222222"
-                                android:textSize="14sp"
-                                android:textStyle="bold" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:orientation="vertical">
-
-                            <FrameLayout
-                                android:layout_width="86dp"
-                                android:layout_height="86dp">
-
-                                <ImageView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:src="@drawable/ic_crown"
-                                    android:contentDescription="Vương miện ngày đầu" />
-
-                                <TextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:layout_marginTop="18dp"
-                                    android:gravity="center"
-                                    android:text="1"
-                                    android:textColor="#FFFFFF"
-                                    android:textSize="27sp"
-                                    android:textStyle="bold"
-                                    android:shadowColor="#8A5A00"
-                                    android:shadowDx="1"
-                                    android:shadowDy="1"
-                                    android:shadowRadius="2" />
-                            </FrameLayout>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="8dp"
-                                android:gravity="center"
-                                android:text="Ngày đầu\nbắt đầu"
-                                android:textAlignment="center"
-                                android:textColor="#222222"
-                                android:textSize="14sp"
-                                android:textStyle="bold" />
-                        </LinearLayout>
-                    </LinearLayout>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardCalendar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -423,17 +240,31 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:text="Hôm nay"
+                        android:text="1/7/2026"
                         android:textColor="#111111"
-                        android:textSize="24sp"
-                        android:textStyle="bold" />
+                        android:textSize="26sp"
+                        android:textStyle="bold"
+                        android:visibility="gone" />
 
-                    <CalendarView
-                        android:id="@+id/calendarView"
+                    <TextView
+                        android:id="@+id/txtCalendarMonth"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:nestedScrollingEnabled="false" />
+                        android:gravity="center"
+                        android:text="thg 7 2026"
+                        android:textColor="#111111"
+                        android:textSize="21sp"
+                        android:fontFamily="sans-serif"
+                        android:includeFontPadding="false" />
+
+                    <GridLayout
+                        android:id="@+id/gridReportCalendar"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="22dp"
+                        android:columnCount="7"
+                        android:rowCount="7" />
+
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
