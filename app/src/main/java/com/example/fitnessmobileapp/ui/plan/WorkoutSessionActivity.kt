@@ -28,6 +28,7 @@ import com.example.fitnessmobileapp.data.repository.WorkoutReportManager
 import java.io.File
 import java.io.FileOutputStream
 import java.util.Locale
+import android.os.SystemClock
 
 class WorkoutSessionActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
@@ -79,6 +80,20 @@ class WorkoutSessionActivity : AppCompatActivity(), TextToSpeech.OnInitListener 
     private val prepareSeconds = 10
     private val voiceGuideSeconds = 6
     private val restSeconds = 10
+
+    private var actualWorkoutSeconds = 0
+    private var actualWorkoutCalories = 0.0
+    private var actualCompletedExerciseCount = 0
+
+    private var exerciseTrackingStartMillis = 0L
+    private var isTrackingExercise = false
+    private var currentExerciseTrackedSeconds = 0
+
+    private val minimumSecondsToCountExercise = 3
+
+    private var totalSessionSeconds = 0
+    private var sessionTrackingStartMillis = 0L
+    private var isTrackingSession = false
 
     enum class SessionPhase {
         PREPARE,
@@ -236,6 +251,10 @@ class WorkoutSessionActivity : AppCompatActivity(), TextToSpeech.OnInitListener 
 
         btnPreviousExercise.setOnClickListener {
             if (currentIndex > 0) {
+                if (currentPhase == SessionPhase.EXERCISE) {
+                    stopActualExerciseTracking(markCompleted = false)
+                }
+
                 countDownTimer?.cancel()
                 mainHandler.removeCallbacksAndMessages(null)
                 stopSpeech()
@@ -291,6 +310,8 @@ class WorkoutSessionActivity : AppCompatActivity(), TextToSpeech.OnInitListener 
     private fun startPreparePhase() {
         hideRestScreen()
 
+        startTotalSessionTracking()
+
         currentPhase = SessionPhase.PREPARE
         secondsLeft = prepareSeconds
         spokenVoiceMarks.clear()
@@ -336,6 +357,7 @@ class WorkoutSessionActivity : AppCompatActivity(), TextToSpeech.OnInitListener 
 
         updatePreviousButton()
         playMainExerciseVideo(exercise)
+
         startTimer()
     }
 
@@ -362,6 +384,8 @@ class WorkoutSessionActivity : AppCompatActivity(), TextToSpeech.OnInitListener 
 
         updatePreviousButton()
         playMainExerciseVideo(exercise)
+
+        startActualExerciseTracking(resetCurrentExercise = true)
 
         if (target.type == ExerciseTargetHelper.TYPE_REPS) {
             countDownTimer?.cancel()
@@ -549,6 +573,10 @@ class WorkoutSessionActivity : AppCompatActivity(), TextToSpeech.OnInitListener 
     // Chức năng: kết thúc bài hiện tại.
     // Nếu là bài cuối thì hoàn thành buổi tập, nếu chưa thì chuyển sang màn nghỉ.
     private fun finishExerciseAndMoveNext() {
+        if (currentPhase == SessionPhase.EXERCISE) {
+            stopActualExerciseTracking(markCompleted = true)
+        }
+
         if (currentIndex == exerciseList.size - 1) {
             showWorkoutCompleted()
         } else {
@@ -568,6 +596,9 @@ class WorkoutSessionActivity : AppCompatActivity(), TextToSpeech.OnInitListener 
 
     // Chức năng: hiển thị dialog tạm dừng khi người dùng muốn thoát, tập lại hoặc tiếp tục.
     private fun showPauseDialog() {
+        pauseActualExerciseTracking()
+        pauseTotalSessionTracking()
+
         countDownTimer?.cancel()
         mainHandler.removeCallbacksAndMessages(null)
         pauseCurrentVideo()
@@ -626,6 +657,12 @@ class WorkoutSessionActivity : AppCompatActivity(), TextToSpeech.OnInitListener 
     // Chức năng: tiếp tục buổi tập sau khi tạm dừng.
     // Nếu là bài theo số lần thì không chạy timer lại.
     private fun continueCurrentWorkout() {
+        startTotalSessionTracking()
+
+        if (currentPhase == SessionPhase.EXERCISE) {
+            startActualExerciseTracking()
+        }
+
         when (currentPhase) {
             SessionPhase.EXERCISE,
             SessionPhase.VOICE_GUIDE -> videoSessionExercise.start()
@@ -672,6 +709,93 @@ class WorkoutSessionActivity : AppCompatActivity(), TextToSpeech.OnInitListener 
         }
     }
 
+    // Chức năng: bắt đầu tính thời gian tập thật của bài hiện tại.
+    // Chức năng: bắt đầu tính tổng thời gian của toàn bộ buổi tập.
+    // Có tính cả chuẩn bị, hướng dẫn, tập và nghỉ.
+    private fun startTotalSessionTracking() {
+        if (isTrackingSession) return
+
+        sessionTrackingStartMillis = SystemClock.elapsedRealtime()
+        isTrackingSession = true
+    }
+
+    // Chức năng: tạm dừng tính tổng thời gian buổi tập khi mở dialog hoặc app bị pause.
+    private fun pauseTotalSessionTracking() {
+        if (!isTrackingSession) return
+
+        val elapsedSeconds = ((SystemClock.elapsedRealtime() - sessionTrackingStartMillis) / 1000L)
+            .toInt()
+            .coerceAtLeast(0)
+
+        totalSessionSeconds += elapsedSeconds
+        isTrackingSession = false
+    }
+
+    // Chức năng: dừng và chốt tổng thời gian buổi tập trước khi lưu kết quả.
+    private fun stopTotalSessionTracking() {
+        pauseTotalSessionTracking()
+    }
+
+    // Chỉ gọi khi vào pha EXERCISE, không tính thời gian chuẩn bị, hướng dẫn hoặc nghỉ.
+    private fun startActualExerciseTracking(resetCurrentExercise: Boolean = false) {
+        if (resetCurrentExercise) {
+            currentExerciseTrackedSeconds = 0
+        }
+
+        if (isTrackingExercise) return
+
+        exerciseTrackingStartMillis = SystemClock.elapsedRealtime()
+        isTrackingExercise = true
+    }
+
+    // Chức năng: tạm dừng việc tính thời gian tập thật.
+    // Dùng khi người dùng mở dialog tạm dừng, app pause hoặc chuyển trạng thái.
+    private fun pauseActualExerciseTracking() {
+        stopActualExerciseTracking(markCompleted = false)
+    }
+
+    // Chức năng: dừng tính thời gian tập thật của bài hiện tại.
+    // Nếu bài được tập đủ tối thiểu vài giây thì mới tính là đã tập.
+    private fun stopActualExerciseTracking(markCompleted: Boolean) {
+        if (!isTrackingExercise) {
+            if (markCompleted && currentExerciseTrackedSeconds >= minimumSecondsToCountExercise) {
+                actualCompletedExerciseCount++
+            }
+            return
+        }
+
+        val elapsedSeconds = ((SystemClock.elapsedRealtime() - exerciseTrackingStartMillis + 999L) / 1000L)
+            .toInt()
+            .coerceAtLeast(0)
+
+        isTrackingExercise = false
+
+        if (elapsedSeconds > 0 && exerciseList.isNotEmpty()) {
+            val exercise = exerciseList[currentIndex]
+            val plannedSeconds = getPlannedExerciseSeconds(exercise).coerceAtLeast(1)
+
+            actualWorkoutSeconds += elapsedSeconds
+            currentExerciseTrackedSeconds += elapsedSeconds
+
+            actualWorkoutCalories += exercise.calories * (elapsedSeconds.toDouble() / plannedSeconds.toDouble())
+        }
+
+        if (markCompleted && currentExerciseTrackedSeconds >= minimumSecondsToCountExercise) {
+            actualCompletedExerciseCount++
+        }
+    }
+
+    // Chức năng: lấy thời gian dự kiến của một bài để tính calo theo tỉ lệ thời gian tập thật.
+    private fun getPlannedExerciseSeconds(exercise: Exercise): Int {
+        val target = getExerciseTarget(exercise)
+
+        return if (target.type == ExerciseTargetHelper.TYPE_TIME) {
+            target.value
+        } else {
+            exercise.duration
+        }
+    }
+
     // Chức năng: xử lý khi người dùng hoàn thành toàn bộ bài trong ngày.
     // Sau khi hoàn thành sẽ lưu tiến độ, lưu báo cáo và mở màn chúc mừng kết thúc.
     private fun showWorkoutCompleted() {
@@ -680,6 +804,8 @@ class WorkoutSessionActivity : AppCompatActivity(), TextToSpeech.OnInitListener 
         videoSessionExercise.stopPlayback()
         videoRestNextExercise.stopPlayback()
         stopSpeech()
+
+        stopTotalSessionTracking()
 
         PlanProgressManager.completeDay(
             context = this,
@@ -696,7 +822,7 @@ class WorkoutSessionActivity : AppCompatActivity(), TextToSpeech.OnInitListener 
             putExtra("DAY_NUMBER", dayNumber)
             putExtra("DAY_TITLE", dayTitle)
             putExtra("EXERCISE_TYPE", exerciseType)
-            putExtra("EXERCISE_COUNT", exerciseList.size)
+            putExtra("EXERCISE_COUNT", actualCompletedExerciseCount)
             putExtra("DURATION_SECONDS", totalDurationSeconds)
             putExtra("CALORIES", totalCalories)
         }
@@ -714,7 +840,7 @@ class WorkoutSessionActivity : AppCompatActivity(), TextToSpeech.OnInitListener 
             context = this,
             dayNumber = dayNumber,
             exerciseType = exerciseType,
-            exerciseCount = exerciseList.size,
+            exerciseCount = actualCompletedExerciseCount,
             durationSeconds = totalDurationSeconds,
             calories = totalCalories
         )
@@ -821,25 +947,26 @@ class WorkoutSessionActivity : AppCompatActivity(), TextToSpeech.OnInitListener 
         return target.type == ExerciseTargetHelper.TYPE_REPS
     }
 
-    // Chức năng: tính tổng thời gian tập để lưu sang Báo cáo.
-    // Bài theo thời gian lấy đúng số giây, bài theo số lần tạm quy đổi theo duration gốc.
+    // Chức năng: trả về tổng thời gian buổi tập, gồm chuẩn bị, hướng dẫn, tập và nghỉ.
     private fun calculateTotalDurationSeconds(): Int {
-        return exerciseList.sumOf { exercise ->
-            val target = getExerciseTarget(exercise)
-
-            if (target.type == ExerciseTargetHelper.TYPE_TIME) {
-                target.value
-            } else {
-                exercise.duration
-            }
-        }
+        return totalSessionSeconds
     }
 
-    // Chức năng: tính tổng calories của các bài trong ngày.
+    // Chức năng: tính calo theo tổng thời gian buổi tập.
+    // Tập lâu hơn thì calo tăng, bỏ qua nhanh thì calo thấp.
     private fun calculateTotalCalories(): Int {
-        return exerciseList.sumOf { exercise ->
+        val plannedWorkoutSeconds = exerciseList.sumOf { exercise ->
+            getPlannedExerciseSeconds(exercise)
+        }.coerceAtLeast(1)
+
+        val plannedCalories = exerciseList.sumOf { exercise ->
             exercise.calories
         }
+
+        val estimatedCalories =
+            plannedCalories * (totalSessionSeconds.toDouble() / plannedWorkoutSeconds.toDouble())
+
+        return (estimatedCalories + 0.5).toInt()
     }
 
     // Chức năng: định dạng số giây thành dạng 00:30.
@@ -852,6 +979,8 @@ class WorkoutSessionActivity : AppCompatActivity(), TextToSpeech.OnInitListener 
     // Chức năng: khi app tạm dừng thì dừng timer, video và giọng đọc để tránh chạy ngầm.
     override fun onPause() {
         super.onPause()
+        pauseActualExerciseTracking()
+        pauseTotalSessionTracking()
         countDownTimer?.cancel()
         mainHandler.removeCallbacksAndMessages(null)
         videoSessionExercise.pause()

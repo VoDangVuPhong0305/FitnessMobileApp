@@ -39,11 +39,12 @@ class WorkoutCompletedActivity : AppCompatActivity() {
     }
 
     // Chức năng: nhận dữ liệu được gửi từ WorkoutSessionActivity sau khi tập xong.
+    // Chức năng: nhận dữ liệu được gửi từ WorkoutSessionActivity sau khi tập xong.
     private fun getIntentData() {
         dayNumber = intent.getIntExtra("DAY_NUMBER", 1)
         exerciseCount = intent.getIntExtra("EXERCISE_COUNT", 0)
-        totalCalories = intent.getIntExtra("TOTAL_CALORIES", 0)
-        totalDurationSeconds = intent.getIntExtra("TOTAL_DURATION_SECONDS", 0)
+        totalCalories = intent.getIntExtra("CALORIES", 0)
+        totalDurationSeconds = intent.getIntExtra("DURATION_SECONDS", 0)
     }
 
     // Chức năng: hiển thị ngày hoàn thành, số bài tập, calo và thời lượng lên giao diện.
