@@ -70,8 +70,10 @@ object WorkoutPlanProvider {
         )
     }
 
-    // Chức năng: cá nhân hóa thứ tự bài tập dựa trên BMI và mục tiêu cân nặng.
-    // Không đổi giao diện Plan, chỉ đổi thứ tự bài tập bên trong từng ngày.
+    // Chức năng: cá nhân hóa thứ tự bài tập dựa trên BMI và khoảng cách tới cân nặng mục tiêu.
+    // Nếu còn xa mục tiêu thì ưu tiên bài đốt calo hơn.
+    // Nếu gần đạt mục tiêu thì chuyển dần sang bài giữ dáng, siết cơ nhẹ.
+    // Các ngày đã tập không bị reset tiến độ, chỉ danh sách bài được gợi ý lại theo thông tin mới.
     private fun personalizeExercisesByUserProfile(
         context: Context,
         exercises: List<Exercise>
@@ -82,24 +84,63 @@ object WorkoutPlanProvider {
 
         val userProfile = readUserProfile(context)
 
+        val weightGap = userProfile.currentWeight - userProfile.targetWeight
+
         return when {
-            // Người muốn giảm cân hoặc BMI hơi cao
-            userProfile.currentWeight > userProfile.targetWeight + 0.5f ||
-                    userProfile.currentBMI >= 23f -> {
-                exercises.sortedByDescending { exercise ->
-                    getLoseWeightScore(exercise)
+            // Người đang muốn giảm cân
+            weightGap > 0.5f -> {
+                when {
+                    // Còn xa mục tiêu: giảm cân mạnh hơn, ưu tiên bài đốt calo
+                    weightGap >= 5f || userProfile.currentBMI >= 27f -> {
+                        exercises.sortedByDescending { exercise ->
+                            getLoseWeightScore(exercise)
+                        }
+                    }
+
+                    // Gần đạt mục tiêu: bớt cardio nặng, tăng bài giữ dáng / siết cơ nhẹ
+                    weightGap <= 2f -> {
+                        exercises.sortedByDescending { exercise ->
+                            getNearTargetLoseWeightScore(exercise)
+                        }
+                    }
+
+                    // Ở giữa: pha trộn giữa giảm cân và giữ dáng
+                    else -> {
+                        exercises.sortedByDescending { exercise ->
+                            getLoseWeightScore(exercise) + getKeepFitScore(exercise)
+                        }
+                    }
                 }
             }
 
-            // Người muốn tăng cân hoặc BMI thấp
-            userProfile.currentWeight + 0.5f < userProfile.targetWeight ||
-                    userProfile.currentBMI < 18.5f -> {
-                exercises.sortedByDescending { exercise ->
-                    getGainWeightScore(exercise)
+            // Người đang muốn tăng cân / tăng cơ
+            weightGap < -0.5f -> {
+                val gainGap = -weightGap
+
+                when {
+                    // Cần tăng nhiều: ưu tiên bài tăng cơ nhẹ, ít cardio nặng
+                    gainGap >= 4f || userProfile.currentBMI < 18.5f -> {
+                        exercises.sortedByDescending { exercise ->
+                            getGainWeightScore(exercise)
+                        }
+                    }
+
+                    // Gần đạt mục tiêu tăng cân: chuyển sang giữ dáng, ổn định cơ thể
+                    gainGap <= 2f -> {
+                        exercises.sortedByDescending { exercise ->
+                            getKeepFitScore(exercise) + getGainWeightScore(exercise)
+                        }
+                    }
+
+                    else -> {
+                        exercises.sortedByDescending { exercise ->
+                            getGainWeightScore(exercise)
+                        }
+                    }
                 }
             }
 
-            // Người BMI bình thường / giữ dáng
+            // Cân nặng gần mục tiêu: giữ dáng
             else -> {
                 exercises.sortedByDescending { exercise ->
                     getKeepFitScore(exercise)
@@ -123,6 +164,44 @@ object WorkoutPlanProvider {
             currentWeight = profilePrefs.getFloat("currentWeight", 65f),
             targetWeight = profilePrefs.getFloat("targetWeight", 65f)
         )
+    }
+
+    // Chức năng: chấm điểm bài tập cho người đang giảm cân nhưng đã gần đạt mục tiêu.
+    // Ưu tiên bài giữ dáng, siết cơ, ổn định cơ thể.
+    // Vẫn giữ một ít bài đốt calo nhưng không quá nặng như giai đoạn đầu.
+    private fun getNearTargetLoseWeightScore(exercise: Exercise): Int {
+        var score = 0
+
+        when (exercise.level) {
+            "Beginner" -> score += 12
+            "Medium" -> score += 8
+        }
+
+        when (exercise.intensity) {
+            "Medium" -> score += 12
+            "Low" -> score += 10
+            "High" -> score += 3
+        }
+
+        score += exercise.calories
+
+        val name = exercise.name.lowercase()
+
+        if (name.contains("đo sàn")) score += 14
+        if (name.contains("plank")) score += 14
+        if (name.contains("gánh đùi")) score += 12
+        if (name.contains("squat")) score += 12
+        if (name.contains("cây cầu")) score += 12
+        if (name.contains("chống đẩy")) score += 10
+        if (name.contains("gập bụng")) score += 10
+        if (name.contains("tấn")) score += 8
+
+        // Vẫn giữ cardio, nhưng không ưu tiên quá mạnh khi đã gần đạt mục tiêu
+        if (name.contains("đấm")) score += 5
+        if (name.contains("bật nhảy")) score += 2
+        if (name.contains("leo núi")) score += 2
+
+        return score
     }
 
     // Chức năng: chấm điểm bài tập cho người muốn giảm cân.
