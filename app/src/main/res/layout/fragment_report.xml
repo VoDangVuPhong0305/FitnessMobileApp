@@ -20,7 +20,7 @@
     <LinearLayout
         android:id="@+id/headerReport"
         android:layout_width="0dp"
-        android:layout_height="155dp"
+        android:layout_height="180dp"
         android:orientation="vertical"
         android:paddingStart="26dp"
         android:paddingEnd="26dp"
@@ -117,7 +117,7 @@
             android:orientation="vertical"
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
-            android:paddingTop="16dp"
+            android:paddingTop="20dp"
             android:paddingBottom="32dp">
 
             <com.google.android.material.card.MaterialCardView
@@ -461,14 +461,23 @@
                         android:textSize="24sp"
                         android:textStyle="bold" />
 
-                    <TextView
-                        android:id="@+id/txtWorkoutHistory"
+                    <ScrollView
+                        android:id="@+id/scrollWorkoutHistory"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="330dp"
                         android:layout_marginTop="14dp"
-                        android:text="Chưa có dữ liệu"
-                        android:textColor="#555555"
-                        android:textSize="17sp" />
+                        android:fillViewport="false"
+                        android:overScrollMode="ifContentScrolls"
+                        android:scrollbars="vertical">
+
+                        <LinearLayout
+                            android:id="@+id/layoutWorkoutHistory"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical" />
+
+                    </ScrollView>
+
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 

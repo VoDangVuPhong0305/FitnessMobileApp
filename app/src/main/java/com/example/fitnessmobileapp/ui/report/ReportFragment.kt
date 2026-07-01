@@ -25,6 +25,14 @@ import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 import kotlin.math.roundToInt
+import android.graphics.Typeface
+import android.graphics.drawable.GradientDrawable
+import android.view.Gravity
+import android.widget.LinearLayout
+import com.example.fitnessmobileapp.data.repository.WorkoutReportRecord
+import android.annotation.SuppressLint
+import android.view.MotionEvent
+import android.widget.ScrollView
 
 class ReportFragment : Fragment() {
 
@@ -45,7 +53,8 @@ class ReportFragment : Fragment() {
 
     private lateinit var calendarView: CalendarView
     private lateinit var txtSelectedDate: TextView
-    private lateinit var txtWorkoutHistory: TextView
+    private lateinit var layoutWorkoutHistory: LinearLayout
+    private lateinit var scrollWorkoutHistory: ScrollView
 
     private lateinit var btnEditWeight: TextView
     private lateinit var txtCurrentWeight: TextView
@@ -100,6 +109,7 @@ class ReportFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_report, container, false)
 
         initViews(view)
+        setupWorkoutHistoryScroll()
         setupEvents()
         loadReportData()
         selectCalendarTab()
@@ -133,7 +143,8 @@ class ReportFragment : Fragment() {
 
         calendarView = view.findViewById(R.id.calendarView)
         txtSelectedDate = view.findViewById(R.id.txtSelectedDate)
-        txtWorkoutHistory = view.findViewById(R.id.txtWorkoutHistory)
+        layoutWorkoutHistory = view.findViewById(R.id.layoutWorkoutHistory)
+        scrollWorkoutHistory = view.findViewById(R.id.scrollWorkoutHistory)
 
         btnEditWeight = view.findViewById(R.id.btnEditWeight)
         txtCurrentWeight = view.findViewById(R.id.txtCurrentWeight)
@@ -173,6 +184,27 @@ class ReportFragment : Fragment() {
                 FrameLayout.LayoutParams.MATCH_PARENT
             )
         )
+    }
+
+    // Chức năng: cho vùng Lịch sử tập luyện tự cuộn bên trong,
+    // không để ScrollView lớn bên ngoài giành quyền kéo.
+    @SuppressLint("ClickableViewAccessibility")
+    private fun setupWorkoutHistoryScroll() {
+        scrollWorkoutHistory.setOnTouchListener { view, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN,
+                MotionEvent.ACTION_MOVE -> {
+                    view.parent.requestDisallowInterceptTouchEvent(true)
+                }
+
+                MotionEvent.ACTION_UP,
+                MotionEvent.ACTION_CANCEL -> {
+                    view.parent.requestDisallowInterceptTouchEvent(false)
+                }
+            }
+
+            false
+        }
     }
 
     private fun setupEvents() {
@@ -249,28 +281,214 @@ class ReportFragment : Fragment() {
         showWorkoutHistory(todayQuery)
     }
 
+    // Chức năng: hiển thị lịch sử tập luyện của ngày được chọn.
+    // Mỗi lần tập sẽ được hiển thị thành một card nhỏ, dễ nhìn hơn dạng chữ dài.
     private fun showWorkoutHistory(date: String) {
         val records = WorkoutReportManager.getRecordsByDate(requireContext(), date)
+            .sortedByDescending { record ->
+                record.completedAtMillis
+            }
+
+        layoutWorkoutHistory.removeAllViews()
 
         if (records.isEmpty()) {
-            txtWorkoutHistory.text =
-                "Ngày này chưa có dữ liệu tập luyện.\n\nKhi người dùng hoàn thành bài tập, dữ liệu sẽ tự lưu vào báo cáo."
+            addEmptyHistoryView()
             return
         }
 
-        val result = StringBuilder()
-
         records.forEachIndexed { index, record ->
-            result.append("Lần tập ${index + 1}\n")
-            result.append("• Ngày tập: ${formatDateForDisplay(record.date)}\n")
-            result.append("• Ngày thứ: ${record.dayNumber}\n")
-            result.append("• Loại bài tập: ${record.exerciseType}\n")
-            result.append("• Số bài: ${record.exerciseCount}\n")
-            result.append("• Thời gian: ${formatDuration(record.durationSeconds)}\n")
-            result.append("• Calo: ${record.calories} Kcal\n\n")
+            addWorkoutHistoryItem(
+                index = index,
+                record = record
+            )
+        }
+    }
+
+    // Chức năng: hiển thị thông báo khi ngày được chọn chưa có lịch sử tập luyện.
+    private fun addEmptyHistoryView() {
+        val emptyText = TextView(requireContext()).apply {
+            text = "Ngày này chưa có dữ liệu tập luyện.\nHoàn thành một buổi tập để lưu lịch sử."
+            setTextColor(Color.parseColor("#777777"))
+            textSize = 15f
+            setLineSpacing(4f, 1.0f)
         }
 
-        txtWorkoutHistory.text = result.toString()
+        layoutWorkoutHistory.addView(emptyText)
+    }
+
+    // Chức năng: tạo một item lịch sử tập luyện dạng card nhỏ, chữ nhẹ và gọn giống app mẫu.
+    private fun addWorkoutHistoryItem(
+        index: Int,
+        record: WorkoutReportRecord
+    ) {
+        if (index > 0) {
+            addHistoryDivider()
+        }
+
+        val normalFont = Typeface.create("sans-serif", Typeface.NORMAL)
+        val mediumFont = Typeface.create("sans-serif-medium", Typeface.NORMAL)
+
+        val itemLayout = LinearLayout(requireContext()).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(dp(12), dp(8), dp(12), dp(8))
+            background = createRoundedBackground("#FFFFFF", 18f)
+
+            val params = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            )
+
+            if (index > 0) {
+                params.topMargin = dp(14)
+            }
+
+            layoutParams = params
+        }
+
+        val titleText = TextView(requireContext()).apply {
+            text = "${getExerciseTypeDisplayName(record.exerciseType)} - Ngày ${record.dayNumber}"
+            setTextColor(Color.parseColor("#111111"))
+            textSize = 17f
+            typeface = Typeface.DEFAULT_BOLD
+            paint.isFakeBoldText = true
+        }
+
+        val dateText = TextView(requireContext()).apply {
+            text = "${formatTimeOfDay(record.completedAtMillis)}  •  ${formatDateForDisplay(record.date)}"
+            setTextColor(Color.parseColor("#888888"))
+            textSize = 14f
+            typeface = normalFont
+            setPadding(0, dp(4), 0, dp(6))
+        }
+
+        val statRow = LinearLayout(requireContext()).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER
+        }
+
+        statRow.addView(
+            createHistoryStatText(
+                value = "${record.exerciseCount}",
+                label = "Bài tập"
+            )
+        )
+
+        statRow.addView(
+            createHistoryStatText(
+                value = formatDuration(record.durationSeconds),
+                label = "Thời lượng"
+            )
+        )
+
+        statRow.addView(
+            createHistoryStatText(
+                value = "${record.calories}",
+                label = "Kcal"
+            )
+        )
+
+        itemLayout.addView(titleText)
+        itemLayout.addView(dateText)
+        itemLayout.addView(statRow)
+
+        layoutWorkoutHistory.addView(itemLayout)
+    }
+
+    // Chức năng: tạo đường kẻ ngang để phân chia các lần tập trong lịch sử.
+    private fun addHistoryDivider() {
+        val divider = View(requireContext()).apply {
+            setBackgroundColor(Color.parseColor("#DDDDDD"))
+
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                dp(1)
+            ).apply {
+                topMargin = dp(8)
+                bottomMargin = dp(8)
+                marginStart = dp(4)
+                marginEnd = dp(4)
+            }
+        }
+        layoutWorkoutHistory.addView(divider)
+    }
+
+    // Chức năng: tạo một cột thông số nhỏ trong item lịch sử.
+    // Chức năng: tạo một cột thông số nhỏ trong item lịch sử với chữ mảnh, dễ nhìn hơn.
+    private fun createHistoryStatText(
+        value: String,
+        label: String
+    ): LinearLayout {
+        val normalFont = Typeface.create("sans-serif", Typeface.NORMAL)
+        val mediumFont = Typeface.create("sans-serif-medium", Typeface.NORMAL)
+
+        val layout = LinearLayout(requireContext()).apply {
+            orientation = LinearLayout.VERTICAL
+            gravity = Gravity.CENTER
+
+            layoutParams = LinearLayout.LayoutParams(
+                0,
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                1f
+            )
+        }
+
+        val valueText = TextView(requireContext()).apply {
+            text = value
+            setTextColor(Color.parseColor("#222222"))
+            textSize = 16f
+            gravity = Gravity.CENTER
+            typeface = mediumFont
+        }
+
+        val labelText = TextView(requireContext()).apply {
+            text = label
+            setTextColor(Color.parseColor("#999999"))
+            textSize = 13f
+            gravity = Gravity.CENTER
+            typeface = normalFont
+        }
+
+        layout.addView(valueText)
+        layout.addView(labelText)
+
+        return layout
+    }
+
+    // Chức năng: đổi mã loại bài tập thành tên tiếng Việt dễ đọc.
+    private fun getExerciseTypeDisplayName(exerciseType: String): String {
+        return when (exerciseType) {
+            "full_body" -> "Tập Toàn Thân"
+            "abs" -> "Cơ Bụng"
+            "arms_chest" -> "Tay & Ngực"
+            "legs" -> "Chân"
+            else -> "Bài tập"
+        }
+    }
+
+    // Chức năng: định dạng giờ hoàn thành buổi tập.
+    private fun formatTimeOfDay(timeMillis: Long): String {
+        return try {
+            val outputFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+            outputFormat.format(Date(timeMillis))
+        } catch (e: Exception) {
+            "--:--"
+        }
+    }
+
+    // Chức năng: tạo nền bo góc cho item lịch sử.
+    private fun createRoundedBackground(
+        color: String,
+        radiusDp: Float
+    ): GradientDrawable {
+        return GradientDrawable().apply {
+            setColor(Color.parseColor(color))
+            cornerRadius = radiusDp * resources.displayMetrics.density
+        }
+    }
+
+    // Chức năng: đổi dp sang pixel để tạo giao diện bằng Kotlin.
+    private fun dp(value: Int): Int {
+        return (value * resources.displayMetrics.density).toInt()
     }
 
     private fun showAddWeightDialog() {
