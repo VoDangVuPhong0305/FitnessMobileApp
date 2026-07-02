@@ -1018,7 +1018,7 @@ class ReportFragment : Fragment() {
         }
 
         val newBMI = newWeight / (heightM * heightM)
-        val planLevel = getPlanLevelByBodyData(newBMI, newWeight)
+        val planLevel = getPlanLevelByBodyData(newBMI)
 
         getProfilePrefs()
             .edit()
@@ -1043,10 +1043,7 @@ class ReportFragment : Fragment() {
     }
 
     // Chức năng: dựa vào BMI để chọn nhóm lộ trình tập phù hợp.
-    private fun getPlanLevelByBodyData(
-        bmi: Double,
-        currentWeight: Double
-    ): String {
+    private fun getPlanLevelByBodyData(bmi: Double): String {
         return when {
             bmi < 18.5 -> "underweight"
             bmi < 25.0 -> "normal"
@@ -1055,7 +1052,7 @@ class ReportFragment : Fragment() {
         }
     }
 
-    // Chức năng: hiển thị loading tính lại lộ trình giống bước setup cá nhân ban đầu.
+    // Chức năng: hiển thị loading tính lại lộ trình dạng vòng tròn 0% đến 100%.
     private fun showRecalculatePlanDialog(onFinish: () -> Unit) {
         val normalFont = Typeface.create("sans-serif", Typeface.NORMAL)
         val mediumFont = Typeface.create("sans-serif-medium", Typeface.NORMAL)
@@ -1063,15 +1060,15 @@ class ReportFragment : Fragment() {
         val container = LinearLayout(requireContext()).apply {
             orientation = LinearLayout.VERTICAL
             gravity = Gravity.CENTER_HORIZONTAL
-            setPadding(dp(24), dp(32), dp(24), dp(30))
+            setPadding(dp(24), dp(30), dp(24), dp(28))
             background = GradientDrawable().apply {
                 setColor(Color.WHITE)
-                cornerRadius = dp(26).toFloat()
+                cornerRadius = dp(28).toFloat()
             }
         }
 
         val titleText = TextView(requireContext()).apply {
-            text = "Đang tạo kế hoạch cá nhân của bạn"
+            text = "Đang tạo kế hoạch cá nhân"
             gravity = Gravity.CENTER
             setTextColor(Color.parseColor("#111111"))
             textSize = 22f
@@ -1080,37 +1077,64 @@ class ReportFragment : Fragment() {
         }
 
         val descriptionText = TextView(requireContext()).apply {
-            text = "Đang phân tích hồ sơ mới của bạn..."
+            text = "Ứng dụng đang phân tích chỉ số cơ thể mới của bạn..."
             gravity = Gravity.CENTER
             setTextColor(Color.parseColor("#777777"))
             textSize = 15f
             typeface = normalFont
             includeFontPadding = false
-            setPadding(0, dp(12), 0, dp(30))
+            setPadding(0, dp(10), 0, dp(24))
         }
+
+        val circleContainer = FrameLayout(requireContext()).apply {
+            layoutParams = LinearLayout.LayoutParams(
+                dp(170),
+                dp(170)
+            )
+        }
+
+        val circleProgressView = RecalculateCircleProgressView(requireContext())
+
+        circleContainer.addView(
+            circleProgressView,
+            FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                Gravity.CENTER
+            )
+        )
 
         val percentText = TextView(requireContext()).apply {
             text = "0%"
             gravity = Gravity.CENTER
             setTextColor(Color.parseColor("#111111"))
-            textSize = 58f
-            typeface = Typeface.DEFAULT_BOLD
+            textSize = 42f
+            typeface = mediumFont
             includeFontPadding = false
         }
+
+        circleContainer.addView(
+            percentText,
+            FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                Gravity.CENTER
+            )
+        )
 
         val bottomText = TextView(requireContext()).apply {
             text = "Bắt đầu xây dựng lại lộ trình tập trong 30 ngày"
             gravity = Gravity.CENTER
             setTextColor(Color.parseColor("#666666"))
-            textSize = 16f
-            typeface = mediumFont
+            textSize = 15f
+            typeface = normalFont
             includeFontPadding = false
-            setPadding(0, dp(28), 0, 0)
+            setPadding(0, dp(22), 0, 0)
         }
 
         container.addView(titleText)
         container.addView(descriptionText)
-        container.addView(percentText)
+        container.addView(circleContainer)
         container.addView(bottomText)
 
         val dialog = AlertDialog.Builder(requireContext())
@@ -1126,13 +1150,28 @@ class ReportFragment : Fragment() {
 
             val runnable = object : Runnable {
                 override fun run() {
-                    progress += 5
+                    progress += 1
 
                     if (progress > 100) {
                         progress = 100
                     }
 
                     percentText.text = "$progress%"
+                    circleProgressView.setProgress(progress)
+
+                    when (progress) {
+                        25 -> {
+                            descriptionText.text = "Đang cập nhật BMI mới..."
+                        }
+
+                        55 -> {
+                            descriptionText.text = "Đang chọn bài tập phù hợp..."
+                        }
+
+                        80 -> {
+                            descriptionText.text = "Đang hoàn tất lộ trình 30 ngày..."
+                        }
+                    }
 
                     if (progress < 100) {
                         handler.postDelayed(this, 45)
@@ -1143,10 +1182,12 @@ class ReportFragment : Fragment() {
                             }
 
                             onFinish()
-                        }, 400)
+                        }, 500)
                     }
                 }
             }
+
+            handler.postDelayed(runnable, 300)
 
             handler.post(runnable)
         }
@@ -1481,7 +1522,7 @@ class ReportFragment : Fragment() {
     }
 
     // Chức năng: vẽ biểu đồ cân nặng có thể kéo ngang.
-// Mặc định ngày hôm nay nằm ở giữa, hai bên mỗi bên 3 ngày, tổng cộng 7 ngày.
+    // Mặc định ngày hôm nay nằm ở giữa, hai bên mỗi bên 3 ngày, tổng cộng 7 ngày.
     class WeightLineChartView(context: Context) : View(context) {
 
         private var data: List<WeightRecord> = emptyList()
@@ -1786,6 +1827,63 @@ class ReportFragment : Fragment() {
                 bubbleRect.centerX(),
                 bubbleRect.centerY() + 10f,
                 bubbleTextPaint
+            )
+        }
+    }
+
+    // Chức năng: vẽ vòng tròn tiến trình khi tính lại lộ trình tập.
+    private class RecalculateCircleProgressView(context: Context) : View(context) {
+
+        private var progressPercent = 0
+
+        private val backgroundPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = Color.parseColor("#E8F5EE")
+            style = Paint.Style.STROKE
+            strokeCap = Paint.Cap.ROUND
+        }
+
+        private val progressPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = Color.parseColor("#18C27A")
+            style = Paint.Style.STROKE
+            strokeCap = Paint.Cap.ROUND
+        }
+
+        fun setProgress(value: Int) {
+            progressPercent = value.coerceIn(0, 100)
+            invalidate()
+        }
+
+        override fun onDraw(canvas: Canvas) {
+            super.onDraw(canvas)
+
+            val strokeWidth = 14f * resources.displayMetrics.density
+
+            backgroundPaint.strokeWidth = strokeWidth
+            progressPaint.strokeWidth = strokeWidth
+
+            val padding = strokeWidth / 2f + 6f
+
+            val rect = android.graphics.RectF(
+                padding,
+                padding,
+                width - padding,
+                height - padding
+            )
+
+            canvas.drawArc(
+                rect,
+                -90f,
+                360f,
+                false,
+                backgroundPaint
+            )
+
+            canvas.drawArc(
+                rect,
+                -90f,
+                360f * progressPercent / 100f,
+                false,
+                progressPaint
             )
         }
     }
