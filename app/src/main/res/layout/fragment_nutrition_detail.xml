@@ -64,52 +64,97 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:paddingHorizontal="16dp">
 
-                <TextView
-                    android:id="@+id/tvBreakfast"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    android:background="#FFFFFF"
-                    android:elevation="3dp"
-                    android:padding="18dp"
-                    android:textColor="#222222"
-                    android:textSize="17sp"/>
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/tvSnack"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    android:background="#FFFFFF"
-                    android:elevation="3dp"
-                    android:padding="18dp"
-                    android:textColor="#222222"
-                    android:textSize="17sp"/>
+                    <!-- Bữa sáng -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        app:cardCornerRadius="20dp"
+                        app:cardElevation="3dp"
+                        app:cardBackgroundColor="#FFFFFF"
+                        app:strokeColor="#EEEEEE"
+                        app:strokeWidth="1dp">
 
-                <TextView
-                    android:id="@+id/tvLunch"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    android:background="#FFFFFF"
-                    android:elevation="3dp"
-                    android:padding="18dp"
-                    android:textColor="#222222"
-                    android:textSize="17sp"/>
+                        <TextView
+                            android:id="@+id/tvBreakfast"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="18dp"
+                            android:textColor="#222222"
+                            android:textSize="17sp"
+                            android:lineSpacingExtra="4dp" />
+                    </com.google.android.material.card.MaterialCardView>
 
-                <TextView
-                    android:id="@+id/tvDinner"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="20dp"
-                    android:background="#FFFFFF"
-                    android:elevation="3dp"
-                    android:padding="18dp"
-                    android:textColor="#222222"
-                    android:textSize="17sp"/>
+                    <!-- Bữa nhẹ -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        app:cardCornerRadius="20dp"
+                        app:cardElevation="3dp"
+                        app:cardBackgroundColor="#FFFFFF"
+                        app:strokeColor="#EEEEEE"
+                        app:strokeWidth="1dp">
+
+                        <TextView
+                            android:id="@+id/tvSnack"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="18dp"
+                            android:textColor="#222222"
+                            android:textSize="17sp"
+                            android:lineSpacingExtra="4dp" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- Bữa trưa -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        app:cardCornerRadius="20dp"
+                        app:cardElevation="3dp"
+                        app:cardBackgroundColor="#FFFFFF"
+                        app:strokeColor="#EEEEEE"
+                        app:strokeWidth="1dp">
+
+                        <TextView
+                            android:id="@+id/tvLunch"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="18dp"
+                            android:textColor="#222222"
+                            android:textSize="17sp"
+                            android:lineSpacingExtra="4dp" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- Bữa tối -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:cardCornerRadius="20dp"
+                        app:cardElevation="3dp"
+                        app:cardBackgroundColor="#FFFFFF"
+                        app:strokeColor="#EEEEEE"
+                        app:strokeWidth="1dp">
+
+                        <TextView
+                            android:id="@+id/tvDinner"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="18dp"
+                            android:textColor="#222222"
+                            android:textSize="17sp"
+                            android:lineSpacingExtra="4dp" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                </LinearLayout>
 
             </LinearLayout>
 

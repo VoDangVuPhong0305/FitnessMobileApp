@@ -76,7 +76,7 @@ class FaqFragment : Fragment(R.layout.fragment_faq) {
             params.bottomMargin = 20
 
             card.layoutParams = params
-            card.radius = 20f
+            card.radius = 24f
             card.cardElevation = 6f
             card.setCardBackgroundColor(Color.WHITE)
 

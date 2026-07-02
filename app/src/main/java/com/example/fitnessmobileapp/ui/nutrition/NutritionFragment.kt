@@ -1,11 +1,12 @@
 package com.example.fitnessmobileapp.ui.nutrition
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.fitnessmobileapp.R
-import com.example.fitnessmobileapp.ui.nutrition.NutritionItem
 
 private val menuList = listOf(
     NutritionItem(
@@ -584,6 +585,7 @@ class NutritionFragment : Fragment(R.layout.fragment_nutrition) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         view.findViewById<View>(R.id.btnShoppingList)?.setOnClickListener {
             parentFragmentManager.beginTransaction()
                 .replace(R.id.fragmentContainer, ShoppingFragment())
@@ -598,8 +600,9 @@ class NutritionFragment : Fragment(R.layout.fragment_nutrition) {
                 .commit()
         }
 
-        for (i in 1..30) {
+        refreshDayStates(view)
 
+        for (i in 1..30) {
             val viewId = resources.getIdentifier(
                 "day$i",
                 "id",
@@ -607,24 +610,12 @@ class NutritionFragment : Fragment(R.layout.fragment_nutrition) {
             )
 
             val dayView = view.findViewById<TextView>(viewId)
-            val prefs = requireActivity().getSharedPreferences("user_prefs", 0)
-
-            if (prefs.getBoolean("day_${i}_done", false)) {
-                dayView?.setBackgroundColor(
-                    android.graphics.Color.parseColor("#C8E6C9")
-                )
-            }
 
             dayView?.setOnClickListener {
-
                 val detailFragment = NutritionDetailFragment()
 
                 val bundle = Bundle()
-                bundle.putSerializable(
-                    "nutrition_data",
-                    menuList[i - 1]
-                )
-
+                bundle.putSerializable("nutrition_data", menuList[i - 1])
                 detailFragment.arguments = bundle
 
                 parentFragmentManager.beginTransaction()
@@ -634,5 +625,44 @@ class NutritionFragment : Fragment(R.layout.fragment_nutrition) {
             }
         }
     }
-}
 
+    override fun onResume() {
+        super.onResume()
+        view?.let { refreshDayStates(it) }
+    }
+
+    private fun refreshDayStates(rootView: View) {
+        val prefs = requireActivity().getSharedPreferences("user_prefs", 0)
+
+        for (i in 1..30) {
+            val viewId = resources.getIdentifier(
+                "day$i",
+                "id",
+                requireContext().packageName
+            )
+
+            val dayView = rootView.findViewById<TextView>(viewId)
+            val isDone = prefs.getBoolean("day_${i}_done", false)
+
+            updateDayView(dayView, i, isDone)
+        }
+    }
+
+    private fun updateDayView(dayView: TextView?, day: Int, isDone: Boolean) {
+        dayView?.text = "Ngày $day"
+
+        if (isDone) {
+            dayView?.setTextColor(Color.WHITE)
+            dayView?.background = ContextCompat.getDrawable(
+                requireContext(),
+                R.drawable.bg_day_done
+            )
+        } else {
+            dayView?.setTextColor(Color.parseColor("#222222"))
+            dayView?.background = ContextCompat.getDrawable(
+                requireContext(),
+                R.drawable.bg_day_box
+            )
+        }
+    }
+}
