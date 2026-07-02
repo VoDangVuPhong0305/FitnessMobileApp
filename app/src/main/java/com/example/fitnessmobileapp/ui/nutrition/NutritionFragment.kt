@@ -657,7 +657,7 @@ class NutritionFragment : Fragment(R.layout.fragment_nutrition) {
                 requireContext(),
                 R.drawable.bg_day_done
             )
-        } else {
+        }  else {
             dayView?.setTextColor(Color.parseColor("#222222"))
             dayView?.background = ContextCompat.getDrawable(
                 requireContext(),
