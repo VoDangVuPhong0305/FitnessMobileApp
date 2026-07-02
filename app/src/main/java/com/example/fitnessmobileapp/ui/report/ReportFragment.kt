@@ -59,6 +59,7 @@ class ReportFragment : Fragment() {
     private lateinit var scrollWorkoutHistory: ScrollView
 
     private lateinit var btnEditWeight: TextView
+    private lateinit var btnAddWeight: TextView
     private lateinit var txtCurrentWeight: TextView
     private lateinit var txtLast30Days: TextView
     private lateinit var txtAverageWeight: TextView
@@ -89,22 +90,103 @@ class ReportFragment : Fragment() {
 
     private lateinit var weightLineChartView: WeightLineChartView
 
-    private val heightM = 1.65
+    private var heightM = 1.65
     private val reportCalendar = Calendar.getInstance()
     private val selectedCalendar = Calendar.getInstance()
     private val reportDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
-    private val weightList = mutableListOf(
-        WeightRecord("10/6", 77.5),
-        WeightRecord("12/6", 76.8),
-        WeightRecord("16/6", 76.0),
-        WeightRecord("19/6", 75.5)
-    )
+    private val weightList = mutableListOf<WeightRecord>()
 
     data class WeightRecord(
         val date: String,
         val weight: Double
     )
+
+    // Chức năng: lấy tên tài khoản hiện tại để lưu cân nặng riêng cho từng người dùng.
+    private fun getCurrentUsername(): String {
+        val loginPrefs = requireContext().getSharedPreferences("login_data", Context.MODE_PRIVATE)
+        return loginPrefs.getString("current_user", "guest") ?: "guest"
+    }
+
+    // Chức năng: lấy SharedPreferences hồ sơ người dùng đã tạo ở Onboarding.
+    private fun getProfilePrefs() =
+        requireContext().getSharedPreferences("user_${getCurrentUsername()}_profile", Context.MODE_PRIVATE)
+
+    // Chức năng: lấy SharedPreferences riêng để lưu lịch sử cân nặng.
+    private fun getWeightPrefs() =
+        requireContext().getSharedPreferences("user_${getCurrentUsername()}_weight_report", Context.MODE_PRIVATE)
+
+    // Chức năng: đọc số Float trong hồ sơ, tránh lỗi nếu dữ liệu cũ từng lưu dạng Int.
+    private fun getProfileFloat(
+        key: String,
+        defaultValue: Float
+    ): Float {
+        val prefs = getProfilePrefs()
+
+        return try {
+            prefs.getFloat(key, defaultValue)
+        } catch (e: ClassCastException) {
+            prefs.getInt(key, defaultValue.toInt()).toFloat()
+        }
+    }
+
+    // Chức năng: load chiều cao và lịch sử cân nặng đã lưu.
+// Nếu chưa có lịch sử cân nặng thì lấy cân nặng ban đầu từ Onboarding.
+    private fun loadWeightData() {
+        val heightCm = getProfileFloat("height", 165f)
+        heightM = (heightCm / 100.0).coerceIn(1.0, 2.3)
+
+        val prefs = getWeightPrefs()
+        val savedRecords = prefs.getString("records", "") ?: ""
+
+        weightList.clear()
+
+        if (savedRecords.isNotBlank()) {
+            savedRecords.split(";").forEach { item ->
+                val parts = item.split("|")
+
+                if (parts.size == 2) {
+                    val date = parts[0]
+                    val weight = parts[1].toDoubleOrNull()
+
+                    if (weight != null && weight > 0) {
+                        weightList.add(
+                            WeightRecord(
+                                date = date,
+                                weight = weight
+                            )
+                        )
+                    }
+                }
+            }
+        }
+
+        if (weightList.isEmpty()) {
+            val currentWeight = getProfileFloat("currentWeight", 70f).toDouble()
+            val today = SimpleDateFormat("dd/MM", Locale.getDefault()).format(Date())
+
+            weightList.add(
+                WeightRecord(
+                    date = today,
+                    weight = currentWeight
+                )
+            )
+
+            saveWeightData()
+        }
+    }
+
+    // Chức năng: lưu lịch sử cân nặng vào SharedPreferences.
+    private fun saveWeightData() {
+        val data = weightList.joinToString(";") { record ->
+            "${record.date}|${record.weight}"
+        }
+
+        getWeightPrefs()
+            .edit()
+            .putString("records", data)
+            .apply()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -153,6 +235,7 @@ class ReportFragment : Fragment() {
         scrollWorkoutHistory = view.findViewById(R.id.scrollWorkoutHistory)
 
         btnEditWeight = view.findViewById(R.id.btnEditWeight)
+        btnAddWeight = view.findViewById(R.id.btnAddWeight)
         txtCurrentWeight = view.findViewById(R.id.txtCurrentWeight)
         txtLast30Days = view.findViewById(R.id.txtLast30Days)
         txtAverageWeight = view.findViewById(R.id.txtAverageWeight)
@@ -225,7 +308,11 @@ class ReportFragment : Fragment() {
         }
 
         btnEditWeight.setOnClickListener {
-            showAddWeightDialog()
+            showEditBodyDialog()
+        }
+
+        btnAddWeight.setOnClickListener {
+            showAddWeightOnlyDialog()
         }
     }
 
@@ -252,6 +339,7 @@ class ReportFragment : Fragment() {
     private fun loadReportData() {
         showSummaryData()
         showTodayHistory()
+        loadWeightData()
         updateWeightInfo()
         updateWeightChart()
         updateCaloriesChart()
@@ -265,17 +353,41 @@ class ReportFragment : Fragment() {
         txtTotalMinutes.text = secondsToMinutes(summary.totalDurationSeconds).toString()
     }
 
-    // Chức năng: hiển thị lịch sử tập luyện của ngày hôm nay và render lịch tháng hiện tại.
+    // Chức năng: khi mở Báo cáo, tự hiển thị lịch sử của ngày có buổi tập gần nhất.
+// Nếu chưa có buổi tập nào thì mới hiển thị ngày hôm nay.
     private fun showTodayHistory() {
-        selectedCalendar.time = Date()
-        reportCalendar.time = Date()
+        val allRecords = WorkoutReportManager.getAllRecords(requireContext())
 
-        val todayQuery = reportDateFormat.format(Date())
-        val todayDisplay = SimpleDateFormat("d/M/yyyy", Locale.getDefault()).format(Date())
+        if (allRecords.isNotEmpty()) {
+            val latestRecord = allRecords.maxByOrNull { record ->
+                record.completedAtMillis
+            }
 
-        txtSelectedDate.text = todayDisplay
-        showWorkoutHistory(todayQuery)
-        renderWorkoutCalendar()
+            val latestDate = latestRecord?.date ?: reportDateFormat.format(Date())
+
+            val parsedDate = try {
+                reportDateFormat.parse(latestDate)
+            } catch (e: Exception) {
+                Date()
+            } ?: Date()
+
+            selectedCalendar.time = parsedDate
+            reportCalendar.time = parsedDate
+
+            txtSelectedDate.text = formatDateForDisplay(latestDate)
+
+            showWorkoutHistory(latestDate)
+            renderWorkoutCalendar()
+        } else {
+            selectedCalendar.time = Date()
+            reportCalendar.time = Date()
+
+            val todayQuery = reportDateFormat.format(Date())
+            txtSelectedDate.text = formatDateForDisplay(todayQuery)
+
+            showWorkoutHistory(todayQuery)
+            renderWorkoutCalendar()
+        }
     }
 
     // Chức năng: tự vẽ lịch tháng bằng GridLayout.
@@ -647,67 +759,443 @@ class ReportFragment : Fragment() {
         return (value * resources.displayMetrics.density).toInt()
     }
 
-    private fun showAddWeightDialog() {
-        val input = EditText(requireContext()).apply {
-            hint = "Nhập cân nặng, ví dụ: 65.5"
-            inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
-            setPadding(34, 20, 34, 20)
-            textSize = 15f
+    // Chức năng: mở hộp thoại chỉnh sửa cân nặng và chiều cao với giao diện gọn đẹp.
+    // Sau khi lưu sẽ cập nhật lại BMI, biểu đồ cân nặng và lưu vào hồ sơ người dùng.
+    private fun showEditBodyDialog() {
+        val currentWeight = weightList.lastOrNull()?.weight ?: getProfileFloat("currentWeight", 70f).toDouble()
+        val currentHeightCm = (heightM * 100).roundToInt()
+
+        val normalFont = Typeface.create("sans-serif", Typeface.NORMAL)
+        val mediumFont = Typeface.create("sans-serif-medium", Typeface.NORMAL)
+
+        val dialogContainer = LinearLayout(requireContext()).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(dp(24), dp(24), dp(24), dp(18))
+            background = GradientDrawable().apply {
+                setColor(Color.WHITE)
+                cornerRadius = dp(22).toFloat()
+            }
         }
 
+        val titleText = TextView(requireContext()).apply {
+            text = "Chỉnh sửa chỉ số"
+            setTextColor(Color.parseColor("#111111"))
+            textSize = 22f
+            typeface = mediumFont
+            includeFontPadding = false
+        }
+
+        val subTitleText = TextView(requireContext()).apply {
+            text = "Cập nhật cân nặng và chiều cao hiện tại"
+            setTextColor(Color.parseColor("#888888"))
+            textSize = 14f
+            typeface = normalFont
+            includeFontPadding = false
+            setPadding(0, dp(8), 0, dp(20))
+        }
+
+        val weightLabel = TextView(requireContext()).apply {
+            text = "Cân nặng"
+            setTextColor(Color.parseColor("#333333"))
+            textSize = 16f
+            typeface = mediumFont
+            includeFontPadding = false
+        }
+
+        val inputWeight = EditText(requireContext()).apply {
+            setText("%.1f".format(currentWeight))
+            hint = "75.0"
+            inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
+            setTextColor(Color.parseColor("#222222"))
+            setHintTextColor(Color.parseColor("#BBBBBB"))
+            textSize = 18f
+            typeface = normalFont
+            setSingleLine(true)
+            backgroundTintList = android.content.res.ColorStateList.valueOf(Color.parseColor("#DDDDDD"))
+            setPadding(0, 0, 0, dp(6))
+        }
+
+        val weightUnit = TextView(requireContext()).apply {
+            text = "kg"
+            gravity = Gravity.CENTER
+            setTextColor(Color.WHITE)
+            textSize = 16f
+            typeface = mediumFont
+            background = GradientDrawable().apply {
+                setColor(Color.parseColor("#18C27A"))
+                cornerRadius = dp(6).toFloat()
+            }
+            layoutParams = LinearLayout.LayoutParams(dp(48), dp(40)).apply {
+                marginStart = dp(14)
+            }
+        }
+
+        val weightInputRow = LinearLayout(requireContext()).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+            setPadding(0, dp(10), 0, dp(24))
+
+            addView(
+                inputWeight,
+                LinearLayout.LayoutParams(
+                    0,
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    1f
+                )
+            )
+
+            addView(weightUnit)
+        }
+
+        val heightLabel = TextView(requireContext()).apply {
+            text = "Chiều cao"
+            setTextColor(Color.parseColor("#333333"))
+            textSize = 16f
+            typeface = mediumFont
+            includeFontPadding = false
+        }
+
+        val inputHeight = EditText(requireContext()).apply {
+            setText(currentHeightCm.toString())
+            hint = "170"
+            inputType = InputType.TYPE_CLASS_NUMBER
+            setTextColor(Color.parseColor("#222222"))
+            setHintTextColor(Color.parseColor("#BBBBBB"))
+            textSize = 18f
+            typeface = normalFont
+            setSingleLine(true)
+            backgroundTintList = android.content.res.ColorStateList.valueOf(Color.parseColor("#DDDDDD"))
+            setPadding(0, 0, 0, dp(6))
+        }
+
+        val heightUnit = TextView(requireContext()).apply {
+            text = "cm"
+            gravity = Gravity.CENTER
+            setTextColor(Color.WHITE)
+            textSize = 16f
+            typeface = mediumFont
+            background = GradientDrawable().apply {
+                setColor(Color.parseColor("#18C27A"))
+                cornerRadius = dp(6).toFloat()
+            }
+            layoutParams = LinearLayout.LayoutParams(dp(48), dp(40)).apply {
+                marginStart = dp(14)
+            }
+        }
+
+        val heightInputRow = LinearLayout(requireContext()).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+            setPadding(0, dp(10), 0, dp(26))
+
+            addView(
+                inputHeight,
+                LinearLayout.LayoutParams(
+                    0,
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    1f
+                )
+            )
+
+            addView(heightUnit)
+        }
+
+        val buttonRow = LinearLayout(requireContext()).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.END or Gravity.CENTER_VERTICAL
+        }
+
+        val btnCancel = TextView(requireContext()).apply {
+            text = "HỦY"
+            gravity = Gravity.CENTER
+            setTextColor(Color.parseColor("#777777"))
+            textSize = 15f
+            typeface = mediumFont
+            setPadding(dp(18), dp(12), dp(18), dp(12))
+        }
+
+        val btnSave = TextView(requireContext()).apply {
+            text = "LƯU"
+            gravity = Gravity.CENTER
+            setTextColor(Color.parseColor("#18C27A"))
+            textSize = 15f
+            typeface = mediumFont
+            setPadding(dp(18), dp(12), dp(4), dp(12))
+        }
+
+        buttonRow.addView(btnCancel)
+        buttonRow.addView(btnSave)
+
+        dialogContainer.addView(titleText)
+        dialogContainer.addView(subTitleText)
+        dialogContainer.addView(weightLabel)
+        dialogContainer.addView(weightInputRow)
+        dialogContainer.addView(heightLabel)
+        dialogContainer.addView(heightInputRow)
+        dialogContainer.addView(buttonRow)
+
         val dialog = AlertDialog.Builder(requireContext())
-            .setTitle("Cập nhật cân nặng")
-            .setMessage("Nhập cân nặng hôm nay")
-            .setView(input)
-            .setPositiveButton("Lưu", null)
-            .setNegativeButton("Hủy", null)
+            .setView(dialogContainer)
             .create()
 
-        dialog.setOnShowListener {
-            dialog.window?.setBackgroundDrawableResource(R.drawable.bg_dialog_rounded)
+        btnCancel.setOnClickListener {
+            dialog.dismiss()
+        }
 
-            val btnSave = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-            val btnCancel = dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+        btnSave.setOnClickListener {
+            val newWeight = inputWeight.text.toString().trim().replace(",", ".").toDoubleOrNull()
+            val newHeightCm = inputHeight.text.toString().trim().toDoubleOrNull()
 
-            btnSave.setTextColor(0xFF18C27A.toInt())
-            btnCancel.setTextColor(0xFF777777.toInt())
-
-            btnSave.setOnClickListener {
-                val weight = input.text.toString().trim().toDoubleOrNull()
-
-                if (weight == null || weight <= 0) {
-                    Toast.makeText(
-                        requireContext(),
-                        "Cân nặng không hợp lệ",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    return@setOnClickListener
-                }
-
-                val today = SimpleDateFormat("d/M", Locale.getDefault()).format(Date())
-
-                weightList.add(
-                    WeightRecord(
-                        date = today,
-                        weight = weight
-                    )
-                )
-
-                while (weightList.size > 6) {
-                    weightList.removeAt(0)
-                }
-
-                updateWeightInfo()
-                updateWeightChart()
-
+            if (newWeight == null || newWeight < 30.0 || newWeight > 250.0) {
                 Toast.makeText(
                     requireContext(),
-                    "Đã cập nhật cân nặng",
+                    "Cân nặng không hợp lệ",
                     Toast.LENGTH_SHORT
                 ).show()
-
-                dialog.dismiss()
+                return@setOnClickListener
             }
+
+            if (newHeightCm == null || newHeightCm < 100.0 || newHeightCm > 230.0) {
+                Toast.makeText(
+                    requireContext(),
+                    "Chiều cao không hợp lệ",
+                    Toast.LENGTH_SHORT
+                ).show()
+                return@setOnClickListener
+            }
+
+            heightM = newHeightCm / 100.0
+
+            val today = SimpleDateFormat("dd/MM", Locale.getDefault()).format(Date())
+
+            weightList.removeAll { record ->
+                record.date == today
+            }
+
+            weightList.add(
+                WeightRecord(
+                    date = today,
+                    weight = newWeight
+                )
+            )
+
+            while (weightList.size > 7) {
+                weightList.removeAt(0)
+            }
+
+            val newBMI = newWeight / (heightM * heightM)
+
+            getProfilePrefs()
+                .edit()
+                .putFloat("height", newHeightCm.toFloat())
+                .putFloat("currentWeight", newWeight.toFloat())
+                .putFloat("currentBMI", newBMI.toFloat())
+                .apply()
+
+            saveWeightData()
+            updateWeightInfo()
+            updateWeightChart()
+
+            Toast.makeText(
+                requireContext(),
+                "Đã cập nhật chỉ số cơ thể",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            dialog.dismiss()
+        }
+
+        dialog.setOnShowListener {
+            dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        }
+
+        dialog.show()
+    }
+
+    // Chức năng: mở hộp thoại chỉ cập nhật cân nặng hôm nay.
+// Dùng cho nút + trong card Cân nặng, không chỉnh chiều cao.
+    private fun showAddWeightOnlyDialog() {
+        val currentWeight = weightList.lastOrNull()?.weight
+            ?: getProfileFloat("currentWeight", 70f).toDouble()
+
+        val normalFont = Typeface.create("sans-serif", Typeface.NORMAL)
+        val mediumFont = Typeface.create("sans-serif-medium", Typeface.NORMAL)
+
+        val dialogContainer = LinearLayout(requireContext()).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(dp(24), dp(24), dp(24), dp(18))
+            background = GradientDrawable().apply {
+                setColor(Color.WHITE)
+                cornerRadius = dp(22).toFloat()
+            }
+        }
+
+        val titleText = TextView(requireContext()).apply {
+            text = "Cập nhật cân nặng"
+            setTextColor(Color.parseColor("#111111"))
+            textSize = 22f
+            typeface = mediumFont
+            includeFontPadding = false
+        }
+
+        val subTitleText = TextView(requireContext()).apply {
+            text = "Nhập cân nặng hiện tại của hôm nay"
+            setTextColor(Color.parseColor("#888888"))
+            textSize = 14f
+            typeface = normalFont
+            includeFontPadding = false
+            setPadding(0, dp(8), 0, dp(22))
+        }
+
+        val inputWeight = EditText(requireContext()).apply {
+            setText("%.1f".format(currentWeight))
+            hint = "76.0"
+            inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
+            setTextColor(Color.parseColor("#222222"))
+            setHintTextColor(Color.parseColor("#BBBBBB"))
+            textSize = 22f
+            typeface = normalFont
+            setSingleLine(true)
+            backgroundTintList =
+                android.content.res.ColorStateList.valueOf(Color.parseColor("#18C27A"))
+            setPadding(0, 0, 0, dp(6))
+        }
+
+        val unitText = TextView(requireContext()).apply {
+            text = "kg"
+            gravity = Gravity.CENTER
+            setTextColor(Color.WHITE)
+            textSize = 16f
+            typeface = mediumFont
+            background = GradientDrawable().apply {
+                setColor(Color.parseColor("#18C27A"))
+                cornerRadius = dp(6).toFloat()
+            }
+            layoutParams = LinearLayout.LayoutParams(dp(50), dp(40)).apply {
+                marginStart = dp(14)
+            }
+        }
+
+        val inputRow = LinearLayout(requireContext()).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+            setPadding(0, 0, 0, dp(28))
+
+            addView(
+                inputWeight,
+                LinearLayout.LayoutParams(
+                    0,
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    1f
+                )
+            )
+
+            addView(unitText)
+        }
+
+        val noteText = TextView(requireContext()).apply {
+            text = "Gợi ý: chỉ cần cập nhật khi bạn cân lại, ví dụ mỗi tuần 1 lần."
+            setTextColor(Color.parseColor("#999999"))
+            textSize = 13f
+            typeface = normalFont
+            includeFontPadding = false
+            setPadding(0, 0, 0, dp(18))
+        }
+
+        val buttonRow = LinearLayout(requireContext()).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.END or Gravity.CENTER_VERTICAL
+        }
+
+        val btnCancel = TextView(requireContext()).apply {
+            text = "HỦY"
+            gravity = Gravity.CENTER
+            setTextColor(Color.parseColor("#777777"))
+            textSize = 15f
+            typeface = mediumFont
+            setPadding(dp(18), dp(12), dp(18), dp(12))
+        }
+
+        val btnSave = TextView(requireContext()).apply {
+            text = "LƯU"
+            gravity = Gravity.CENTER
+            setTextColor(Color.parseColor("#18C27A"))
+            textSize = 15f
+            typeface = mediumFont
+            setPadding(dp(18), dp(12), dp(4), dp(12))
+        }
+
+        buttonRow.addView(btnCancel)
+        buttonRow.addView(btnSave)
+
+        dialogContainer.addView(titleText)
+        dialogContainer.addView(subTitleText)
+        dialogContainer.addView(inputRow)
+        dialogContainer.addView(noteText)
+        dialogContainer.addView(buttonRow)
+
+        val dialog = AlertDialog.Builder(requireContext())
+            .setView(dialogContainer)
+            .create()
+
+        btnCancel.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        btnSave.setOnClickListener {
+            val newWeight = inputWeight.text.toString().trim()
+                .replace(",", ".")
+                .toDoubleOrNull()
+
+            if (newWeight == null || newWeight < 30.0 || newWeight > 250.0) {
+                Toast.makeText(
+                    requireContext(),
+                    "Cân nặng không hợp lệ",
+                    Toast.LENGTH_SHORT
+                ).show()
+                return@setOnClickListener
+            }
+
+            val today = SimpleDateFormat("dd/MM", Locale.getDefault()).format(Date())
+
+            weightList.removeAll { record ->
+                record.date == today
+            }
+
+            weightList.add(
+                WeightRecord(
+                    date = today,
+                    weight = newWeight
+                )
+            )
+
+            while (weightList.size > 7) {
+                weightList.removeAt(0)
+            }
+
+            val newBMI = newWeight / (heightM * heightM)
+
+            getProfilePrefs()
+                .edit()
+                .putFloat("currentWeight", newWeight.toFloat())
+                .putFloat("currentBMI", newBMI.toFloat())
+                .apply()
+
+            saveWeightData()
+            updateWeightInfo()
+            updateWeightChart()
+
+            Toast.makeText(
+                requireContext(),
+                "Đã cập nhật cân nặng hôm nay",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            dialog.dismiss()
+        }
+
+        dialog.setOnShowListener {
+            dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
         }
 
         dialog.show()
@@ -718,26 +1206,38 @@ class ReportFragment : Fragment() {
         val oldWeight = weightList.firstOrNull()?.weight ?: currentWeight
 
         val last30Days = oldWeight - currentWeight
-        val averageWeight = weightList.map { it.weight }.average()
+        val averageWeight = if (weightList.isNotEmpty()) {
+            weightList.map { it.weight }.average()
+        } else {
+            currentWeight
+        }
 
         txtCurrentWeight.text = "%.1f".format(currentWeight)
         txtLast30Days.text = "%.1f".format(last30Days)
         txtAverageWeight.text = "%.1f".format(averageWeight)
 
-        val bmi = currentWeight / (heightM * heightM)
+        val bmi = if (heightM > 0) {
+            currentWeight / (heightM * heightM)
+        } else {
+            0.0
+        }
 
         txtBMIValue.text = "%.1f".format(bmi)
         txtBMIStatus.text = getBMIStatus(bmi)
 
+        txtBMIMarker.text = "%.1f".format(bmi)
+        txtBMIMarker.setTextColor(Color.WHITE)
+        txtBMIMarker.background = createRoundedBackground("#555A60", 14f)
+        txtBMIMarker.typeface = Typeface.create("sans-serif", Typeface.NORMAL)
+
         val statusColor = when {
             bmi < 18.5 -> 0xFF5F93FF.toInt()
-            bmi < 25 -> 0xFF63D44B.toInt()
+            bmi < 25 -> 0xFF46C7C7.toInt()
             bmi < 30 -> 0xFFF2AB45.toInt()
             else -> 0xFFF05066.toInt()
         }
 
         txtBMIStatus.setTextColor(statusColor)
-        txtBMIMarker.setTextColor(statusColor)
 
         updateBMIPosition(bmi)
     }
@@ -837,25 +1337,39 @@ class ReportFragment : Fragment() {
 
     private fun getBMIStatus(bmi: Double): String {
         return when {
-            bmi < 18.5 -> "Gầy"
-            bmi < 25 -> "Bình thường"
+            bmi < 18.5 -> "Thiếu cân"
+            bmi < 25 -> "Đủ cân"
             bmi < 30 -> "Thừa cân"
             else -> "Béo phì"
         }
     }
 
+    // Chức năng: vẽ biểu đồ cân nặng có thể kéo ngang.
+// Mặc định ngày hôm nay nằm ở giữa, hai bên mỗi bên 3 ngày, tổng cộng 7 ngày.
     class WeightLineChartView(context: Context) : View(context) {
 
         private var data: List<WeightRecord> = emptyList()
+
+        private var centerDateOffsetDays = 0
+        private var lastTouchX = 0f
+        private var dragDistanceX = 0f
 
         private val gridPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
             color = Color.parseColor("#E6E6E6")
             strokeWidth = 2f
         }
 
+        private val dashPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = Color.parseColor("#18C27A")
+            strokeWidth = 2.5f
+            style = Paint.Style.STROKE
+            pathEffect = android.graphics.DashPathEffect(floatArrayOf(14f, 12f), 0f)
+        }
+
         private val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
             color = Color.parseColor("#9E9E9E")
             textSize = 28f
+            textAlign = Paint.Align.LEFT
         }
 
         private val linePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -886,6 +1400,52 @@ class ReportFragment : Fragment() {
             invalidate()
         }
 
+        override fun performClick(): Boolean {
+            super.performClick()
+            return true
+        }
+
+        override fun onTouchEvent(event: MotionEvent): Boolean {
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    parent.requestDisallowInterceptTouchEvent(true)
+                    lastTouchX = event.x
+                    dragDistanceX = 0f
+                    return true
+                }
+
+                MotionEvent.ACTION_MOVE -> {
+                    val dx = event.x - lastTouchX
+                    lastTouchX = event.x
+                    dragDistanceX += dx
+
+                    val oneDayWidth = width / 7f
+
+                    if (kotlin.math.abs(dragDistanceX) >= oneDayWidth) {
+                        val dayMove = (dragDistanceX / oneDayWidth).toInt()
+
+                        // Kéo sang phải: xem ngày cũ hơn.
+                        // Kéo sang trái: xem ngày mới hơn.
+                        centerDateOffsetDays -= dayMove
+
+                        dragDistanceX -= dayMove * oneDayWidth
+                        invalidate()
+                    }
+
+                    return true
+                }
+
+                MotionEvent.ACTION_UP,
+                MotionEvent.ACTION_CANCEL -> {
+                    parent.requestDisallowInterceptTouchEvent(false)
+                    performClick()
+                    return true
+                }
+            }
+
+            return true
+        }
+
         override fun onDraw(canvas: Canvas) {
             super.onDraw(canvas)
 
@@ -894,69 +1454,203 @@ class ReportFragment : Fragment() {
                 return
             }
 
-            val left = 58f
-            val top = 28f
-            val right = width - 24f
-            val bottom = height - 48f
+            val left = 120f      // chừa nhiều chỗ hơn cho số trục Y
+            val top = 50f
+            val right = width - 36f
+            val bottom = height - 70f   // chừa thêm chỗ cho ngày ở trục X
             val chartWidth = right - left
             val chartHeight = bottom - top
 
-            val weights = data.map { it.weight }
-            var minWeight = weights.minOrNull() ?: 0.0
-            var maxWeight = weights.maxOrNull() ?: 1.0
+            val visibleDays = getVisibleSevenDays()
+            val visibleKeys = visibleDays.map { it.first }.toSet()
+
+            val visibleRecords = data.filter { record ->
+                visibleKeys.contains(record.date)
+            }
+
+            val weightsForScale = if (visibleRecords.isNotEmpty()) {
+                visibleRecords.map { it.weight }
+            } else {
+                data.map { it.weight }
+            }
+
+            var minWeight = weightsForScale.minOrNull() ?: 0.0
+            var maxWeight = weightsForScale.maxOrNull() ?: 1.0
 
             if (maxWeight - minWeight < 1.0) {
-                maxWeight += 1.0
-                minWeight -= 1.0
+                maxWeight += 0.5
+                minWeight -= 0.5
             }
 
             val range = maxWeight - minWeight
 
+            drawGridAndYAxis(
+                canvas = canvas,
+                left = left,
+                top = top,
+                right = right,
+                bottom = bottom,
+                chartHeight = chartHeight,
+                minWeight = minWeight,
+                maxWeight = maxWeight,
+                range = range
+            )
+
+            val points = mutableListOf<Triple<Float, Float, Double>>()
+
+            visibleDays.forEachIndexed { index, dayItem ->
+                val x = left + chartWidth * index / 6f
+                val dateKey = dayItem.first
+                val dateLabel = dayItem.second
+
+                val record = data.findLast { weightRecord ->
+                    weightRecord.date == dateKey
+                }
+
+                if (record != null) {
+                    val yPercent = ((record.weight - minWeight) / range).toFloat()
+                    val y = bottom - chartHeight * yPercent
+                    points.add(Triple(x, y, record.weight))
+                }
+
+                drawDateLabel(canvas, x, dateLabel)
+            }
+
+            drawWeightLineAndPoints(canvas, points, bottom)
+        }
+
+        // Chức năng: tạo danh sách 7 ngày hiển thị trên trục X.
+        // Ngày ở giữa là hôm nay cộng/trừ số ngày người dùng đã kéo.
+        private fun getVisibleSevenDays(): List<Pair<String, String>> {
+            val keyFormat = SimpleDateFormat("dd/MM", Locale.getDefault())
+            val labelFormat = SimpleDateFormat("dd", Locale.getDefault())
+
+            val result = mutableListOf<Pair<String, String>>()
+
+            for (i in -3..3) {
+                val calendar = Calendar.getInstance()
+                calendar.add(Calendar.DAY_OF_YEAR, centerDateOffsetDays + i)
+
+                val key = keyFormat.format(calendar.time)
+                val label = labelFormat.format(calendar.time)
+
+                result.add(Pair(key, label))
+            }
+
+            return result
+        }
+
+        // Chức năng: vẽ lưới ngang và số cân nặng bên trái.
+        private fun drawGridAndYAxis(
+            canvas: Canvas,
+            left: Float,
+            top: Float,
+            right: Float,
+            bottom: Float,
+            chartHeight: Float,
+            minWeight: Double,
+            maxWeight: Double,
+            range: Double
+        ) {
             for (i in 0..4) {
                 val y = top + chartHeight * i / 4f
                 canvas.drawLine(left, y, right, y, gridPaint)
 
                 val labelValue = maxWeight - range * i / 4.0
-                canvas.drawText("%.0f".format(labelValue), 4f, y + 8f, textPaint)
+                canvas.drawText("%.1f".format(labelValue), 4f, y + 8f, textPaint)
             }
 
-            val points = data.mapIndexed { index, record ->
-                val x = if (data.size == 1) {
-                    left + chartWidth / 2f
-                } else {
-                    left + chartWidth * index / (data.size - 1).toFloat()
-                }
+            val centerWeight = data.lastOrNull()?.weight ?: return
+            val centerPercent = ((centerWeight - minWeight) / range).toFloat()
+            val centerY = bottom - chartHeight * centerPercent
 
-                val yPercent = ((record.weight - minWeight) / range).toFloat()
-                val y = bottom - chartHeight * yPercent
+            canvas.drawLine(left, centerY, right, centerY, dashPaint)
+        }
 
-                Pair(x, y)
+        // Chức năng: vẽ nhãn ngày bên dưới trục X.
+        private fun drawDateLabel(
+            canvas: Canvas,
+            x: Float,
+            label: String
+        ) {
+            val oldAlign = textPaint.textAlign
+            textPaint.textAlign = Paint.Align.CENTER
+            canvas.drawText(label, x, height - 10f, textPaint)
+            textPaint.textAlign = oldAlign
+        }
+
+        // Chức năng: vẽ đường biểu đồ, điểm cân nặng và bong bóng số cân nặng.
+        private fun drawWeightLineAndPoints(
+            canvas: Canvas,
+            points: List<Triple<Float, Float, Double>>,
+            bottom: Float
+        ) {
+            if (points.isEmpty()) {
+                return
             }
 
             val fillPath = Path()
             fillPath.moveTo(points.first().first, bottom)
+
             points.forEach { point ->
                 fillPath.lineTo(point.first, point.second)
             }
+
             fillPath.lineTo(points.last().first, bottom)
             fillPath.close()
             canvas.drawPath(fillPath, fillPaint)
 
-            val linePath = Path()
-            linePath.moveTo(points.first().first, points.first().second)
-            for (i in 1 until points.size) {
-                linePath.lineTo(points[i].first, points[i].second)
-            }
-            canvas.drawPath(linePath, linePaint)
+            if (points.size >= 2) {
+                val linePath = Path()
+                linePath.moveTo(points.first().first, points.first().second)
 
-            points.forEachIndexed { index, point ->
-                canvas.drawCircle(point.first, point.second, 12f, pointBorderPaint)
-                canvas.drawCircle(point.first, point.second, 8f, pointPaint)
+                for (i in 1 until points.size) {
+                    linePath.lineTo(points[i].first, points[i].second)
+                }
 
-                val label = data[index].date
-                val textWidth = textPaint.measureText(label)
-                canvas.drawText(label, point.first - textWidth / 2f, height - 10f, textPaint)
+                canvas.drawPath(linePath, linePaint)
             }
+
+            points.forEach { point ->
+                canvas.drawCircle(point.first, point.second, 10f, pointBorderPaint)
+                canvas.drawCircle(point.first, point.second, 6f, pointPaint)
+            }
+
+            val lastPoint = points.last()
+            val bubbleText = "%.1f".format(lastPoint.third)
+
+            val bubblePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                color = Color.BLACK
+                style = Paint.Style.FILL
+            }
+
+            val bubbleTextPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                color = Color.WHITE
+                textSize = 30f
+                textAlign = Paint.Align.CENTER
+            }
+
+            val bubbleWidth = 88f
+            val bubbleHeight = 54f
+            val bubbleLeft = (lastPoint.first - bubbleWidth / 2f)
+                .coerceIn(8f, width - bubbleWidth - 8f)
+            val bubbleTop = (lastPoint.second - bubbleHeight - 18f)
+                .coerceAtLeast(6f)
+
+            val bubbleRect = android.graphics.RectF(
+                bubbleLeft,
+                bubbleTop,
+                bubbleLeft + bubbleWidth,
+                bubbleTop + bubbleHeight
+            )
+
+            canvas.drawRoundRect(bubbleRect, 24f, 24f, bubblePaint)
+            canvas.drawText(
+                bubbleText,
+                bubbleRect.centerX(),
+                bubbleRect.centerY() + 10f,
+                bubbleTextPaint
+            )
         }
     }
 }

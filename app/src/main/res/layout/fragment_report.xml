@@ -50,6 +50,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
+                android:minHeight="48dp"
+                android:gravity="center"
                 android:clickable="true"
                 android:focusable="true">
 
@@ -326,47 +328,67 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="22dp">
+                    android:paddingStart="18dp"
+                    android:paddingEnd="18dp"
+                    android:paddingTop="18dp"
+                    android:paddingBottom="18dp">
 
+                    <!-- Tiêu đề cân nặng -->
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="48dp"
                         android:gravity="center_vertical"
                         android:orientation="horizontal">
 
                         <TextView
-                            android:layout_width="0dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
                             android:text="Cân nặng"
                             android:textColor="#111111"
-                            android:textSize="24sp"
-                            android:textStyle="bold" />
+                            android:textSize="22sp"
+                            android:fontFamily="sans-serif"
+                            android:includeFontPadding="false" />
 
                         <TextView
-                            android:id="@+id/btnEditWeight"
-                            android:layout_width="78dp"
-                            android:layout_height="42dp"
-                            android:background="#18C27A"
-                            android:clickable="true"
-                            android:focusable="true"
-                            android:gravity="center"
-                            android:text="Sửa ✎"
-                            android:textColor="#FFFFFF"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:text="(kg)"
+                            android:textColor="#888888"
                             android:textSize="15sp"
-                            android:textStyle="bold" />
+                            android:fontFamily="sans-serif"
+                            android:includeFontPadding="false" />
+
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="1dp"
+                            android:layout_weight="1" />
+
+                        <TextView
+                            android:id="@+id/btnAddWeight"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:gravity="center"
+                            android:text="+"
+                            android:textColor="#18A865"
+                            android:textSize="30sp"
+                            android:fontFamily="sans-serif"
+                            android:includeFontPadding="false"
+                            android:clickable="true"
+                            android:focusable="true" />
+
                     </LinearLayout>
 
+                    <!-- 3 thông số cân nặng -->
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="18dp"
-                        android:orientation="horizontal"
-                        android:weightSum="3">
+                        android:layout_height="90dp"
+                        android:gravity="center"
+                        android:orientation="horizontal">
 
                         <LinearLayout
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:layout_weight="1"
                             android:gravity="center"
                             android:orientation="vertical">
@@ -375,22 +397,30 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Hiện tại"
-                                android:textColor="#777777"
-                                android:textSize="12sp" />
+                                android:textColor="#666666"
+                                android:textSize="14sp"
+                                android:fontFamily="sans-serif" />
 
                             <TextView
                                 android:id="@+id/txtCurrentWeight"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="75.5"
+                                android:layout_marginTop="6dp"
+                                android:text="0.0"
                                 android:textColor="#111111"
                                 android:textSize="28sp"
-                                android:textStyle="bold" />
+                                android:fontFamily="sans-serif"
+                                android:includeFontPadding="false" />
                         </LinearLayout>
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="48dp"
+                            android:background="#EEEEEE" />
 
                         <LinearLayout
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:layout_weight="1"
                             android:gravity="center"
                             android:orientation="vertical">
@@ -398,23 +428,32 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="30 ngày"
-                                android:textColor="#777777"
-                                android:textSize="12sp" />
+                                android:text="30 ngày trước"
+                                android:textColor="#666666"
+                                android:textSize="14sp"
+                                android:fontFamily="sans-serif" />
 
                             <TextView
                                 android:id="@+id/txtLast30Days"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="2.0"
+                                android:layout_marginTop="6dp"
+                                android:text="0.0"
                                 android:textColor="#111111"
                                 android:textSize="28sp"
-                                android:textStyle="bold" />
+                                android:fontFamily="sans-serif"
+                                android:includeFontPadding="false" />
+
                         </LinearLayout>
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="48dp"
+                            android:background="#EEEEEE" />
 
                         <LinearLayout
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:layout_weight="1"
                             android:gravity="center"
                             android:orientation="vertical">
@@ -423,26 +462,32 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Trung bình"
-                                android:textColor="#777777"
-                                android:textSize="12sp" />
+                                android:textColor="#666666"
+                                android:textSize="14sp"
+                                android:fontFamily="sans-serif" />
 
                             <TextView
                                 android:id="@+id/txtAverageWeight"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="76.5"
+                                android:layout_marginTop="6dp"
+                                android:text="0.0"
                                 android:textColor="#111111"
                                 android:textSize="28sp"
-                                android:textStyle="bold" />
+                                android:fontFamily="sans-serif"
+                                android:includeFontPadding="false" />
                         </LinearLayout>
+
                     </LinearLayout>
 
+                    <!-- Biểu đồ cân nặng -->
                     <FrameLayout
                         android:id="@+id/layoutWeightLineChart"
                         android:layout_width="match_parent"
-                        android:layout_height="260dp"
-                        android:layout_marginTop="18dp"
+                        android:layout_height="210dp"
+                        android:layout_marginTop="8dp"
                         android:background="#FFFFFF" />
+
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -460,60 +505,91 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="22dp">
+                    android:paddingStart="18dp"
+                    android:paddingEnd="18dp"
+                    android:paddingTop="18dp"
+                    android:paddingBottom="22dp">
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="BMI (kg/m²)"
-                        android:textColor="#111111"
-                        android:textSize="22sp"
-                        android:textStyle="bold" />
-
+                    <!-- Hàng tiêu đề BMI + đơn vị + nút chỉnh sửa -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
 
-                        <TextView
-                            android:id="@+id/txtBMIValue"
+                        <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="22.0"
-                            android:textColor="#000000"
-                            android:textSize="42sp"
-                            android:textStyle="bold" />
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+
+                            <TextView
+                                android:id="@+id/txtBMITitle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="BMI"
+                                android:textColor="#111111"
+                                android:textSize="24sp"
+                                android:textStyle="bold"
+                                android:fontFamily="@font/anton_regular"
+                                android:includeFontPadding="false" />
+
+                            <TextView
+                                android:id="@+id/txtBMIUnit"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="4dp"
+                                android:text="(kg/m²)"
+                                android:textColor="#777777"
+                                android:textSize="12sp"
+                                android:textStyle="normal"
+                                android:fontFamily="sans-serif"
+                                android:includeFontPadding="false" />
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="1dp"
+                            android:layout_weight="1" />
 
                         <TextView
-                            android:id="@+id/txtBMIStatus"
+                            android:id="@+id/btnEditWeight"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="14dp"
-                            android:text="Bình thường"
-                            android:textColor="#63D44B"
-                            android:textSize="17sp" />
+                            android:layout_height="48dp"
+                            android:minHeight="48dp"
+                            android:gravity="center"
+                            android:paddingStart="8dp"
+                            android:paddingEnd="0dp"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:text="Chỉnh sửa ✎"
+                            android:textColor="#777777"
+                            android:textSize="13sp"
+                            android:textStyle="normal"
+                            android:fontFamily="sans-serif"
+                            android:includeFontPadding="false" />
                     </LinearLayout>
 
                     <FrameLayout
                         android:id="@+id/bmiScaleContainer"
                         android:layout_width="match_parent"
-                        android:layout_height="55dp"
-                        android:layout_marginTop="16dp">
+                        android:layout_height="78dp"
+                        android:layout_marginTop="18dp">
 
                         <TextView
                             android:id="@+id/txtBMIMarker"
-                            android:layout_width="28dp"
-                            android:layout_height="28dp"
+                            android:layout_width="54dp"
+                            android:layout_height="30dp"
                             android:gravity="center"
-                            android:text="●"
-                            android:textColor="#18C27A"
-                            android:textSize="24sp" />
+                            android:text="24.2"
+                            android:textColor="#FFFFFF"
+                            android:textSize="15sp"
+                            android:fontFamily="sans-serif"
+                            android:includeFontPadding="false" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="14dp"
+                            android:layout_height="16dp"
                             android:layout_gravity="bottom"
                             android:orientation="horizontal">
 
@@ -521,30 +597,35 @@
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="1"
+                                android:layout_marginEnd="3dp"
                                 android:background="#496BFF" />
 
                             <View
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="1"
+                                android:layout_marginEnd="3dp"
                                 android:background="#5F93FF" />
 
                             <View
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="2"
+                                android:layout_marginEnd="3dp"
                                 android:background="#63D44B" />
 
                             <View
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="1"
+                                android:layout_marginEnd="3dp"
                                 android:background="#F2D65C" />
 
                             <View
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="1"
+                                android:layout_marginEnd="3dp"
                                 android:background="#F2AB45" />
 
                             <View
@@ -555,12 +636,95 @@
                         </LinearLayout>
                     </FrameLayout>
 
-                    <TextView
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="15     16     18.5        25        30        35        40"
-                        android:textColor="#999999"
-                        android:textSize="13sp" />
+                        android:layout_marginTop="6dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="15"
+                            android:textColor="#999999"
+                            android:textSize="13sp"
+                            android:fontFamily="sans-serif" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="16"
+                            android:textColor="#999999"
+                            android:textSize="13sp"
+                            android:fontFamily="sans-serif" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="2"
+                            android:text="18.5"
+                            android:textColor="#999999"
+                            android:textSize="13sp"
+                            android:fontFamily="sans-serif" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="25"
+                            android:textColor="#999999"
+                            android:textSize="13sp"
+                            android:fontFamily="sans-serif" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="30"
+                            android:textColor="#999999"
+                            android:textSize="13sp"
+                            android:fontFamily="sans-serif" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="end"
+                            android:text="40"
+                            android:textColor="#999999"
+                            android:textSize="13sp"
+                            android:fontFamily="sans-serif" />
+                    </LinearLayout>
+
+                    <!-- Chỉ hiển thị tình trạng BMI, vẫn giữ txtBMIValue ẩn để Kotlin không bị lỗi -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/txtBMIValue"
+                            android:layout_width="1dp"
+                            android:layout_height="1dp"
+                            android:visibility="gone"
+                            android:text="24.2" />
+
+                        <TextView
+                            android:id="@+id/txtBMIStatus"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Đủ cân"
+                            android:textColor="#46C7C7"
+                            android:textSize="15sp"
+                            android:textStyle="normal"
+                            android:fontFamily="sans-serif"
+                            android:includeFontPadding="false" />
+                    </LinearLayout>
+
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
