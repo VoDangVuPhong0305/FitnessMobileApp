@@ -1,30 +1,40 @@
 package com.example.fitnessmobileapp.ui.nutrition
 
 import android.app.AlertDialog
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.fragment.app.Fragment
-import com.example.fitnessmobileapp.R
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.example.fitnessmobileapp.ui.nutrition.NutritionItem
+import androidx.fragment.app.Fragment
+import com.example.fitnessmobileapp.R
 
 class NutritionDetailFragment : Fragment(R.layout.fragment_nutrition_detail) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         val header = view.findViewById<View>(R.id.header)
         ViewCompat.setOnApplyWindowInsetsListener(header) { v, insets ->
-            val statusBarHeight = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
-            v.setPadding(v.paddingLeft, statusBarHeight, v.paddingRight, v.paddingBottom)
+            val statusBarHeight =
+                insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
+            v.setPadding(
+                v.paddingLeft,
+                statusBarHeight,
+                v.paddingRight,
+                v.paddingBottom
+            )
             insets
         }
 
-        val tvTitle = view.findViewById<View>(R.id.header).findViewById<TextView>(R.id.tvTitle)
+        val tvTitle = view.findViewById<View>(R.id.header)
+            .findViewById<TextView>(R.id.tvTitle)
+
         val tvBreakfast = view.findViewById<TextView>(R.id.tvBreakfast)
         val tvSnack = view.findViewById<TextView>(R.id.tvSnack)
         val tvLunch = view.findViewById<TextView>(R.id.tvLunch)
@@ -41,22 +51,40 @@ class NutritionDetailFragment : Fragment(R.layout.fragment_nutrition_detail) {
         data?.let { item ->
 
             tvTitle.text = "NGÀY ${item.day}"
+
+            val prefs = requireActivity().getSharedPreferences("user_prefs", 0)
+            val isDone = prefs.getBoolean("day_${item.day}_done", false)
+
+            if (isDone) {
+                btnCheck.setImageResource(R.drawable.ic_check_black)
+                btnCheck.background = ContextCompat.getDrawable(
+                    requireContext(),
+                    R.drawable.bg_check_checked
+                )
+            } else {
+                btnCheck.setImageResource(R.drawable.ic_check_white)
+                btnCheck.background = ContextCompat.getDrawable(
+                    requireContext(),
+                    R.drawable.bg_check_unchecked
+                )
+            }
+
             fun updateButtons(isStandard: Boolean) {
                 if (isStandard) {
                     btnStandard.backgroundTintList =
-                        android.content.res.ColorStateList.valueOf(Color.parseColor("#20C76F"))
+                        ColorStateList.valueOf(Color.parseColor("#20C76F"))
                     btnStandard.setTextColor(Color.WHITE)
 
                     btnVegetarian.backgroundTintList =
-                        android.content.res.ColorStateList.valueOf(Color.WHITE)
+                        ColorStateList.valueOf(Color.WHITE)
                     btnVegetarian.setTextColor(Color.parseColor("#666666"))
                 } else {
                     btnVegetarian.backgroundTintList =
-                        android.content.res.ColorStateList.valueOf(Color.parseColor("#20C76F"))
+                        ColorStateList.valueOf(Color.parseColor("#20C76F"))
                     btnVegetarian.setTextColor(Color.WHITE)
 
                     btnStandard.backgroundTintList =
-                        android.content.res.ColorStateList.valueOf(Color.WHITE)
+                        ColorStateList.valueOf(Color.WHITE)
                     btnStandard.setTextColor(Color.parseColor("#666666"))
                 }
             }
@@ -71,17 +99,10 @@ class NutritionDetailFragment : Fragment(R.layout.fragment_nutrition_detail) {
                 lAlt: String,
                 dAlt: String
             ) {
-                tvBreakfast.text =
-                    "🍳 Bữa sáng\n\n• $b\n• $bAlt"
-
-                tvSnack.text =
-                    "🍎 Bữa nhẹ\n\n• $s\n• $sAlt"
-
-                tvLunch.text =
-                    "🥗 Bữa trưa\n\n• $l\n• $lAlt"
-
-                tvDinner.text =
-                    "🍲 Bữa tối\n\n• $d\n• $dAlt"
+                tvBreakfast.text = "🍳 Bữa sáng\n\n• $b\n• $bAlt"
+                tvSnack.text = "🍎 Bữa nhẹ\n\n• $s\n• $sAlt"
+                tvLunch.text = "🥗 Bữa trưa\n\n• $l\n• $lAlt"
+                tvDinner.text = "🍲 Bữa tối\n\n• $d\n• $dAlt"
             }
 
             // Hiển thị mặc định (Tiêu chuẩn)
@@ -99,7 +120,6 @@ class NutritionDetailFragment : Fragment(R.layout.fragment_nutrition_detail) {
 
             // Nút Tiêu chuẩn
             btnStandard.setOnClickListener {
-
                 updateButtons(true)
 
                 showMenu(
@@ -114,9 +134,8 @@ class NutritionDetailFragment : Fragment(R.layout.fragment_nutrition_detail) {
                 )
             }
 
-// Nút Ăn chay
+            // Nút Ăn chay
             btnVegetarian.setOnClickListener {
-
                 updateButtons(false)
 
                 showMenu(
@@ -130,39 +149,59 @@ class NutritionDetailFragment : Fragment(R.layout.fragment_nutrition_detail) {
                     item.dinnerVegAlt
                 )
             }
-        }
 
-        // Nút quay lại
-        btnBack.setOnClickListener {
-            parentFragmentManager.popBackStack()
-        }
-
-        // Nút hoàn thành
-        btnCheck.setOnClickListener {
-
-
-            btnCheck.setImageResource(R.drawable.ic_check_green)
-
-                btnCheck.backgroundTintList =
-                    android.content.res.ColorStateList.valueOf(
-                        Color.parseColor("#E8F5E9")
-                    )
-                AlertDialog.Builder(requireContext())
-                    .setTitle("Thông báo")
-                    .setMessage("Đã kết thúc")
-                    .setPositiveButton("OK") { dialog, _ ->
-                        dialog.dismiss()
-                    }
-                    .show()
-
+            // Nút hoàn thành
+            btnCheck.setOnClickListener {
                 data?.let { item ->
-                    val prefs =
-                        requireActivity().getSharedPreferences("user_prefs", 0)
 
-                    prefs.edit()
-                        .putBoolean("day_${item.day}_done", true)
-                        .apply()
+                    val currentDone = prefs.getBoolean("day_${item.day}_done", false)
+
+                    if (!currentDone) {
+                        // Chưa hoàn thành -> chuyển sang hoàn thành
+                        btnCheck.setImageResource(R.drawable.ic_check_black)
+                        btnCheck.background = ContextCompat.getDrawable(
+                            requireContext(),
+                            R.drawable.bg_check_checked
+                        )
+
+                        prefs.edit()
+                            .putBoolean("day_${item.day}_done", true)
+                            .apply()
+
+                        AlertDialog.Builder(requireContext())
+                            .setTitle("Thông báo")
+                            .setMessage("Đã kết thúc")
+                            .setPositiveButton("OK") { dialog, _ ->
+                                dialog.dismiss()
+                            }
+                            .show()
+
+                    } else {
+                        // Đã hoàn thành -> bỏ hoàn thành, quay về trạng thái ban đầu
+                        btnCheck.setImageResource(R.drawable.ic_check_white)
+                        btnCheck.background = ContextCompat.getDrawable(
+                            requireContext(),
+                            R.drawable.bg_check_unchecked
+                        )
+
+                        prefs.edit()
+                            .putBoolean("day_${item.day}_done", false)
+                            .apply()
+
+                        AlertDialog.Builder(requireContext())
+                            .setTitle("Thông báo")
+                            .setMessage("Đã bỏ đánh dấu hoàn thành")
+                            .setPositiveButton("OK") { dialog, _ ->
+                                dialog.dismiss()
+                            }
+                            .show()
+                    }
                 }
+            }
+            // Nút quay lại
+            btnBack.setOnClickListener {
+                parentFragmentManager.popBackStack()
             }
         }
     }
+}

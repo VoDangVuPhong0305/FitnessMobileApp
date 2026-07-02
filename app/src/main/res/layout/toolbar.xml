@@ -3,13 +3,11 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/headerLayout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="#FFFFFF"
+    android:layout_height="70dp"
+    android:background="#20C76F"
     android:elevation="6dp"
     android:paddingStart="16dp"
-    android:paddingEnd="16dp"
-    android:paddingTop="0dp"
-    android:paddingBottom="14dp">
+    android:paddingEnd="16dp">
 
     <ImageView
         android:id="@+id/btnBack"
@@ -27,8 +25,8 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:text="Câu hỏi thường gặp"
-        android:textColor="#222222"
-        android:textStyle="bold"
-        android:textSize="24sp"/>
+        android:textColor="#FFFFFF"
+        android:textSize="24sp"
+        android:textStyle="bold"/>
 
 </RelativeLayout>
