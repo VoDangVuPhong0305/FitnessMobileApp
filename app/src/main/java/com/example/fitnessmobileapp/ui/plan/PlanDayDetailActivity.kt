@@ -18,6 +18,7 @@ import com.example.fitnessmobileapp.R
 import com.example.fitnessmobileapp.data.model.Exercise
 import com.example.fitnessmobileapp.data.repository.ExerciseTargetHelper
 import com.example.fitnessmobileapp.data.repository.WorkoutDataReader
+import com.example.fitnessmobileapp.data.repository.CustomExerciseTargetManager
 import java.io.File
 import java.io.FileOutputStream
 
@@ -56,9 +57,20 @@ class PlanDayDetailActivity : AppCompatActivity() {
         btnStartWorkout = findViewById(R.id.btnStartWorkout)
 
         getIntentData()
-        showHeaderInfo()
         showExerciseList()
+        showHeaderInfo()
         setupButtons()
+    }
+
+    // Chức năng: khi quay lại màn chi tiết ngày tập từ màn chi tiết bài tập,
+    // tự load lại danh sách bài để hiển thị số lần/thời gian mới nếu người dùng vừa bấm LƯU.
+    override fun onResume() {
+        super.onResume()
+
+        if (::layoutExerciseList.isInitialized) {
+            showExerciseList()
+            showHeaderInfo()
+        }
     }
 
     // Chức năng: nhận dữ liệu ngày tập và màu kế hoạch từ PlanFragment.
@@ -78,11 +90,26 @@ class PlanDayDetailActivity : AppCompatActivity() {
         canStartWorkout = intent.getBooleanExtra("CAN_START_WORKOUT", true)
     }
 
-    // Chức năng: hiển thị tiêu đề ngày, tên nhóm bài tập và tổng thời gian.
+    // Chức năng: hiển thị thông tin đầu màn hình chi tiết ngày tập.
+    // Bao gồm tên ngày tập, loại kế hoạch, tổng phút và tổng số bài tập.
+    // Tổng phút sẽ được tính lại nếu người dùng đã chỉnh số lần/thời gian của bài tập.
     private fun showHeaderInfo() {
         txtDayTitle.text = dayTitle.uppercase()
         txtWorkoutInfo.text = getWorkoutTitle()
-        txtWorkoutSummary.text = "$durationMinutes phút, $exerciseCount bài tập"
+
+        val realExerciseCount = if (exercisesOfDay.isNotEmpty()) {
+            exercisesOfDay.size
+        } else {
+            exerciseCount
+        }
+
+        val realDurationMinutes = if (exercisesOfDay.isNotEmpty()) {
+            calculateCustomDurationMinutes()
+        } else {
+            durationMinutes
+        }
+
+        txtWorkoutSummary.text = "$realDurationMinutes phút, $realExerciseCount bài tập"
     }
 
     // Chức năng: đổi exerciseType thành tên dễ đọc trên giao diện.
@@ -223,16 +250,15 @@ class PlanDayDetailActivity : AppCompatActivity() {
         return root
     }
 
-    // Chức năng: lấy nội dung hiển thị cho từng bài trong danh sách.
-    // Ví dụ:
-    // Bật nhảy -> 30 s
-    // Gánh đùi -> x12
-    // Chống đẩy -> x6
+    // Chức năng: lấy nội dung hiển thị số lần hoặc thời gian của từng bài tập.
+    // Nếu người dùng đã chỉnh và lưu thì hiển thị giá trị mới.
+    // Ví dụ: Chống đẩy mặc định x6, sau khi lưu x8 thì danh sách hiển thị x8.
     private fun getExerciseTargetText(exercise: Exercise): String {
-        val target = ExerciseTargetHelper.getTarget(
-            exerciseId = exercise.id,
-            exerciseName = exercise.name,
-            dayNumber = dayNumber
+        val target = CustomExerciseTargetManager.getTarget(
+            context = this,
+            exerciseType = exerciseType,
+            dayNumber = dayNumber,
+            exercise = exercise
         )
 
         return if (target.type == ExerciseTargetHelper.TYPE_REPS) {
@@ -240,6 +266,37 @@ class PlanDayDetailActivity : AppCompatActivity() {
         } else {
             formatDuration(target.value)
         }
+    }
+
+    // Chức năng: tính lại tổng thời lượng của ngày tập dựa trên số lần/thời gian đã chỉnh.
+    // Bài theo thời gian thì lấy số giây hiện tại.
+    // Bài theo số lần thì quy đổi thời lượng theo tỉ lệ số lần mới so với số lần mặc định.
+    private fun calculateCustomDurationMinutes(): Int {
+        val totalSeconds = exercisesOfDay.sumOf { exercise ->
+            val defaultTarget = CustomExerciseTargetManager.getDefaultTarget(
+                exercise = exercise,
+                dayNumber = dayNumber
+            )
+
+            val currentTarget = CustomExerciseTargetManager.getTarget(
+                context = this,
+                exerciseType = exerciseType,
+                dayNumber = dayNumber,
+                exercise = exercise
+            )
+
+            if (currentTarget.type == ExerciseTargetHelper.TYPE_TIME) {
+                currentTarget.value
+            } else {
+                CustomExerciseTargetManager.calculateDurationForTarget(
+                    baseDurationSeconds = exercise.duration,
+                    defaultTarget = defaultTarget,
+                    currentTarget = currentTarget
+                )
+            }
+        }
+
+        return (totalSeconds + 59) / 60
     }
 
     // Chức năng: bấm từng bài trong danh sách thì mở màn chi tiết bài tập.

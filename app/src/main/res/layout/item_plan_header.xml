@@ -8,7 +8,23 @@
         android:id="@+id/layoutHeaderCard"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/bg_plan_header_dark">
+        android:background="@drawable/bg_plan_header_dark"
+        android:clipToOutline="true">
+
+        <ImageView
+            android:id="@+id/imgHeaderBackground"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@null"
+            android:scaleType="centerCrop"
+            android:scaleX="1.08"
+            android:scaleY="1.08"
+            android:src="@drawable/bg_full_body" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#4D000000" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -23,23 +39,23 @@
                 android:id="@+id/txtHeaderTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:includeFontPadding="false"
-                android:text="TẬP CƠ BỤNG"
                 android:fontFamily="sans-serif"
+                android:includeFontPadding="false"
+                android:letterSpacing="0.04"
+                android:text="TẬP CƠ BỤNG"
                 android:textColor="#FFFFFF"
                 android:textSize="28sp"
-                android:textStyle="bold"
-                android:letterSpacing="0.04" />
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/txtHeaderSubtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:fontFamily="sans-serif"
                 android:includeFontPadding="false"
                 android:text="Cho cơ bụng săn chắc và gợi cảm"
                 android:textColor="#E0E0E0"
-                android:fontFamily="sans-serif"
                 android:textSize="16sp" />
 
             <Space
@@ -58,8 +74,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="30 ngày còn lại"
                     android:fontFamily="sans-serif"
+                    android:text="30 ngày còn lại"
                     android:textColor="#FFFFFF"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -68,8 +84,8 @@
                     android:id="@+id/txtHeaderPercent"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="0%"
                     android:fontFamily="sans-serif"
+                    android:text="0%"
                     android:textColor="#FFFFFF"
                     android:textSize="16sp"
                     android:textStyle="bold" />

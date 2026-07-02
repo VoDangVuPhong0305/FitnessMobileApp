@@ -3,9 +3,11 @@ package com.example.fitnessmobileapp.ui.plan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fitnessmobileapp.R
+import com.example.fitnessmobileapp.data.model.WorkoutPlanCategories
 import com.example.fitnessmobileapp.data.model.WorkoutPlanCategory
 import com.example.fitnessmobileapp.data.repository.PlanProgressManager
 
@@ -15,6 +17,7 @@ class PlanHeaderAdapter(
 ) : RecyclerView.Adapter<PlanHeaderAdapter.PlanHeaderViewHolder>() {
 
     inner class PlanHeaderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val imgHeaderBackground: ImageView = itemView.findViewById(R.id.imgHeaderBackground)
         val txtHeaderTitle: TextView = itemView.findViewById(R.id.txtHeaderTitle)
         val txtHeaderSubtitle: TextView = itemView.findViewById(R.id.txtHeaderSubtitle)
         val txtHeaderRemaining: TextView = itemView.findViewById(R.id.txtHeaderRemaining)
@@ -26,17 +29,19 @@ class PlanHeaderAdapter(
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_plan_header, parent, false)
 
-        // Chức năng: card có chiều rộng cố định nhỏ hơn màn hình một chút.
-        // Không ép bằng ô ngày nữa để tránh lỗi khuyết mép.
-        val cardWidth = parent.resources.displayMetrics.widthPixels - dp(parent, 48)
+        val cardWidth = parent.resources.displayMetrics.widthPixels - dp(parent, 34)
         val cardGap = dp(parent, 14)
 
         view.layoutParams = RecyclerView.LayoutParams(
             cardWidth,
             RecyclerView.LayoutParams.MATCH_PARENT
         ).apply {
-            marginStart = cardGap / 2
-            marginEnd = cardGap / 2
+            setMargins(
+                cardGap / 2,
+                0,
+                cardGap / 2,
+                0
+            )
         }
 
         return PlanHeaderViewHolder(view)
@@ -45,6 +50,10 @@ class PlanHeaderAdapter(
     override fun onBindViewHolder(holder: PlanHeaderViewHolder, position: Int) {
         val plan = planList[position]
         val context = holder.itemView.context
+
+        holder.imgHeaderBackground.setImageResource(
+            getPlanBackgroundImage(plan.id)
+        )
 
         holder.txtHeaderTitle.text = plan.title
         holder.txtHeaderSubtitle.text = plan.subtitle
@@ -85,6 +94,17 @@ class PlanHeaderAdapter(
 
     override fun getItemCount(): Int {
         return planList.size
+    }
+
+    // Chức năng: chọn ảnh nền cho từng loại kế hoạch.
+    private fun getPlanBackgroundImage(planId: String): Int {
+        return when (planId) {
+            WorkoutPlanCategories.FULL_BODY_ID -> R.drawable.bg_full_body
+            WorkoutPlanCategories.ABS_ID -> R.drawable.bg_abs
+            WorkoutPlanCategories.ARMS_CHEST_ID -> R.drawable.bg_arms_chest
+            WorkoutPlanCategories.LEGS_ID -> R.drawable.bg_legs
+            else -> R.drawable.bg_full_body
+        }
     }
 
     // Chức năng: đổi đơn vị dp sang pixel trong Adapter.

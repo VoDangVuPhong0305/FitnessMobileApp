@@ -16,6 +16,7 @@ import com.example.fitnessmobileapp.data.model.Exercise
 import com.example.fitnessmobileapp.data.repository.ExerciseTargetHelper
 import com.example.fitnessmobileapp.data.repository.ExerciseYoutubeLinkHelper
 import com.example.fitnessmobileapp.data.repository.WorkoutDataReader
+import com.example.fitnessmobileapp.data.repository.CustomExerciseTargetManager
 import java.io.File
 import java.io.FileOutputStream
 
@@ -67,6 +68,13 @@ class ExerciseDetailActivity : AppCompatActivity() {
     // Bài time: 30 giây.
     // Bài reps: x12, x14, x16...
     private var currentTarget = ExerciseTargetHelper.ExerciseTarget(
+        ExerciseTargetHelper.TYPE_TIME,
+        30
+    )
+
+    // Chức năng: lưu lại số lần/thời gian ban đầu khi mở bài tập.
+    // Dùng để so sánh xem người dùng có thay đổi bằng nút + hoặc - hay không.
+    private var originalTarget = ExerciseTargetHelper.ExerciseTarget(
         ExerciseTargetHelper.TYPE_TIME,
         30
     )
@@ -169,7 +177,11 @@ class ExerciseDetailActivity : AppCompatActivity() {
         }
 
         btnCloseExercise.setOnClickListener {
-            finish()
+            if (isTargetChanged()) {
+                saveCurrentTargetAndClose()
+            } else {
+                finish()
+            }
         }
 
         tabAnimation.setOnClickListener {
@@ -190,6 +202,7 @@ class ExerciseDetailActivity : AppCompatActivity() {
         btnMinus.setOnClickListener {
             currentTarget = ExerciseTargetHelper.decreaseTarget(currentTarget)
             updateTargetUI()
+            updateCloseButtonState()
         }
 
         // Chức năng: tăng thời lượng hoặc số lần.
@@ -198,6 +211,7 @@ class ExerciseDetailActivity : AppCompatActivity() {
         btnPlus.setOnClickListener {
             currentTarget = ExerciseTargetHelper.increaseTarget(currentTarget)
             updateTargetUI()
+            updateCloseButtonState()
         }
 
         btnPreviousExercise.setOnClickListener {
@@ -232,13 +246,22 @@ class ExerciseDetailActivity : AppCompatActivity() {
         // Ví dụ:
         // Bật nhảy -> Thời lượng 00:30
         // Gánh đùi -> Lần lặp lại x12.
-        currentTarget = ExerciseTargetHelper.getTarget(
-            exerciseId = exercise.id,
-            exerciseName = exercise.name,
-            dayNumber = dayNumber
+        currentTarget = CustomExerciseTargetManager.getTarget(
+            context = this,
+            exerciseType = exerciseType,
+            dayNumber = dayNumber,
+            exercise = exercise
+        )
+
+        // Chức năng: lưu lại giá trị ban đầu khi vừa mở bài.
+        // Dùng để biết người dùng có chỉnh khác ban đầu hay không.
+        originalTarget = ExerciseTargetHelper.ExerciseTarget(
+            currentTarget.type,
+            currentTarget.value
         )
 
         updateTargetUI()
+        updateCloseButtonState()
 
         txtExerciseDescription.text = if (exercise.description.isEmpty()) {
             "Chưa có mô tả bài tập."
@@ -386,6 +409,49 @@ class ExerciseDetailActivity : AppCompatActivity() {
         }
 
         return cachedFile
+    }
+
+    // Chức năng: kiểm tra người dùng có chỉnh số lần/thời gian khác với giá trị ban đầu hay không.
+    // Nếu có thay đổi thì nút ĐÓNG sẽ đổi thành LƯU.
+    private fun isTargetChanged(): Boolean {
+        return currentTarget.type != originalTarget.type ||
+                currentTarget.value != originalTarget.value
+    }
+
+    // Chức năng: cập nhật trạng thái nút cuối màn hình.
+    // Nếu người dùng chưa chỉnh gì thì hiển thị ĐÓNG.
+    // Nếu người dùng đã bấm + hoặc - làm thay đổi số lần/thời gian thì hiển thị LƯU.
+    private fun updateCloseButtonState() {
+        if (isTargetChanged()) {
+            btnCloseExercise.text = "LƯU"
+        } else {
+            btnCloseExercise.text = "ĐÓNG"
+        }
+
+        btnCloseExercise.background = createPlanButtonBackground()
+    }
+
+    // Chức năng: lưu số lần/thời gian mới của bài tập sau khi người dùng bấm LƯU.
+    // Sau khi lưu xong sẽ quay lại màn danh sách bài tập của ngày đó.
+    private fun saveCurrentTargetAndClose() {
+        val exercise = currentExercise ?: return
+
+        CustomExerciseTargetManager.saveTarget(
+            context = this,
+            exerciseType = exerciseType,
+            dayNumber = dayNumber,
+            exercise = exercise,
+            target = currentTarget
+        )
+
+        Toast.makeText(
+            this,
+            "Đã lưu thay đổi",
+            Toast.LENGTH_SHORT
+        ).show()
+
+        setResult(RESULT_OK)
+        finish()
     }
 
     // Chức năng: áp dụng màu riêng của kế hoạch cho màn chi tiết bài tập.

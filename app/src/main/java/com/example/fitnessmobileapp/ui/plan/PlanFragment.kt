@@ -76,7 +76,7 @@ class PlanFragment : Fragment(R.layout.fragment_plan) {
         // Chức năng: chừa khoảng trống hai bên RecyclerView để card đầu và card cuối
         // có thể tự snap vào chính giữa màn hình mà không bị khuyết.
         recyclerPlanHeader.post {
-            val cardWidth = resources.displayMetrics.widthPixels - dp(48)
+            val cardWidth = resources.displayMetrics.widthPixels - dp(34)
             val cardGap = dp(14)
 
             val sidePadding = ((recyclerPlanHeader.width - cardWidth - cardGap) / 2)
@@ -124,6 +124,20 @@ class PlanFragment : Fragment(R.layout.fragment_plan) {
 
             if (selectedIndex >= 0) {
                 recyclerPlanHeader.scrollToPosition(selectedIndex)
+
+                recyclerPlanHeader.post {
+                    val layoutManager = recyclerPlanHeader.layoutManager ?: return@post
+                    val snapView = pagerSnapHelper.findSnapView(layoutManager) ?: return@post
+                    val distance = pagerSnapHelper.calculateDistanceToFinalSnap(
+                        layoutManager,
+                        snapView
+                    ) ?: return@post
+
+                    recyclerPlanHeader.scrollBy(
+                        distance[0],
+                        distance[1]
+                    )
+                }
             }
         }
     }
