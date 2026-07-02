@@ -6,7 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FBF8FF">
+    android:background="#EEEEEE">
 
     <View
         android:id="@+id/topBackground"
@@ -106,7 +106,8 @@
         android:layout_height="0dp"
         android:clipToPadding="false"
         android:fillViewport="false"
-        android:paddingBottom="100dp"
+        android:paddingBottom="24dp"
+        android:overScrollMode="never"
         app:layout_constraintTop_toBottomOf="@id/headerReport"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -120,7 +121,7 @@
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
             android:paddingTop="20dp"
-            android:paddingBottom="32dp">
+            android:paddingBottom="5dp">
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardSummary"
@@ -128,7 +129,7 @@
                 android:layout_height="108dp"
                 app:cardBackgroundColor="#FFFFFF"
                 app:cardCornerRadius="24dp"
-                app:cardElevation="4dp"
+                app:cardElevation="0dp"
                 app:strokeWidth="0dp">
 
                 <LinearLayout
@@ -228,7 +229,7 @@
                 android:layout_marginTop="22dp"
                 app:cardBackgroundColor="#FFFFFF"
                 app:cardCornerRadius="24dp"
-                app:cardElevation="4dp"
+                app:cardElevation="0dp"
                 app:strokeWidth="0dp">
 
                 <LinearLayout
@@ -277,7 +278,7 @@
                 android:layout_marginTop="22dp"
                 app:cardBackgroundColor="#FFFFFF"
                 app:cardCornerRadius="24dp"
-                app:cardElevation="4dp"
+                app:cardElevation="0dp"
                 app:strokeWidth="0dp">
 
                 <LinearLayout
@@ -321,7 +322,7 @@
                 android:layout_marginTop="22dp"
                 app:cardBackgroundColor="#FFFFFF"
                 app:cardCornerRadius="24dp"
-                app:cardElevation="4dp"
+                app:cardElevation="0dp"
                 app:strokeWidth="0dp">
 
                 <LinearLayout
@@ -498,7 +499,7 @@
                 android:layout_marginTop="22dp"
                 app:cardBackgroundColor="#FFFFFF"
                 app:cardCornerRadius="24dp"
-                app:cardElevation="4dp"
+                app:cardElevation="0dp"
                 app:strokeWidth="0dp">
 
                 <LinearLayout
@@ -735,41 +736,63 @@
                 android:layout_marginTop="22dp"
                 app:cardBackgroundColor="#FFFFFF"
                 app:cardCornerRadius="24dp"
-                app:cardElevation="4dp"
+                app:cardElevation="0dp"
                 app:strokeWidth="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="22dp">
+                    android:paddingStart="18dp"
+                    android:paddingEnd="18dp"
+                    android:paddingTop="18dp"
+                    android:paddingBottom="18dp">
 
-                    <TextView
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Calo đã đốt ước tính (Kcal)"
-                        android:textColor="#111111"
-                        android:textSize="22sp"
-                        android:textStyle="bold" />
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Calo đã đốt cháy"
+                            android:textColor="#111111"
+                            android:textSize="22sp"
+                            android:fontFamily="sans-serif"
+                            android:includeFontPadding="false" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:text="(Kcal)"
+                            android:textColor="#888888"
+                            android:textSize="15sp"
+                            android:fontFamily="sans-serif"
+                            android:includeFontPadding="false" />
+                    </LinearLayout>
 
                     <TextView
                         android:id="@+id/txtCaloriesToday"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="10dp"
                         android:text="Hôm nay: 0 Kcal"
                         android:textColor="#18C27A"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
+                        android:textSize="17sp"
+                        android:fontFamily="sans-serif-medium"
+                        android:includeFontPadding="false" />
 
                     <LinearLayout
                         android:id="@+id/layoutCaloriesChart"
                         android:layout_width="match_parent"
-                        android:layout_height="220dp"
-                        android:layout_marginTop="18dp"
+                        android:layout_height="150dp"
+                        android:layout_marginTop="12dp"
                         android:gravity="bottom"
                         android:orientation="horizontal"
-                        android:padding="8dp">
+                        android:paddingTop="8dp">
 
                         <LinearLayout
                             android:layout_width="0dp"
@@ -783,20 +806,26 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="0"
-                                android:textSize="11sp" />
+                                android:textColor="#777777"
+                                android:textSize="11sp"
+                                android:fontFamily="sans-serif" />
 
                             <View
                                 android:id="@+id/barCal1"
-                                android:layout_width="24dp"
+                                android:layout_width="22dp"
                                 android:layout_height="40dp"
+                                android:layout_marginTop="4dp"
                                 android:background="#18C27A" />
 
                             <TextView
                                 android:id="@+id/txtCalDay1"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_marginTop="6dp"
                                 android:text="T2"
-                                android:textSize="12sp" />
+                                android:textColor="#999999"
+                                android:textSize="12sp"
+                                android:fontFamily="sans-serif" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -811,20 +840,26 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="0"
-                                android:textSize="11sp" />
+                                android:textColor="#777777"
+                                android:textSize="11sp"
+                                android:fontFamily="sans-serif" />
 
                             <View
                                 android:id="@+id/barCal2"
-                                android:layout_width="24dp"
+                                android:layout_width="22dp"
                                 android:layout_height="40dp"
+                                android:layout_marginTop="4dp"
                                 android:background="#18C27A" />
 
                             <TextView
                                 android:id="@+id/txtCalDay2"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_marginTop="6dp"
                                 android:text="T3"
-                                android:textSize="12sp" />
+                                android:textColor="#999999"
+                                android:textSize="12sp"
+                                android:fontFamily="sans-serif" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -839,20 +874,26 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="0"
-                                android:textSize="11sp" />
+                                android:textColor="#777777"
+                                android:textSize="11sp"
+                                android:fontFamily="sans-serif" />
 
                             <View
                                 android:id="@+id/barCal3"
-                                android:layout_width="24dp"
+                                android:layout_width="22dp"
                                 android:layout_height="40dp"
+                                android:layout_marginTop="4dp"
                                 android:background="#18C27A" />
 
                             <TextView
                                 android:id="@+id/txtCalDay3"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_marginTop="6dp"
                                 android:text="T4"
-                                android:textSize="12sp" />
+                                android:textColor="#999999"
+                                android:textSize="12sp"
+                                android:fontFamily="sans-serif" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -867,20 +908,26 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="0"
-                                android:textSize="11sp" />
+                                android:textColor="#777777"
+                                android:textSize="11sp"
+                                android:fontFamily="sans-serif" />
 
                             <View
                                 android:id="@+id/barCal4"
-                                android:layout_width="24dp"
+                                android:layout_width="22dp"
                                 android:layout_height="40dp"
+                                android:layout_marginTop="4dp"
                                 android:background="#18C27A" />
 
                             <TextView
                                 android:id="@+id/txtCalDay4"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_marginTop="6dp"
                                 android:text="T5"
-                                android:textSize="12sp" />
+                                android:textColor="#999999"
+                                android:textSize="12sp"
+                                android:fontFamily="sans-serif" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -895,20 +942,26 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="0"
-                                android:textSize="11sp" />
+                                android:textColor="#777777"
+                                android:textSize="11sp"
+                                android:fontFamily="sans-serif" />
 
                             <View
                                 android:id="@+id/barCal5"
-                                android:layout_width="24dp"
+                                android:layout_width="22dp"
                                 android:layout_height="40dp"
+                                android:layout_marginTop="4dp"
                                 android:background="#18C27A" />
 
                             <TextView
                                 android:id="@+id/txtCalDay5"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_marginTop="6dp"
                                 android:text="T6"
-                                android:textSize="12sp" />
+                                android:textColor="#999999"
+                                android:textSize="12sp"
+                                android:fontFamily="sans-serif" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -923,20 +976,26 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="0"
-                                android:textSize="11sp" />
+                                android:textColor="#777777"
+                                android:textSize="11sp"
+                                android:fontFamily="sans-serif" />
 
                             <View
                                 android:id="@+id/barCal6"
-                                android:layout_width="24dp"
+                                android:layout_width="22dp"
                                 android:layout_height="40dp"
+                                android:layout_marginTop="4dp"
                                 android:background="#18C27A" />
 
                             <TextView
                                 android:id="@+id/txtCalDay6"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_marginTop="6dp"
                                 android:text="T7"
-                                android:textSize="12sp" />
+                                android:textColor="#999999"
+                                android:textSize="12sp"
+                                android:fontFamily="sans-serif" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -951,22 +1010,30 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="0"
-                                android:textSize="11sp" />
+                                android:textColor="#777777"
+                                android:textSize="11sp"
+                                android:fontFamily="sans-serif" />
 
                             <View
                                 android:id="@+id/barCal7"
-                                android:layout_width="24dp"
+                                android:layout_width="22dp"
                                 android:layout_height="40dp"
+                                android:layout_marginTop="4dp"
                                 android:background="#18C27A" />
 
                             <TextView
                                 android:id="@+id/txtCalDay7"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_marginTop="6dp"
                                 android:text="CN"
-                                android:textSize="12sp" />
+                                android:textColor="#999999"
+                                android:textSize="12sp"
+                                android:fontFamily="sans-serif" />
                         </LinearLayout>
+
                     </LinearLayout>
+
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 

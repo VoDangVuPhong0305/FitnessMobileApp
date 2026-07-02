@@ -8,37 +8,22 @@ import com.example.fitnessmobileapp.data.model.WorkoutPlanCategory
 
 object WorkoutPlanProvider {
 
-    // Lấy danh sách ngày tập theo loại kế hoạch người dùng chọn.
-    // Cả 4 nhóm: Toàn thân, Cơ bụng, Tay & Ngực, Chân
-    // đều đi chung qua luồng tạo kế hoạch tự động theo BMI.
+    // Chức năng: lấy danh sách 30 ngày tập theo id kế hoạch.
+    // Tất cả kế hoạch, kể cả Cơ bụng, đều được tự sinh bằng WorkoutPlanGenerator,
+    // sau đó đi qua bước cá nhân hóa theo BMI/cân nặng.
     fun getPlanDays(
         context: Context,
         planId: String
     ): List<PlanDay> {
-        return when (planId) {
-            WorkoutPlanCategories.FULL_BODY_ID,
-            WorkoutPlanCategories.ARMS_CHEST_ID,
-            WorkoutPlanCategories.LEGS_ID,
-            WorkoutPlanCategories.ABS_ID -> {
-                val planCategory = WorkoutPlanCategories.getPlanById(planId)
+        val planLevel = getCurrentPlanLevel(context)
 
-                createGeneratedPlan(
-                    context = context,
-                    planCategory = planCategory
-                )
-            }
+        val planCategory = WorkoutPlanCategories.getPlanById(planId)
 
-            else -> {
-                val planCategory = WorkoutPlanCategories.getPlanById(
-                    WorkoutPlanCategories.FULL_BODY_ID
-                )
-
-                createGeneratedPlan(
-                    context = context,
-                    planCategory = planCategory
-                )
-            }
-        }
+        return createGeneratedPlan(
+            context = context,
+            planCategory = planCategory,
+            planLevel = planLevel
+        )
     }
 
     // Chức năng: lấy thông tin kế hoạch theo id.
@@ -48,109 +33,34 @@ object WorkoutPlanProvider {
     }
 
     // Chức năng: tạo lộ trình 30 ngày cho các kế hoạch tự sinh.
-    // Hàm này lấy bài tập theo nhóm, cá nhân hóa theo BMI, rồi đưa vào WorkoutPlanGenerator.
+    // Sau khi tạo xong vẫn đưa qua bước cá nhân hóa theo BMI.
     private fun createGeneratedPlan(
         context: Context,
-        planCategory: WorkoutPlanCategory
+        planCategory: WorkoutPlanCategory,
+        planLevel: String
     ): List<PlanDay> {
         val exercises = WorkoutDataReader.getExercisesByType(
             context = context,
             exerciseType = planCategory.exerciseType
         )
 
-        val personalizedExercises = personalizeExercisesByUserProfile(
-            context = context,
+        val basePlan = WorkoutPlanGenerator.generateThirtyDayPlan(
+            planTitle = planCategory.title,
+            exerciseType = planCategory.exerciseType,
             exercises = exercises
         )
 
-        return WorkoutPlanGenerator.generateThirtyDayPlan(
-            planTitle = planCategory.title,
+        return applyPlanLevel(
+            context = context,
+            planDays = basePlan,
             exerciseType = planCategory.exerciseType,
-            exercises = personalizedExercises
+            planLevel = planLevel
         )
     }
 
-    // Chức năng: cá nhân hóa thứ tự bài tập dựa trên BMI và khoảng cách tới cân nặng mục tiêu.
-    // Nếu còn xa mục tiêu thì ưu tiên bài đốt calo hơn.
-    // Nếu gần đạt mục tiêu thì chuyển dần sang bài giữ dáng, siết cơ nhẹ.
-    // Các ngày đã tập không bị reset tiến độ, chỉ danh sách bài được gợi ý lại theo thông tin mới.
-    private fun personalizeExercisesByUserProfile(
-        context: Context,
-        exercises: List<Exercise>
-    ): List<Exercise> {
-        if (exercises.isEmpty()) {
-            return exercises
-        }
-
-        val userProfile = readUserProfile(context)
-
-        val weightGap = userProfile.currentWeight - userProfile.targetWeight
-
-        return when {
-            // Người đang muốn giảm cân
-            weightGap > 0.5f -> {
-                when {
-                    // Còn xa mục tiêu: giảm cân mạnh hơn, ưu tiên bài đốt calo
-                    weightGap >= 5f || userProfile.currentBMI >= 27f -> {
-                        exercises.sortedByDescending { exercise ->
-                            getLoseWeightScore(exercise)
-                        }
-                    }
-
-                    // Gần đạt mục tiêu: bớt cardio nặng, tăng bài giữ dáng / siết cơ nhẹ
-                    weightGap <= 2f -> {
-                        exercises.sortedByDescending { exercise ->
-                            getNearTargetLoseWeightScore(exercise)
-                        }
-                    }
-
-                    // Ở giữa: pha trộn giữa giảm cân và giữ dáng
-                    else -> {
-                        exercises.sortedByDescending { exercise ->
-                            getLoseWeightScore(exercise) + getKeepFitScore(exercise)
-                        }
-                    }
-                }
-            }
-
-            // Người đang muốn tăng cân / tăng cơ
-            weightGap < -0.5f -> {
-                val gainGap = -weightGap
-
-                when {
-                    // Cần tăng nhiều: ưu tiên bài tăng cơ nhẹ, ít cardio nặng
-                    gainGap >= 4f || userProfile.currentBMI < 18.5f -> {
-                        exercises.sortedByDescending { exercise ->
-                            getGainWeightScore(exercise)
-                        }
-                    }
-
-                    // Gần đạt mục tiêu tăng cân: chuyển sang giữ dáng, ổn định cơ thể
-                    gainGap <= 2f -> {
-                        exercises.sortedByDescending { exercise ->
-                            getKeepFitScore(exercise) + getGainWeightScore(exercise)
-                        }
-                    }
-
-                    else -> {
-                        exercises.sortedByDescending { exercise ->
-                            getGainWeightScore(exercise)
-                        }
-                    }
-                }
-            }
-
-            // Cân nặng gần mục tiêu: giữ dáng
-            else -> {
-                exercises.sortedByDescending { exercise ->
-                    getKeepFitScore(exercise)
-                }
-            }
-        }
-    }
-
-    // Chức năng: đọc BMI và cân nặng đã lưu từ onboarding.
-    private fun readUserProfile(context: Context): UserWorkoutProfile {
+    // Chức năng: đọc cấp độ lộ trình đã lưu trong hồ sơ người dùng.
+    // Nếu chưa có planLevel thì tự tính tạm từ BMI.
+    private fun getCurrentPlanLevel(context: Context): String {
         val loginPrefs = context.getSharedPreferences("login_data", Context.MODE_PRIVATE)
         val username = loginPrefs.getString("current_user", "guest") ?: "guest"
 
@@ -159,147 +69,347 @@ object WorkoutPlanProvider {
             Context.MODE_PRIVATE
         )
 
-        return UserWorkoutProfile(
-            currentBMI = profilePrefs.getFloat("currentBMI", 22f),
-            currentWeight = profilePrefs.getFloat("currentWeight", 65f),
-            targetWeight = profilePrefs.getFloat("targetWeight", 65f)
+        val savedPlanLevel = profilePrefs.getString("planLevel", "") ?: ""
+
+        if (
+            savedPlanLevel == "underweight" ||
+            savedPlanLevel == "normal" ||
+            savedPlanLevel == "overweight" ||
+            savedPlanLevel == "obese"
+        ) {
+            return savedPlanLevel
+        }
+
+        val currentBMI = getProfileFloat(
+            prefs = profilePrefs,
+            key = "currentBMI",
+            defaultValue = 22f
+        ).toDouble()
+
+        return when {
+            currentBMI < 18.5 -> "underweight"
+            currentBMI < 25.0 -> "normal"
+            currentBMI < 30.0 -> "overweight"
+            else -> "obese"
+        }
+    }
+
+    // Chức năng: đọc Float an toàn, tránh lỗi nếu dữ liệu cũ từng lưu dạng Int.
+    private fun getProfileFloat(
+        prefs: android.content.SharedPreferences,
+        key: String,
+        defaultValue: Float
+    ): Float {
+        return try {
+            prefs.getFloat(key, defaultValue)
+        } catch (e: ClassCastException) {
+            prefs.getInt(key, defaultValue.toInt()).toFloat()
+        }
+    }
+
+    // Chức năng: áp dụng cấp độ lộ trình cho danh sách ngày tập.
+    // Dùng chung cho tất cả kế hoạch sau khi được tự sinh.
+    private fun applyPlanLevel(
+        context: Context,
+        planDays: List<PlanDay>,
+        exerciseType: String,
+        planLevel: String
+    ): List<PlanDay> {
+        val allExercises = WorkoutDataReader.getExercisesByType(
+            context = context,
+            exerciseType = exerciseType
+        )
+
+        return planDays.map { planDay ->
+            personalizePlanDay(
+                planDay = planDay,
+                allExercises = allExercises,
+                planLevel = planLevel
+            )
+        }
+    }
+
+    // Chức năng: cá nhân hóa một ngày tập theo nhóm BMI.
+    private fun personalizePlanDay(
+        planDay: PlanDay,
+        allExercises: List<Exercise>,
+        planLevel: String
+    ): PlanDay {
+        if (planDay.isRestDay) {
+            return planDay
+        }
+
+        val targetExerciseCount = getExerciseCountForDay(
+            dayNumber = planDay.dayNumber,
+            planLevel = planLevel
+        )
+
+        val selectedExerciseIds = buildPersonalizedExerciseIds(
+            originalIds = planDay.exerciseIds,
+            allExercises = allExercises,
+            targetCount = targetExerciseCount,
+            dayNumber = planDay.dayNumber,
+            planLevel = planLevel
+        )
+
+        val durationMinutes = calculateDurationMinutes(
+            selectedExerciseIds = selectedExerciseIds,
+            allExercises = allExercises,
+            oldDurationMinutes = planDay.durationMinutes
+        )
+
+        return PlanDay(
+            dayNumber = planDay.dayNumber,
+            title = planDay.title,
+            exerciseCount = selectedExerciseIds.size,
+            durationMinutes = durationMinutes,
+            isRestDay = false,
+            exerciseType = planDay.exerciseType,
+            exerciseIds = selectedExerciseIds
         )
     }
 
-    // Chức năng: chấm điểm bài tập cho người đang giảm cân nhưng đã gần đạt mục tiêu.
-    // Ưu tiên bài giữ dáng, siết cơ, ổn định cơ thể.
-    // Vẫn giữ một ít bài đốt calo nhưng không quá nặng như giai đoạn đầu.
-    private fun getNearTargetLoseWeightScore(exercise: Exercise): Int {
-        var score = 0
+    // Chức năng: sắp xếp bài tập theo nhóm BMI.
+// Béo phì ưu tiên bài Low, Beginner, ít tác động mạnh.
+// Thừa cân ưu tiên Beginner/Medium, cường độ vừa để tăng đốt calo.
+// Bình thường giữ mức cân bằng.
+// Thiếu cân ưu tiên bài nhẹ, không ép cardio quá mạnh.
+    private fun sortExercisesByPlanLevel(
+        exercises: List<Exercise>,
+        planLevel: String,
+        dayNumber: Int
+    ): List<Exercise> {
+        val rotatedExercises = rotateExercisesByDay(
+            exercises = exercises,
+            dayNumber = dayNumber
+        )
 
-        when (exercise.level) {
-            "Beginner" -> score += 12
-            "Medium" -> score += 8
+        return when (planLevel) {
+            "obese" -> {
+                rotatedExercises.sortedWith(
+                    compareBy<Exercise>(
+                        { if (isHighImpactExercise(it.name)) 1 else 0 },
+                        { getIntensityScore(it.intensity) },
+                        { getLevelScore(it.level) },
+                        { it.calories }
+                    )
+                )
+            }
+
+            "overweight" -> {
+                rotatedExercises.sortedWith(
+                    compareBy<Exercise>(
+                        { if (it.intensity == "High") 1 else 0 },
+                        { getLevelScore(it.level) },
+                        { if (it.intensity == "Medium") 0 else 1 },
+                        { -it.calories }
+                    )
+                )
+            }
+
+            "underweight" -> {
+                rotatedExercises.sortedWith(
+                    compareBy<Exercise>(
+                        { if (it.intensity == "High") 1 else 0 },
+                        { getLevelScore(it.level) },
+                        { getIntensityScore(it.intensity) },
+                        { it.calories }
+                    )
+                )
+            }
+
+            else -> {
+                rotatedExercises.sortedWith(
+                    compareBy<Exercise>(
+                        { getLevelScore(it.level) },
+                        { getIntensityScore(it.intensity) }
+                    )
+                )
+            }
         }
-
-        when (exercise.intensity) {
-            "Medium" -> score += 12
-            "Low" -> score += 10
-            "High" -> score += 3
-        }
-
-        score += exercise.calories
-
-        val name = exercise.name.lowercase()
-
-        if (name.contains("đo sàn")) score += 14
-        if (name.contains("plank")) score += 14
-        if (name.contains("gánh đùi")) score += 12
-        if (name.contains("squat")) score += 12
-        if (name.contains("cây cầu")) score += 12
-        if (name.contains("chống đẩy")) score += 10
-        if (name.contains("gập bụng")) score += 10
-        if (name.contains("tấn")) score += 8
-
-        // Vẫn giữ cardio, nhưng không ưu tiên quá mạnh khi đã gần đạt mục tiêu
-        if (name.contains("đấm")) score += 5
-        if (name.contains("bật nhảy")) score += 2
-        if (name.contains("leo núi")) score += 2
-
-        return score
     }
 
-    // Chức năng: chấm điểm bài tập cho người muốn giảm cân.
-    // Ưu tiên bài đốt calo cao, cường độ vừa, vận động nhiều.
-    private fun getLoseWeightScore(exercise: Exercise): Int {
-        var score = 0
-
-        score += exercise.calories * 3
-
-        when (exercise.intensity) {
-            "High" -> score += 8
-            "Medium" -> score += 12
-            "Low" -> score += 3
+    // Chức năng: đổi cường độ bài tập thành điểm để sắp xếp.
+    private fun getIntensityScore(intensity: String): Int {
+        return when (intensity.lowercase()) {
+            "low" -> 0
+            "medium" -> 1
+            "high" -> 2
+            else -> 1
         }
-
-        when (exercise.level) {
-            "Beginner" -> score += 8
-            "Medium" -> score += 6
-        }
-
-        val name = exercise.name.lowercase()
-
-        if (name.contains("bật nhảy")) score += 10
-        if (name.contains("leo núi")) score += 10
-        if (name.contains("đấm")) score += 8
-        if (name.contains("đạp xe")) score += 8
-        if (name.contains("gập người")) score += 6
-        if (name.contains("tấn")) score += 5
-
-        return score
     }
 
-    // Chức năng: chấm điểm bài tập cho người muốn tăng cân / tăng cơ nhẹ.
-    // Ưu tiên bài ổn định, ít cardio nặng, phù hợp người mới.
-    private fun getGainWeightScore(exercise: Exercise): Int {
-        var score = 0
-
-        when (exercise.level) {
-            "Beginner" -> score += 12
-            "Medium" -> score += 5
+    // Chức năng: đổi độ khó bài tập thành điểm để sắp xếp.
+    private fun getLevelScore(level: String): Int {
+        return when (level.lowercase()) {
+            "beginner" -> 0
+            "medium" -> 1
+            "advanced" -> 2
+            else -> 1
         }
-
-        when (exercise.intensity) {
-            "Low" -> score += 10
-            "Medium" -> score += 8
-            "High" -> score -= 5
-        }
-
-        val name = exercise.name.lowercase()
-
-        if (name.contains("chống đẩy")) score += 12
-        if (name.contains("gánh đùi")) score += 12
-        if (name.contains("đứng tấn")) score += 10
-        if (name.contains("cây cầu")) score += 10
-        if (name.contains("đo sàn")) score += 8
-        if (name.contains("tấn sau")) score += 8
-
-        if (name.contains("bật nhảy")) score -= 8
-        if (name.contains("leo núi")) score -= 8
-        if (name.contains("tung chân")) score -= 8
-
-        return score
     }
 
-    // Chức năng: chấm điểm bài tập cho người BMI bình thường / giữ dáng.
-    // Ưu tiên bài cân bằng giữa toàn thân, cơ bụng, tay ngực và chân.
-    private fun getKeepFitScore(exercise: Exercise): Int {
-        var score = 0
-
-        score += exercise.calories * 2
-
-        when (exercise.intensity) {
-            "Medium" -> score += 12
-            "Low" -> score += 7
-            "High" -> score += 4
+    // Chức năng: xoay danh sách theo ngày để các ngày không bị lấy y chang cùng một nhóm bài.
+    private fun rotateExercisesByDay(
+        exercises: List<Exercise>,
+        dayNumber: Int
+    ): List<Exercise> {
+        if (exercises.isEmpty()) {
+            return exercises
         }
 
-        when (exercise.level) {
-            "Beginner" -> score += 10
-            "Medium" -> score += 6
-        }
+        val startIndex = ((dayNumber - 1) * 2) % exercises.size
 
-        val name = exercise.name.lowercase()
-
-        if (name.contains("bật nhảy")) score += 7
-        if (name.contains("gánh đùi")) score += 7
-        if (name.contains("chống đẩy")) score += 7
-        if (name.contains("gập")) score += 7
-        if (name.contains("đo sàn")) score += 7
-        if (name.contains("cây cầu")) score += 5
-
-        return score
+        return exercises.drop(startIndex) + exercises.take(startIndex)
     }
 
-    // Dữ liệu tạm để chứa thông tin người dùng đọc từ SharedPreferences.
-    private data class UserWorkoutProfile(
-        val currentBMI: Float,
-        val currentWeight: Float,
-        val targetWeight: Float
-    )
+    // Chức năng: nhận diện tạm các bài có tác động mạnh, cần hạn chế cho nhóm béo phì.
+    private fun isHighImpactExercise(exerciseName: String): Boolean {
+        val name = exerciseName.lowercase()
+
+        val highImpactKeywords = listOf(
+            "bật",
+            "nhảy",
+            "leo núi",
+            "tung chân",
+            "burpee",
+            "hít đất",
+            "chống đẩy",
+            "tấn sau"
+        )
+
+        return highImpactKeywords.any { keyword ->
+            name.contains(keyword)
+        }
+    }
+
+    // Chức năng: tạo danh sách bài tập mới cho một ngày.
+    // Không chỉ đổi số lượng bài, mà còn chọn bài phù hợp với nhóm BMI.
+    private fun buildPersonalizedExerciseIds(
+        originalIds: List<String>,
+        allExercises: List<Exercise>,
+        targetCount: Int,
+        dayNumber: Int,
+        planLevel: String
+    ): List<String> {
+        if (targetCount <= 0) {
+            return emptyList()
+        }
+
+        if (allExercises.isEmpty()) {
+            return originalIds.take(targetCount)
+        }
+
+        val sortedExercises = sortExercisesByPlanLevel(
+            exercises = allExercises,
+            planLevel = planLevel,
+            dayNumber = dayNumber
+        )
+
+        val selectedIds = mutableListOf<String>()
+
+        val originalIdSet = originalIds.toSet()
+
+        // Ưu tiên lấy các bài phù hợp mà vẫn nằm trong lộ trình gốc của ngày đó.
+        sortedExercises.forEach { exercise ->
+            if (
+                selectedIds.size < targetCount &&
+                originalIdSet.contains(exercise.id) &&
+                !selectedIds.contains(exercise.id)
+            ) {
+                selectedIds.add(exercise.id)
+            }
+        }
+
+        // Nếu chưa đủ số bài thì lấy thêm từ danh sách bài đã được sắp xếp theo BMI.
+        sortedExercises.forEach { exercise ->
+            if (
+                selectedIds.size < targetCount &&
+                !selectedIds.contains(exercise.id)
+            ) {
+                selectedIds.add(exercise.id)
+            }
+        }
+
+        return selectedIds
+    }
+
+    // Chức năng: tính lại tổng phút dựa trên danh sách bài tập sau khi cá nhân hóa.
+    private fun calculateDurationMinutes(
+        selectedExerciseIds: List<String>,
+        allExercises: List<Exercise>,
+        oldDurationMinutes: Int
+    ): Int {
+        if (selectedExerciseIds.isEmpty()) {
+            return 0
+        }
+
+        val exerciseMap = allExercises.associateBy { exercise ->
+            exercise.id
+        }
+
+        val totalSeconds = selectedExerciseIds.sumOf { exerciseId ->
+            exerciseMap[exerciseId]?.duration ?: 60
+        }
+
+        if (totalSeconds <= 0) {
+            return oldDurationMinutes
+        }
+
+        return (totalSeconds + 59) / 60
+    }
+
+    // Chức năng: quyết định số bài tập theo từng giai đoạn và nhóm BMI.
+// Béo phì tập ít bài hơn thừa cân để giảm áp lực lên khớp và tim mạch.
+    private fun getExerciseCountForDay(
+        dayNumber: Int,
+        planLevel: String
+    ): Int {
+        return when (planLevel) {
+            "underweight" -> {
+                when {
+                    dayNumber <= 7 -> 4
+                    dayNumber <= 15 -> 5
+                    dayNumber <= 23 -> 5
+                    else -> 6
+                }
+            }
+
+            "normal" -> {
+                when {
+                    dayNumber <= 7 -> 6
+                    dayNumber <= 15 -> 7
+                    dayNumber <= 23 -> 8
+                    else -> 8
+                }
+            }
+
+            "overweight" -> {
+                when {
+                    dayNumber <= 7 -> 5
+                    dayNumber <= 15 -> 6
+                    dayNumber <= 23 -> 6
+                    else -> 7
+                }
+            }
+
+            "obese" -> {
+                when {
+                    dayNumber <= 7 -> 3
+                    dayNumber <= 15 -> 4
+                    dayNumber <= 23 -> 4
+                    else -> 5
+                }
+            }
+
+            else -> {
+                when {
+                    dayNumber <= 7 -> 6
+                    dayNumber <= 15 -> 7
+                    dayNumber <= 23 -> 8
+                    else -> 8
+                }
+            }
+        }
+    }
 }

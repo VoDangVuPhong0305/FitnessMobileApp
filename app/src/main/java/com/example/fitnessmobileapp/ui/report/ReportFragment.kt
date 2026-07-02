@@ -33,6 +33,8 @@ import com.example.fitnessmobileapp.data.repository.WorkoutReportRecord
 import android.annotation.SuppressLint
 import android.view.MotionEvent
 import android.widget.GridLayout
+import android.os.Handler
+import android.os.Looper
 
 
 class ReportFragment : Fragment() {
@@ -87,6 +89,14 @@ class ReportFragment : Fragment() {
     private lateinit var txtCalValue5: TextView
     private lateinit var txtCalValue6: TextView
     private lateinit var txtCalValue7: TextView
+
+    private lateinit var txtCalDay1: TextView
+    private lateinit var txtCalDay2: TextView
+    private lateinit var txtCalDay3: TextView
+    private lateinit var txtCalDay4: TextView
+    private lateinit var txtCalDay5: TextView
+    private lateinit var txtCalDay6: TextView
+    private lateinit var txtCalDay7: TextView
 
     private lateinit var weightLineChartView: WeightLineChartView
 
@@ -263,6 +273,14 @@ class ReportFragment : Fragment() {
         txtCalValue5 = view.findViewById(R.id.txtCalValue5)
         txtCalValue6 = view.findViewById(R.id.txtCalValue6)
         txtCalValue7 = view.findViewById(R.id.txtCalValue7)
+
+        txtCalDay1 = view.findViewById(R.id.txtCalDay1)
+        txtCalDay2 = view.findViewById(R.id.txtCalDay2)
+        txtCalDay3 = view.findViewById(R.id.txtCalDay3)
+        txtCalDay4 = view.findViewById(R.id.txtCalDay4)
+        txtCalDay5 = view.findViewById(R.id.txtCalDay5)
+        txtCalDay6 = view.findViewById(R.id.txtCalDay6)
+        txtCalDay7 = view.findViewById(R.id.txtCalDay7)
 
         weightLineChartView = WeightLineChartView(requireContext())
         layoutWeightLineChart.removeAllViews()
@@ -964,45 +982,8 @@ class ReportFragment : Fragment() {
                 return@setOnClickListener
             }
 
-            heightM = newHeightCm / 100.0
-
-            val today = SimpleDateFormat("dd/MM", Locale.getDefault()).format(Date())
-
-            weightList.removeAll { record ->
-                record.date == today
-            }
-
-            weightList.add(
-                WeightRecord(
-                    date = today,
-                    weight = newWeight
-                )
-            )
-
-            while (weightList.size > 7) {
-                weightList.removeAt(0)
-            }
-
-            val newBMI = newWeight / (heightM * heightM)
-
-            getProfilePrefs()
-                .edit()
-                .putFloat("height", newHeightCm.toFloat())
-                .putFloat("currentWeight", newWeight.toFloat())
-                .putFloat("currentBMI", newBMI.toFloat())
-                .apply()
-
-            saveWeightData()
-            updateWeightInfo()
-            updateWeightChart()
-
-            Toast.makeText(
-                requireContext(),
-                "Đã cập nhật chỉ số cơ thể",
-                Toast.LENGTH_SHORT
-            ).show()
-
             dialog.dismiss()
+            saveBodyDataAndRecalculatePlan(newWeight, newHeightCm)
         }
 
         dialog.setOnShowListener {
@@ -1012,8 +993,169 @@ class ReportFragment : Fragment() {
         dialog.show()
     }
 
+    // Chức năng: lưu cân nặng, chiều cao, BMI mới và chạy hiệu ứng tính lại lộ trình tập.
+    private fun saveBodyDataAndRecalculatePlan(
+        newWeight: Double,
+        newHeightCm: Double
+    ) {
+        heightM = newHeightCm / 100.0
+
+        val today = SimpleDateFormat("dd/MM", Locale.getDefault()).format(Date())
+
+        weightList.removeAll { record ->
+            record.date == today
+        }
+
+        weightList.add(
+            WeightRecord(
+                date = today,
+                weight = newWeight
+            )
+        )
+
+        while (weightList.size > 7) {
+            weightList.removeAt(0)
+        }
+
+        val newBMI = newWeight / (heightM * heightM)
+        val planLevel = getPlanLevelByBodyData(newBMI, newWeight)
+
+        getProfilePrefs()
+            .edit()
+            .putFloat("height", newHeightCm.toFloat())
+            .putFloat("currentWeight", newWeight.toFloat())
+            .putFloat("currentBMI", newBMI.toFloat())
+            .putString("planLevel", planLevel)
+            .putLong("planRecalculatedAt", System.currentTimeMillis())
+            .apply()
+
+        saveWeightData()
+        updateWeightInfo()
+        updateWeightChart()
+
+        showRecalculatePlanDialog {
+            Toast.makeText(
+                requireContext(),
+                "Đã cập nhật BMI và tính lại lộ trình tập",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+
+    // Chức năng: dựa vào BMI để chọn nhóm lộ trình tập phù hợp.
+    private fun getPlanLevelByBodyData(
+        bmi: Double,
+        currentWeight: Double
+    ): String {
+        return when {
+            bmi < 18.5 -> "underweight"
+            bmi < 25.0 -> "normal"
+            bmi < 30.0 -> "overweight"
+            else -> "obese"
+        }
+    }
+
+    // Chức năng: hiển thị loading tính lại lộ trình giống bước setup cá nhân ban đầu.
+    private fun showRecalculatePlanDialog(onFinish: () -> Unit) {
+        val normalFont = Typeface.create("sans-serif", Typeface.NORMAL)
+        val mediumFont = Typeface.create("sans-serif-medium", Typeface.NORMAL)
+
+        val container = LinearLayout(requireContext()).apply {
+            orientation = LinearLayout.VERTICAL
+            gravity = Gravity.CENTER_HORIZONTAL
+            setPadding(dp(24), dp(32), dp(24), dp(30))
+            background = GradientDrawable().apply {
+                setColor(Color.WHITE)
+                cornerRadius = dp(26).toFloat()
+            }
+        }
+
+        val titleText = TextView(requireContext()).apply {
+            text = "Đang tạo kế hoạch cá nhân của bạn"
+            gravity = Gravity.CENTER
+            setTextColor(Color.parseColor("#111111"))
+            textSize = 22f
+            typeface = mediumFont
+            includeFontPadding = false
+        }
+
+        val descriptionText = TextView(requireContext()).apply {
+            text = "Đang phân tích hồ sơ mới của bạn..."
+            gravity = Gravity.CENTER
+            setTextColor(Color.parseColor("#777777"))
+            textSize = 15f
+            typeface = normalFont
+            includeFontPadding = false
+            setPadding(0, dp(12), 0, dp(30))
+        }
+
+        val percentText = TextView(requireContext()).apply {
+            text = "0%"
+            gravity = Gravity.CENTER
+            setTextColor(Color.parseColor("#111111"))
+            textSize = 58f
+            typeface = Typeface.DEFAULT_BOLD
+            includeFontPadding = false
+        }
+
+        val bottomText = TextView(requireContext()).apply {
+            text = "Bắt đầu xây dựng lại lộ trình tập trong 30 ngày"
+            gravity = Gravity.CENTER
+            setTextColor(Color.parseColor("#666666"))
+            textSize = 16f
+            typeface = mediumFont
+            includeFontPadding = false
+            setPadding(0, dp(28), 0, 0)
+        }
+
+        container.addView(titleText)
+        container.addView(descriptionText)
+        container.addView(percentText)
+        container.addView(bottomText)
+
+        val dialog = AlertDialog.Builder(requireContext())
+            .setView(container)
+            .setCancelable(false)
+            .create()
+
+        dialog.setOnShowListener {
+            dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+            val handler = Handler(Looper.getMainLooper())
+            var progress = 0
+
+            val runnable = object : Runnable {
+                override fun run() {
+                    progress += 5
+
+                    if (progress > 100) {
+                        progress = 100
+                    }
+
+                    percentText.text = "$progress%"
+
+                    if (progress < 100) {
+                        handler.postDelayed(this, 45)
+                    } else {
+                        handler.postDelayed({
+                            if (dialog.isShowing) {
+                                dialog.dismiss()
+                            }
+
+                            onFinish()
+                        }, 400)
+                    }
+                }
+            }
+
+            handler.post(runnable)
+        }
+
+        dialog.show()
+    }
+
     // Chức năng: mở hộp thoại chỉ cập nhật cân nặng hôm nay.
-// Dùng cho nút + trong card Cân nặng, không chỉnh chiều cao.
+    // Dùng cho nút + trong card Cân nặng, không chỉnh chiều cao.
     private fun showAddWeightOnlyDialog() {
         val currentWeight = weightList.lastOrNull()?.weight
             ?: getProfileFloat("currentWeight", 70f).toDouble()
@@ -1156,42 +1298,10 @@ class ReportFragment : Fragment() {
                 return@setOnClickListener
             }
 
-            val today = SimpleDateFormat("dd/MM", Locale.getDefault()).format(Date())
-
-            weightList.removeAll { record ->
-                record.date == today
-            }
-
-            weightList.add(
-                WeightRecord(
-                    date = today,
-                    weight = newWeight
-                )
-            )
-
-            while (weightList.size > 7) {
-                weightList.removeAt(0)
-            }
-
-            val newBMI = newWeight / (heightM * heightM)
-
-            getProfilePrefs()
-                .edit()
-                .putFloat("currentWeight", newWeight.toFloat())
-                .putFloat("currentBMI", newBMI.toFloat())
-                .apply()
-
-            saveWeightData()
-            updateWeightInfo()
-            updateWeightChart()
-
-            Toast.makeText(
-                requireContext(),
-                "Đã cập nhật cân nặng hôm nay",
-                Toast.LENGTH_SHORT
-            ).show()
+            val currentHeightCm = heightM * 100.0
 
             dialog.dismiss()
+            saveBodyDataAndRecalculatePlan(newWeight, currentHeightCm)
         }
 
         dialog.setOnShowListener {
@@ -1259,21 +1369,34 @@ class ReportFragment : Fragment() {
         weightLineChartView.setData(weightList)
     }
 
+    /// Chức năng: cập nhật biểu đồ calo theo tuần hiện tại.
+// Thứ tự luôn cố định: CN, T2, T3, T4, T5, T6, T7.
     private fun updateCaloriesChart() {
         val allRecords = WorkoutReportManager.getAllRecords(requireContext())
-        val calendar = Calendar.getInstance()
         val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
         val caloriesByDay = mutableListOf<Int>()
+        val dayLabels = listOf("CN", "T2", "T3", "T4", "T5", "T6", "T7")
 
-        for (i in 6 downTo 0) {
-            calendar.time = Date()
-            calendar.add(Calendar.DAY_OF_YEAR, -i)
+        val startOfWeek = Calendar.getInstance().apply {
+            val currentDayOfWeek = get(Calendar.DAY_OF_WEEK)
 
-            val date = dateFormat.format(calendar.time)
+            // Calendar.SUNDAY = 1, MONDAY = 2...
+            // Lùi về Chủ nhật đầu tuần.
+            add(Calendar.DAY_OF_YEAR, -(currentDayOfWeek - Calendar.SUNDAY))
+        }
+
+        for (i in 0..6) {
+            val dayCalendar = Calendar.getInstance().apply {
+                time = startOfWeek.time
+                add(Calendar.DAY_OF_YEAR, i)
+            }
+
+            val date = dateFormat.format(dayCalendar.time)
+
             val calories = allRecords
-                .filter { it.date == date }
-                .sumOf { it.calories }
+                .filter { record -> record.date == date }
+                .sumOf { record -> record.calories }
 
             caloriesByDay.add(calories)
         }
@@ -1290,19 +1413,32 @@ class ReportFragment : Fragment() {
             txtCalValue7
         )
 
+        val labels = listOf(
+            txtCalDay1,
+            txtCalDay2,
+            txtCalDay3,
+            txtCalDay4,
+            txtCalDay5,
+            txtCalDay6,
+            txtCalDay7
+        )
+
         val maxCalories = caloriesByDay.maxOrNull() ?: 0
         val safeMax = if (maxCalories == 0) 1 else maxCalories
 
         for (i in bars.indices) {
             val calories = caloriesByDay[i]
             val percent = calories.toDouble() / safeMax.toDouble()
-            val height = 35 + (percent * 130).roundToInt()
+            val height = 32 + (percent * 120).roundToInt()
 
             val params = bars[i].layoutParams
             params.height = height
             bars[i].layoutParams = params
 
+            bars[i].background = createRoundedBackground("#18C27A", 9f)
+
             values[i].text = calories.toString()
+            labels[i].text = dayLabels[i]
         }
 
         val todayCalories = WorkoutReportManager.getTodaySummary(requireContext()).totalCalories
