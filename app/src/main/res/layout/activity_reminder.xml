@@ -35,8 +35,7 @@
                 android:layout_centerInParent="true"
                 android:text="NHẮC NHỞ"
                 android:textColor="#111111"
-                android:textSize="28sp"
-                android:textStyle="bold" />
+                android:textSize="28sp"/>
 
             <!-- Nút xóa: vẫn là TextView để không lỗi Kotlin.
                  Icon được đặt bằng drawableTop, khi bấm xóa Kotlin sẽ đổi thành chữ HỦY. -->
@@ -54,8 +53,7 @@
                 android:gravity="center"
                 android:text=""
                 android:textColor="#9CA3AF"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:textSize="16sp"/>
 
         </RelativeLayout>
 

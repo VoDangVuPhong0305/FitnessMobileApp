@@ -25,8 +25,7 @@
                 android:gravity="center"
                 android:text="ĐĂNG KÝ"
                 android:textColor="#111111"
-                android:textSize="40sp"
-                android:textStyle="bold" />
+                android:textSize="40sp"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -42,8 +41,7 @@
                     android:layout_height="wrap_content"
                     android:text="Tên đăng nhập"
                     android:textColor="#111111"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:textSize="20sp"/>
 
                 <EditText
                     android:id="@+id/edtRegisterUsername"
@@ -66,8 +64,7 @@
                     android:layout_marginTop="20dp"
                     android:text="Mật khẩu"
                     android:textColor="#111111"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:textSize="20sp"/>
 
                 <EditText
                     android:id="@+id/edtRegisterPassword"
@@ -96,8 +93,7 @@
                 android:gravity="center"
                 android:text="TẠO TÀI KHOẢN"
                 android:textColor="#111111"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                android:textSize="20sp"/>
 
         </LinearLayout>
     </ScrollView>

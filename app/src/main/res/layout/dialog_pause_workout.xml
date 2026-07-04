@@ -17,8 +17,7 @@
             android:layout_height="wrap_content"
             android:text="Vì sao bạn lại tạm dừng ?"
             android:textColor="#FFFFFF"
-            android:textSize="30sp"
-            android:textStyle="bold" />
+            android:textSize="30sp"/>
 
         <TextView
             android:id="@+id/btnRestartCurrentExercise"
@@ -31,8 +30,7 @@
             android:paddingEnd="24dp"
             android:text="Khởi động lại bài tập này"
             android:textColor="#FFFFFF"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textSize="18sp"/>
 
         <TextView
             android:id="@+id/btnExitWorkout"
@@ -45,8 +43,7 @@
             android:paddingEnd="24dp"
             android:text="Thoát"
             android:textColor="#FFFFFF"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textSize="18sp"/>
 
         <TextView
             android:id="@+id/btnContinueWorkout"
@@ -59,8 +56,7 @@
             android:paddingEnd="24dp"
             android:text="Tiếp tục tập luyện"
             android:textColor="#FFFFFF"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textSize="18sp"/>
 
     </LinearLayout>
 

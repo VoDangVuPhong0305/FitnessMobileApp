@@ -548,7 +548,7 @@ class OnboardingActivity : AppCompatActivity() {
     private fun selectMotivation(value: String, selectedView: TextView) {
         motivation = value
         resetOptionStyle()
-        selectedView.setBackgroundResource(R.drawable.bg_green_button)
+        selectedView.setBackgroundResource(R.drawable.bg_unit_selected)
         selectedView.setTextColor(Color.parseColor("#111111"))
     }
 
@@ -556,7 +556,7 @@ class OnboardingActivity : AppCompatActivity() {
     private fun selectGender(value: String, selectedView: TextView) {
         gender = value
         resetOptionStyle()
-        selectedView.setBackgroundResource(R.drawable.bg_green_button)
+        selectedView.setBackgroundResource(R.drawable.bg_unit_selected)
         selectedView.setTextColor(Color.parseColor("#111111"))
     }
 
@@ -565,7 +565,7 @@ class OnboardingActivity : AppCompatActivity() {
         val optionViews = listOf(option1, option2, option3, option4, option5)
 
         optionViews.forEach {
-            it.setBackgroundResource(R.drawable.bg_profile_menu_card)
+            it.setBackgroundResource(R.drawable.bg_unit_unselected)
             it.setTextColor(Color.parseColor("#333333"))
         }
     }
@@ -622,24 +622,26 @@ class OnboardingActivity : AppCompatActivity() {
         txtBmiValue.text = formatBmi(bmi)
 
         txtBmiStatus.text = when {
-            bmi < 18.5 -> "Thiếu cân - bạn nên tăng cân hợp lý."
-            bmi < 23.0 -> "Chỉ số tốt - hãy duy trì nhé!"
-            bmi < 25.0 -> "Hơi thừa cân - nên kiểm soát nhẹ."
-            bmi < 30.0 -> "Thừa cân - nên giảm cân dần."
-            else -> "Béo phì - nên có kế hoạch tập luyện nghiêm túc."
+            bmi < 18.5 -> "Gầy - bạn nên tăng cân hợp lý."
+            bmi < 25.0 -> "Bình thường - hãy duy trì nhé!"
+            bmi < 30.0 -> "Thừa cân - nên kiểm soát cân nặng."
+            bmi < 35.0 -> "Béo phì - nên giảm cân dần."
+            else -> "Béo phì nghiêm trọng - cần ưu tiên cải thiện sức khỏe."
         }
 
         viewBmiIndicator.post {
             val barWidth = layoutBmiBar.width
 
-            val percent = when {
-                bmi <= 15.0 -> 0.05f
-                bmi >= 35.0 -> 0.95f
-                else -> ((bmi - 15.0) / 20.0).toFloat()
-            }
+            val minBmi = 15.0
+            val maxBmi = 40.0
 
-            // Canh vạch đen vào giữa vị trí BMI
-            viewBmiIndicator.translationX = (barWidth * percent) - (viewBmiIndicator.width / 2f)
+            val percent = (
+                    (bmi.coerceIn(minBmi, maxBmi) - minBmi) /
+                            (maxBmi - minBmi)
+                    ).toFloat()
+
+            viewBmiIndicator.translationX =
+                (barWidth * percent) - (viewBmiIndicator.width / 2f)
         }
     }
 

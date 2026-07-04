@@ -96,7 +96,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="74dp"
                 android:layout_marginBottom="16dp"
-                android:background="@drawable/bg_profile_menu_card"
+                android:background="@drawable/bg_unit_unselected"
                 android:gravity="center_vertical"
                 android:paddingStart="24dp"
                 android:paddingEnd="24dp"
@@ -111,7 +111,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="74dp"
                 android:layout_marginBottom="16dp"
-                android:background="@drawable/bg_profile_menu_card"
+                android:background="@drawable/bg_unit_unselected"
                 android:gravity="center_vertical"
                 android:paddingStart="24dp"
                 android:paddingEnd="24dp"
@@ -126,7 +126,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="74dp"
                 android:layout_marginBottom="16dp"
-                android:background="@drawable/bg_profile_menu_card"
+                android:background="@drawable/bg_unit_unselected"
                 android:gravity="center_vertical"
                 android:paddingStart="24dp"
                 android:paddingEnd="24dp"
@@ -141,7 +141,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="74dp"
                 android:layout_marginBottom="16dp"
-                android:background="@drawable/bg_profile_menu_card"
+                android:background="@drawable/bg_unit_unselected"
                 android:gravity="center_vertical"
                 android:paddingStart="24dp"
                 android:paddingEnd="24dp"
@@ -155,7 +155,7 @@
                 android:id="@+id/option5"
                 android:layout_width="match_parent"
                 android:layout_height="74dp"
-                android:background="@drawable/bg_profile_menu_card"
+                android:background="@drawable/bg_unit_unselected"
                 android:gravity="center_vertical"
                 android:paddingStart="24dp"
                 android:paddingEnd="24dp"
@@ -289,38 +289,32 @@
                         <View
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:background="#5ABAD7" />
+                            android:layout_weight="3.5"
+                            android:background="#75BDE3" />
 
                         <View
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:layout_weight="2"
-                            android:background="#80D978" />
+                            android:layout_weight="6.5"
+                            android:background="#63D44B" />
 
                         <View
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:layout_weight="1.5"
-                            android:background="#F0D45C" />
+                            android:layout_weight="5"
+                            android:background="#F2D22E" />
 
                         <View
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:layout_weight="1.5"
-                            android:background="#ECA24A" />
+                            android:layout_weight="5"
+                            android:background="#E89A2E" />
 
                         <View
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:layout_weight="1.5"
-                            android:background="#E46D9C" />
-
-                        <View
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:background="#6666F2" />
+                            android:layout_weight="5"
+                            android:background="#D9231F" />
 
                     </LinearLayout>
 
