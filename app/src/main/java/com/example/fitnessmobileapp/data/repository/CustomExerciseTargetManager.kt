@@ -160,4 +160,56 @@ object CustomExerciseTargetManager {
 
         return baseCalories * (actualSeconds.toDouble() / baseDurationSeconds.toDouble())
     }
+
+    // Chức năng: xóa toàn bộ dữ liệu custom số lần / thời gian bài tập.
+    // Dùng khi Đặt lại tiến độ hoặc Xóa tất cả dữ liệu.
+    fun clearAllTargets(context: Context) {
+        // Chức năng: clear các tên SharedPreferences từng dùng hoặc có thể đang dùng.
+        val possiblePrefNames = listOf(
+            "custom_exercise_targets",
+            "custom_exercise_target_data",
+            "exercise_target_data",
+            "exercise_targets",
+            "custom_targets",
+            "workout_custom_targets",
+            "custom_exercise_target_pref"
+        )
+
+        possiblePrefNames.forEach { prefName ->
+            context.getSharedPreferences(prefName, Context.MODE_PRIVATE)
+                .edit()
+                .clear()
+                .apply()
+        }
+
+        // Chức năng: quét thư mục shared_prefs để xóa các file có tên liên quan tới custom target.
+        // Cách này giúp tránh sót nếu trước đó app từng đổi tên file lưu.
+        val sharedPrefsDir = java.io.File(
+            context.applicationInfo.dataDir,
+            "shared_prefs"
+        )
+
+        if (sharedPrefsDir.exists()) {
+            sharedPrefsDir.listFiles()?.forEach { file ->
+                val fileName = file.name.lowercase()
+
+                val isCustomExerciseTargetFile =
+                    fileName.contains("custom") ||
+                            fileName.contains("exercise_target") ||
+                            fileName.contains("target_exercise") ||
+                            fileName.contains("target")
+
+                if (isCustomExerciseTargetFile) {
+                    val prefName = file.name.removeSuffix(".xml")
+
+                    context.getSharedPreferences(prefName, Context.MODE_PRIVATE)
+                        .edit()
+                        .clear()
+                        .apply()
+
+                    file.delete()
+                }
+            }
+        }
+    }
 }
