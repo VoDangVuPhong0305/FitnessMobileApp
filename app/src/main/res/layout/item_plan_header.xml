@@ -44,8 +44,7 @@
                 android:letterSpacing="0.04"
                 android:text="TẬP CƠ BỤNG"
                 android:textColor="#FFFFFF"
-                android:textSize="28sp"
-                android:textStyle="bold" />
+                android:textSize="28sp"/>
 
             <TextView
                 android:id="@+id/txtHeaderSubtitle"
@@ -77,8 +76,7 @@
                     android:fontFamily="sans-serif"
                     android:text="30 ngày còn lại"
                     android:textColor="#FFFFFF"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:textSize="16sp"/>
 
                 <TextView
                     android:id="@+id/txtHeaderPercent"
@@ -87,8 +85,7 @@
                     android:fontFamily="sans-serif"
                     android:text="0%"
                     android:textColor="#FFFFFF"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:textSize="16sp"/>
             </LinearLayout>
 
             <FrameLayout

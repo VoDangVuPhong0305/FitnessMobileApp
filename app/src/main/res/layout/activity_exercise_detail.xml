@@ -28,8 +28,7 @@
                 android:includeFontPadding="false"
                 android:text="←"
                 android:textColor="#333333"
-                android:textSize="38sp"
-                android:textStyle="bold" />
+                android:textSize="38sp"/>
 
             <!-- Tabs Hoạt hình / Video -->
             <LinearLayout
@@ -55,8 +54,7 @@
                         android:includeFontPadding="false"
                         android:text="Hoạt hình"
                         android:textColor="#222222"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
+                        android:textSize="20sp"/>
 
                     <View
                         android:id="@+id/lineAnimation"
@@ -82,8 +80,7 @@
                         android:includeFontPadding="false"
                         android:text="Video"
                         android:textColor="#666666"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
+                        android:textSize="20sp"/>
 
                     <View
                         android:id="@+id/lineYoutube"
@@ -149,8 +146,7 @@
                         android:includeFontPadding="false"
                         android:text="Video hướng dẫn"
                         android:textColor="#FFFFFF"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
+                        android:textSize="18sp"/>
 
                     <TextView
                         android:id="@+id/txtYoutubeHint"
@@ -186,8 +182,7 @@
                 android:includeFontPadding="false"
                 android:text="Tên bài tập"
                 android:textColor="#2D2D2D"
-                android:textSize="25sp"
-                android:textStyle="bold" />
+                android:textSize="25sp"/>
 
             <!-- Dòng thời lượng / lần lặp lại -->
             <LinearLayout
@@ -206,8 +201,7 @@
                     android:includeFontPadding="false"
                     android:text="Thời lượng"
                     android:textColor="#333333"
-                    android:textSize="21sp"
-                    android:textStyle="bold" />
+                    android:textSize="21sp"/>
 
                 <TextView
                     android:id="@+id/btnMinus"
@@ -219,8 +213,7 @@
                     android:includeFontPadding="false"
                     android:text="−"
                     android:textColor="#7B61FF"
-                    android:textSize="28sp"
-                    android:textStyle="bold" />
+                    android:textSize="28sp"/>
 
                 <TextView
                     android:id="@+id/txtExerciseDuration"
@@ -231,8 +224,7 @@
                     android:includeFontPadding="false"
                     android:text="00:30"
                     android:textColor="#444444"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
+                    android:textSize="24sp" />
 
                 <TextView
                     android:id="@+id/btnPlus"
@@ -244,8 +236,7 @@
                     android:includeFontPadding="false"
                     android:text="+"
                     android:textColor="#7B61FF"
-                    android:textSize="28sp"
-                    android:textStyle="bold" />
+                    android:textSize="28sp"/>
             </LinearLayout>
 
             <TextView
@@ -294,7 +285,6 @@
                 android:text="←"
                 android:textColor="#7B61FF"
                 android:textSize="24sp"
-                android:textStyle="bold"
                 android:translationY="-2dp" />
 
             <TextView
@@ -306,8 +296,7 @@
                 android:includeFontPadding="false"
                 android:text="1 / 7"
                 android:textColor="#111111"
-                android:textSize="21sp"
-                android:textStyle="bold" />
+                android:textSize="21sp"/>
 
             <TextView
                 android:id="@+id/btnNextExercise"
@@ -319,7 +308,6 @@
                 android:text="→"
                 android:textColor="#7B61FF"
                 android:textSize="24sp"
-                android:textStyle="bold"
                 android:translationY="-2dp" />
 
         </LinearLayout>
@@ -340,8 +328,7 @@
             android:includeFontPadding="false"
             android:text="ĐÓNG"
             android:textColor="#FFFFFF"
-            android:textSize="19sp"
-            android:textStyle="bold" />
+            android:textSize="19sp"/>
     </LinearLayout>
 
 </FrameLayout>

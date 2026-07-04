@@ -1382,10 +1382,11 @@ class ReportFragment : Fragment() {
         txtBMIMarker.typeface = Typeface.create("sans-serif", Typeface.NORMAL)
 
         val statusColor = when {
-            bmi < 18.5 -> 0xFF5F93FF.toInt()
-            bmi < 25 -> 0xFF46C7C7.toInt()
-            bmi < 30 -> 0xFFF2AB45.toInt()
-            else -> 0xFFF05066.toInt()
+            bmi < 18.5 -> Color.parseColor("#75BDE3")
+            bmi < 25.0 -> Color.parseColor("#63D44B")
+            bmi < 30.0 -> Color.parseColor("#F2D22E")
+            bmi < 35.0 -> Color.parseColor("#E89A2E")
+            else -> Color.parseColor("#D9231F")
         }
 
         txtBMIStatus.setTextColor(statusColor)
@@ -1401,8 +1402,16 @@ class ReportFragment : Fragment() {
             val fixedBMI = bmi.coerceIn(minBMI, maxBMI)
             val percent = (fixedBMI - minBMI) / (maxBMI - minBMI)
 
-            val maxMove = bmiScaleContainer.width - txtBMIMarker.width
-            txtBMIMarker.translationX = (percent * maxMove).toFloat()
+            val barWidth = bmiScaleContainer.width
+            val markerWidth = txtBMIMarker.width
+
+            val rawX = ((barWidth * percent) - (markerWidth / 2.0)).toFloat()
+
+            txtBMIMarker.translationX =
+                rawX.coerceIn(
+                    0f,
+                    (barWidth - markerWidth).toFloat()
+                )
         }
     }
 
@@ -1514,10 +1523,11 @@ class ReportFragment : Fragment() {
 
     private fun getBMIStatus(bmi: Double): String {
         return when {
-            bmi < 18.5 -> "Thiếu cân"
-            bmi < 25 -> "Đủ cân"
-            bmi < 30 -> "Thừa cân"
-            else -> "Béo phì"
+            bmi < 18.5 -> "Gầy"
+            bmi < 25.0 -> "Bình thường"
+            bmi < 30.0 -> "Thừa cân"
+            bmi < 35.0 -> "Béo phì"
+            else -> "Béo phì nặng"
         }
     }
 

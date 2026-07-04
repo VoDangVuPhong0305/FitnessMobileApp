@@ -33,10 +33,12 @@
             android:id="@+id/txtReportTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Báo cáo"
-            android:textColor="#111111"
-            android:textSize="36sp"
-            android:textStyle="bold" />
+            android:fontFamily="@font/anton_regular"
+            android:includeFontPadding="false"
+            android:text="BÁO CÁO"
+            android:textColor="#222222"
+            android:textSize="30sp"
+            android:textStyle="normal" />
 
         <LinearLayout
             android:id="@+id/layoutQuickTabs"
@@ -48,21 +50,25 @@
             <LinearLayout
                 android:id="@+id/tabCalendar"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
+                android:layout_height="48dp"
+                android:minWidth="48dp"
                 android:minHeight="48dp"
                 android:gravity="center"
+                android:orientation="vertical"
                 android:clickable="true"
-                android:focusable="true">
+                android:focusable="true"
+                android:contentDescription="Tab lịch">
 
                 <TextView
                     android:id="@+id/txtTabCalendar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/anton_regular"
+                    android:includeFontPadding="false"
                     android:text="Lịch"
                     android:textColor="#111111"
-                    android:textSize="22sp"
-                    android:textStyle="bold" />
+                    android:textSize="24sp"
+                    android:textStyle="normal" />
 
                 <View
                     android:id="@+id/lineCalendar"
@@ -75,20 +81,26 @@
             <LinearLayout
                 android:id="@+id/tabWeight"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
                 android:layout_marginStart="46dp"
+                android:minWidth="96dp"
+                android:minHeight="48dp"
+                android:gravity="center"
                 android:orientation="vertical"
                 android:clickable="true"
-                android:focusable="true">
+                android:focusable="true"
+                android:contentDescription="Tab cân nặng">
 
                 <TextView
                     android:id="@+id/txtTabWeight"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/anton_regular"
+                    android:includeFontPadding="false"
                     android:text="Cân nặng"
                     android:textColor="#999999"
-                    android:textSize="22sp"
-                    android:textStyle="bold" />
+                    android:textSize="24sp"
+                    android:textStyle="normal" />
 
                 <View
                     android:id="@+id/lineWeight"
@@ -151,8 +163,7 @@
                             android:layout_height="wrap_content"
                             android:text="0"
                             android:textColor="#18C27A"
-                            android:textSize="34sp"
-                            android:textStyle="bold" />
+                            android:textSize="34sp"/>
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -180,8 +191,7 @@
                             android:layout_height="wrap_content"
                             android:text="0"
                             android:textColor="#18C27A"
-                            android:textSize="34sp"
-                            android:textStyle="bold" />
+                            android:textSize="34sp"/>
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -209,8 +219,7 @@
                             android:layout_height="wrap_content"
                             android:text="0"
                             android:textColor="#18C27A"
-                            android:textSize="34sp"
-                            android:textStyle="bold" />
+                            android:textSize="34sp"/>
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -246,7 +255,6 @@
                         android:text="1/7/2026"
                         android:textColor="#111111"
                         android:textSize="26sp"
-                        android:textStyle="bold"
                         android:visibility="gone" />
 
                     <TextView
@@ -292,14 +300,14 @@
                         android:layout_height="wrap_content"
                         android:text="Lịch sử tập luyện"
                         android:textColor="#111111"
-                        android:textSize="24sp"
-                        android:textStyle="bold" />
+                        android:textSize="24sp"/>
 
                     <ScrollView
                         android:id="@+id/scrollWorkoutHistory"
                         android:layout_width="match_parent"
                         android:layout_height="330dp"
                         android:layout_marginTop="14dp"
+                        android:contentDescription="Danh sách lịch sử tập luyện"
                         android:fillViewport="false"
                         android:overScrollMode="ifContentScrolls"
                         android:scrollbars="vertical">
@@ -528,12 +536,11 @@
                                 android:id="@+id/txtBMITitle"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:fontFamily="@font/anton_regular"
+                                android:includeFontPadding="false"
                                 android:text="BMI"
                                 android:textColor="#111111"
-                                android:textSize="24sp"
-                                android:textStyle="bold"
-                                android:fontFamily="@font/anton_regular"
-                                android:includeFontPadding="false" />
+                                android:textSize="24sp"/>
 
                             <TextView
                                 android:id="@+id/txtBMIUnit"
@@ -597,43 +604,36 @@
                             <View
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
-                                android:layout_weight="1"
+                                android:layout_weight="3.5"
                                 android:layout_marginEnd="3dp"
-                                android:background="#496BFF" />
+                                android:background="#75BDE3" />
 
                             <View
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
-                                android:layout_weight="1"
-                                android:layout_marginEnd="3dp"
-                                android:background="#5F93FF" />
-
-                            <View
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:layout_weight="2"
+                                android:layout_weight="6.5"
                                 android:layout_marginEnd="3dp"
                                 android:background="#63D44B" />
 
                             <View
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
-                                android:layout_weight="1"
+                                android:layout_weight="5"
                                 android:layout_marginEnd="3dp"
-                                android:background="#F2D65C" />
+                                android:background="#F2D22E" />
 
                             <View
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
-                                android:layout_weight="1"
+                                android:layout_weight="5"
                                 android:layout_marginEnd="3dp"
-                                android:background="#F2AB45" />
+                                android:background="#E89A2E" />
 
                             <View
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
-                                android:layout_weight="1"
-                                android:background="#F05066" />
+                                android:layout_weight="5"
+                                android:background="#D9231F" />
                         </LinearLayout>
                     </FrameLayout>
 
@@ -646,7 +646,7 @@
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
+                            android:layout_weight="3.5"
                             android:text="15"
                             android:textColor="#999999"
                             android:textSize="13sp"
@@ -655,16 +655,7 @@
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="16"
-                            android:textColor="#999999"
-                            android:textSize="13sp"
-                            android:fontFamily="sans-serif" />
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="2"
+                            android:layout_weight="6.5"
                             android:text="18.5"
                             android:textColor="#999999"
                             android:textSize="13sp"
@@ -673,7 +664,7 @@
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
+                            android:layout_weight="5"
                             android:text="25"
                             android:textColor="#999999"
                             android:textSize="13sp"
@@ -682,7 +673,7 @@
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
+                            android:layout_weight="5"
                             android:text="30"
                             android:textColor="#999999"
                             android:textSize="13sp"
@@ -691,7 +682,7 @@
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
+                            android:layout_weight="5"
                             android:gravity="end"
                             android:text="40"
                             android:textColor="#999999"

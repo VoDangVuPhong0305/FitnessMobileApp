@@ -14,26 +14,21 @@
         android:orientation="vertical"
         android:paddingTop="22dp">
 
-        <!-- Tiêu đề -->
+        <!-- Tiêu đề và Dấu chấm vị trí -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="18dp"
             android:layout_marginEnd="18dp"
+            android:fontFamily="@font/anton_regular"
+            android:includeFontPadding="false"
+            android:letterSpacing="0"
             android:paddingTop="20dp"
             android:text="KẾ HOẠCH"
-            android:textColor="#202124"
-            android:textSize="28sp"
-            android:fontFamily="@font/anton_regular"
-            android:textStyle="bold"
-            android:letterSpacing="0.04"
-            android:shadowColor="#202124"
-            android:shadowDx="0.9"
-            android:shadowDy="0"
-            android:shadowRadius="0.1"
-            android:includeFontPadding="false" />
+            android:textColor="#222222"
+            android:textSize="30sp"
+            android:textStyle="normal" />
 
-        <!-- Dấu chấm vị trí -->
         <LinearLayout
             android:id="@+id/layoutPlanDots"
             android:layout_width="wrap_content"
@@ -70,6 +65,7 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:clipToPadding="true"
+        android:contentDescription="Danh sách ngày tập"
         android:paddingTop="14dp"
         android:paddingBottom="0dp"
         android:scrollbars="none">

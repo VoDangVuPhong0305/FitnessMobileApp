@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F4F4F4"
@@ -26,10 +27,11 @@
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
                 android:fontFamily="@font/anton_regular"
-                android:text="CỦA TÔI"
-                android:textColor="#111111"
-                android:textSize="42sp"
-                android:textStyle="bold" />
+                android:includeFontPadding="false"
+                android:text="HỒ SƠ CÁ NHÂN"
+                android:textColor="#222222"
+                android:textSize="30sp"
+                android:textStyle="normal" />
 
             <TextView
                 android:id="@+id/btnHelp"
@@ -39,12 +41,11 @@
                 android:layout_centerVertical="true"
                 android:background="@drawable/bg_profile_icon_box"
                 android:backgroundTint="#20C97A"
-                android:fontFamily="@font/anton_regular"
+                android:fontFamily="sans-serif"
                 android:gravity="center"
                 android:text="\?"
                 android:textColor="#FFFFFF"
-                android:textSize="29sp"
-                android:textStyle="bold" />
+                android:textSize="26sp"/>
         </RelativeLayout>
 
         <!-- Ô lớn chứa toàn bộ chức năng -->
@@ -89,22 +90,20 @@
                     android:layout_centerVertical="true"
                     android:layout_marginStart="24dp"
                     android:layout_toEndOf="@id/iconMyProfileBox"
-                    android:fontFamily="@font/anton_regular"
+                    android:fontFamily="sans-serif"
                     android:text="Hồ sơ của tôi"
                     android:textColor="#111111"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
+                    android:textSize="18sp"
+                    android:textStyle="normal" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:fontFamily="@font/anton_regular"
-                    android:text="›"
-                    android:textColor="#111111"
-                    android:textSize="38sp"
-                    android:textStyle="bold" />
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_chevron_right"
+                    app:tint="#111111" />
             </RelativeLayout>
 
             <View
@@ -143,22 +142,20 @@
                     android:layout_centerVertical="true"
                     android:layout_marginStart="24dp"
                     android:layout_toEndOf="@id/iconReminderBox"
-                    android:fontFamily="@font/anton_regular"
+                    android:fontFamily="sans-serif"
                     android:text="Nhắc nhở"
                     android:textColor="#111111"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
+                    android:textSize="18sp"
+                    android:textStyle="normal" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:fontFamily="@font/anton_regular"
-                    android:text="›"
-                    android:textColor="#111111"
-                    android:textSize="38sp"
-                    android:textStyle="bold" />
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_chevron_right"
+                    app:tint="#111111" />
             </RelativeLayout>
 
             <View
@@ -197,22 +194,20 @@
                     android:layout_centerVertical="true"
                     android:layout_marginStart="24dp"
                     android:layout_toEndOf="@id/iconResetBox"
-                    android:fontFamily="@font/anton_regular"
+                    android:fontFamily="sans-serif"
                     android:text="Đặt lại tiến độ"
                     android:textColor="#111111"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
+                    android:textSize="18sp"
+                    android:textStyle="normal" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:fontFamily="@font/anton_regular"
-                    android:text="›"
-                    android:textColor="#111111"
-                    android:textSize="38sp"
-                    android:textStyle="bold" />
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_chevron_right"
+                    app:tint="#111111" />
             </RelativeLayout>
 
             <View
@@ -251,22 +246,20 @@
                     android:layout_centerVertical="true"
                     android:layout_marginStart="24dp"
                     android:layout_toEndOf="@id/iconDeleteBox"
-                    android:fontFamily="@font/anton_regular"
+                    android:fontFamily="sans-serif"
                     android:text="Xóa tất cả dữ liệu"
                     android:textColor="#111111"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
+                    android:textSize="18sp"
+                    android:textStyle="normal" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:fontFamily="@font/anton_regular"
-                    android:text="›"
-                    android:textColor="#111111"
-                    android:textSize="38sp"
-                    android:textStyle="bold" />
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_chevron_right"
+                    app:tint="#111111" />
             </RelativeLayout>
 
             <View
@@ -305,22 +298,20 @@
                     android:layout_centerVertical="true"
                     android:layout_marginStart="24dp"
                     android:layout_toEndOf="@id/iconFAQBox"
-                    android:fontFamily="@font/anton_regular"
+                    android:fontFamily="sans-serif"
                     android:text="Câu hỏi thường gặp"
                     android:textColor="#111111"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
+                    android:textSize="18sp"
+                    android:textStyle="normal" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:fontFamily="@font/anton_regular"
-                    android:text="›"
-                    android:textColor="#111111"
-                    android:textSize="38sp"
-                    android:textStyle="bold" />
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_chevron_right"
+                    app:tint="#111111" />
             </RelativeLayout>
 
         </LinearLayout>
@@ -332,12 +323,11 @@
             android:layout_height="58dp"
             android:layout_marginTop="24dp"
             android:background="@drawable/bg_profile_logout_button"
-            android:fontFamily="@font/anton_regular"
+            android:fontFamily="sans-serif"
             android:gravity="center"
             android:text="ĐĂNG XUẤT"
             android:textColor="#FFFFFF"
-            android:textSize="21sp"
-            android:textStyle="bold" />
+            android:textSize="18sp"/>
 
     </LinearLayout>
 

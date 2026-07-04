@@ -20,6 +20,7 @@ import com.example.fitnessmobileapp.data.model.PlanDay
 import com.example.fitnessmobileapp.data.model.WorkoutPlanCategories
 import com.example.fitnessmobileapp.data.repository.PlanProgressManager
 import com.example.fitnessmobileapp.data.repository.WorkoutPlanProvider
+import androidx.core.content.res.ResourcesCompat
 
 
 class PlanFragment : Fragment(R.layout.fragment_plan) {
@@ -265,7 +266,10 @@ class PlanFragment : Fragment(R.layout.fragment_plan) {
             setImageResource(R.drawable.ic_plan_check)
             scaleType = ImageView.ScaleType.FIT_CENTER
 
-            layoutParams = LinearLayout.LayoutParams(dp(58), dp(58))
+            layoutParams = LinearLayout.LayoutParams(dp(46), dp(46)).apply {
+                gravity = Gravity.CENTER_VERTICAL
+                marginEnd = dp(4)
+            }
         }
 
         card.addView(textContainer)
@@ -304,12 +308,16 @@ class PlanFragment : Fragment(R.layout.fragment_plan) {
 
         val btnStart = TextView(requireContext()).apply {
             text = "Bắt đầu"
-            textSize = 19f
-            typeface = Typeface.create("sans-serif", Typeface.BOLD)
+            textSize = 18f
+            typeface = ResourcesCompat.getFont(requireContext(), R.font.anton_regular)
+            includeFontPadding = false
             setTextColor(Color.parseColor(selectedPlan.startColor))
             gravity = Gravity.CENTER
             background = resources.getDrawable(R.drawable.bg_plan_start_button, null)
-            layoutParams = LinearLayout.LayoutParams(dp(132), dp(48))
+
+            layoutParams = LinearLayout.LayoutParams(dp(128), dp(48)).apply {
+                gravity = Gravity.CENTER_VERTICAL
+            }
         }
 
         card.addView(textContainer)
@@ -369,10 +377,15 @@ class PlanFragment : Fragment(R.layout.fragment_plan) {
 
         val txtIcon = TextView(requireContext()).apply {
             text = "☕"
-            textSize = 38f
+            textSize = 28f
             gravity = Gravity.CENTER
+            includeFontPadding = false
             setTextColor(Color.parseColor(selectedPlan.startColor))
-            layoutParams = LinearLayout.LayoutParams(dp(58), dp(58))
+
+            layoutParams = LinearLayout.LayoutParams(dp(44), dp(44)).apply {
+                gravity = Gravity.CENTER_VERTICAL
+                marginEnd = dp(8)
+            }
         }
 
         card.addView(textContainer)
@@ -407,12 +420,13 @@ class PlanFragment : Fragment(R.layout.fragment_plan) {
         return LinearLayout(requireContext()).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER_VERTICAL
-            setPadding(dp(20), 0, dp(20), 0)
+            setPadding(dp(18), 0, dp(18), 0)
+
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
-                dp(94)
+                dp(86)
             ).apply {
-                bottomMargin = dp(12)
+                bottomMargin = dp(10)
             }
         }
     }
@@ -421,8 +435,8 @@ class PlanFragment : Fragment(R.layout.fragment_plan) {
     private fun createTitleText(text: String, color: String): TextView {
         return TextView(requireContext()).apply {
             this.text = text
-            textSize = 26f
-            typeface = Typeface.create("sans-serif", Typeface.BOLD)
+            textSize = 23f
+            typeface = ResourcesCompat.getFont(requireContext(), R.font.anton_regular)
             setTextColor(Color.parseColor(color))
             includeFontPadding = false
         }
@@ -432,7 +446,7 @@ class PlanFragment : Fragment(R.layout.fragment_plan) {
     private fun createSubText(text: String, color: String): TextView {
         return TextView(requireContext()).apply {
             this.text = text
-            textSize = 15f
+            textSize = 14f
             typeface = Typeface.create("sans-serif", Typeface.NORMAL)
             setTextColor(Color.parseColor(color))
             setPadding(0, dp(4), 0, 0)

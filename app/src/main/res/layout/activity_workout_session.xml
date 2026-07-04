@@ -47,8 +47,7 @@
                 android:includeFontPadding="false"
                 android:text=""
                 android:textColor="#999999"
-                android:textSize="26sp"
-                android:textStyle="bold" />
+                android:textSize="26sp"/>
 
             <!-- Chức năng: giữ bố cục cân đối vì bên phải không có nút tương ứng -->
             <Space
@@ -98,8 +97,7 @@
             android:includeFontPadding="false"
             android:text="ĐÃ SẴN SÀNG TẬP"
             android:textColor="#222222"
-            android:textSize="29sp"
-            android:textStyle="bold" />
+            android:textSize="29sp"/>
 
         <!-- Chức năng: tên bài tập hiện tại -->
         <TextView
@@ -111,8 +109,7 @@
             android:includeFontPadding="false"
             android:text="LEO NÚI"
             android:textColor="#18C27A"
-            android:textSize="30sp"
-            android:textStyle="bold" />
+            android:textSize="30sp"/>
 
         <!-- Chức năng: hiển thị số đếm chuẩn bị hoặc thời gian/số lần tập -->
         <TextView
@@ -124,8 +121,7 @@
             android:includeFontPadding="false"
             android:text="10"
             android:textColor="#111111"
-            android:textSize="98sp"
-            android:textStyle="bold" />
+            android:textSize="98sp"/>
 
         <!-- Chức năng: khoảng trống co giãn để giữ nút BẮT ĐẦU NGAY ở phía dưới -->
         <Space
@@ -145,8 +141,7 @@
             android:gravity="center"
             android:text="BẮT ĐẦU NGAY"
             android:textColor="#666666"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textSize="18sp"/>
 
         <!-- Chức năng: cụm điều khiển khi đang tập, gồm TẠM DỪNG/XONG, Trước đó và Bỏ qua -->
         <LinearLayout
@@ -167,8 +162,7 @@
                 android:gravity="center"
                 android:text="Ⅱ  TẠM DỪNG"
                 android:textColor="#666666"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+                android:textSize="18sp"/>
 
             <FrameLayout
                 android:id="@+id/layoutExerciseNavigation"
@@ -200,7 +194,6 @@
                     android:text="←  Trước đó"
                     android:textColor="#777777"
                     android:textSize="19sp"
-                    android:textStyle="bold"
                     android:translationX="-90dp" />
 
                 <!-- Chức năng: bỏ qua bài hiện tại để sang bài tiếp theo -->
@@ -218,7 +211,6 @@
                     android:text="Bỏ qua  →"
                     android:textColor="#777777"
                     android:textSize="19sp"
-                    android:textStyle="bold"
                     android:translationX="90dp" />
 
             </FrameLayout>
@@ -259,8 +251,7 @@
                     android:gravity="center"
                     android:text="Nghỉ ngơi"
                     android:textColor="#6AF174"
-                    android:textSize="34sp"
-                    android:textStyle="bold" />
+                    android:textSize="34sp"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -281,8 +272,7 @@
                         android:gravity="center"
                         android:text="+20s"
                         android:textColor="#FFFFFF"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
+                        android:textSize="18sp"/>
 
                     <!-- Chức năng: hiển thị số giây nghỉ còn lại -->
                     <TextView
@@ -295,8 +285,7 @@
                         android:gravity="center"
                         android:text="10"
                         android:textColor="#FFFFFF"
-                        android:textSize="76sp"
-                        android:textStyle="bold" />
+                        android:textSize="76sp"/>
 
                     <!-- Chức năng: bỏ qua thời gian nghỉ để sang bài tiếp theo -->
                     <TextView
@@ -308,8 +297,7 @@
                         android:gravity="center"
                         android:text="BỎ QUA"
                         android:textColor="#FFFFFF"
-                        android:textSize="17sp"
-                        android:textStyle="bold" />
+                        android:textSize="17sp"/>
 
                 </LinearLayout>
 
@@ -335,8 +323,7 @@
                 android:layout_height="wrap_content"
                 android:text="Tiếp theo 2/7"
                 android:textColor="#9B9B9B"
-                android:textSize="23sp"
-                android:textStyle="bold" />
+                android:textSize="23sp"/>
 
             <TextView
                 android:id="@+id/txtRestNextName"
@@ -345,8 +332,7 @@
                 android:layout_marginTop="8dp"
                 android:text="Chống đẩy 00:30"
                 android:textColor="#555555"
-                android:textSize="26sp"
-                android:textStyle="bold" />
+                android:textSize="26sp"/>
 
             <!-- Chức năng: khung xem trước bài tiếp theo ở màn nghỉ.
                  Giữ khung vuông bình thường để VideoView hiển thị ổn định. -->
@@ -393,7 +379,6 @@
         android:text="\?"
         android:textColor="#FFFFFF"
         android:textSize="22sp"
-        android:textStyle="bold"
-        android:visibility="gone" />
+        android:textStyle="bold"/>
 
 </FrameLayout>
