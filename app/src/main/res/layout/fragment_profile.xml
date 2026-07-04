@@ -1,129 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Kim Tuyền - Màn hình tab Của tôi -->
-
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F4F4F4"
+    android:clipToPadding="false"
     android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingStart="20dp"
-        android:paddingTop="36dp"
-        android:paddingEnd="20dp"
-        android:paddingBottom="120dp">
+        android:paddingStart="18dp"
+        android:paddingTop="38dp"
+        android:paddingEnd="18dp"
+        android:paddingBottom="128dp">
 
+        <!-- Tiêu đề + nút trợ giúp -->
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="90dp">
+            android:layout_height="76dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
+                android:fontFamily="@font/anton_regular"
                 android:text="CỦA TÔI"
                 android:textColor="#111111"
-                android:textSize="38sp"
+                android:textSize="42sp"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/btnHelp"
-                android:layout_width="54dp"
-                android:layout_height="54dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:background="@drawable/bg_profile_icon_box"
+                android:backgroundTint="#20C97A"
+                android:fontFamily="@font/anton_regular"
                 android:gravity="center"
-                android:text="?"
+                android:text="\?"
                 android:textColor="#FFFFFF"
-                android:textSize="30sp"
+                android:textSize="29sp"
                 android:textStyle="bold" />
         </RelativeLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="105dp"
-            android:layout_marginTop="8dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="82dp"
-                android:layout_height="82dp"
-                android:background="@drawable/bg_profile_avatar"
-                android:gravity="center"
-                android:text="MT"
-                android:textColor="#FFFFFF"
-                android:textSize="28sp"
-                android:textStyle="bold" />
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Mỹ Tuyền"
-                    android:textColor="#111111"
-                    android:textSize="28sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
-                    android:text="Trang cá nhân và cài đặt luyện tập"
-                    android:textColor="#A5A5A5"
-                    android:textSize="17sp" />
-            </LinearLayout>
-        </LinearLayout>
-
+        <!-- Ô lớn chứa toàn bộ chức năng -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="28dp"
             android:background="@drawable/bg_profile_menu_card"
-            android:elevation="4dp"
             android:orientation="vertical"
-            android:paddingStart="18dp"
-            android:paddingTop="16dp"
-            android:paddingEnd="18dp"
-            android:paddingBottom="16dp">
+            android:paddingStart="22dp"
+            android:paddingTop="18dp"
+            android:paddingEnd="22dp"
+            android:paddingBottom="18dp">
 
+            <!-- Hồ sơ của tôi -->
             <RelativeLayout
                 android:id="@+id/itemMyProfile"
                 android:layout_width="match_parent"
-                android:layout_height="76dp"
+                android:layout_height="82dp"
                 android:clickable="true"
                 android:focusable="true">
 
-                <TextView
-                    android:id="@+id/iconMyProfile"
-                    android:layout_width="52dp"
-                    android:layout_height="52dp"
+                <FrameLayout
+                    android:id="@+id/iconMyProfileBox"
+                    android:layout_width="54dp"
+                    android:layout_height="54dp"
                     android:layout_centerVertical="true"
                     android:background="@drawable/bg_profile_icon_box"
-                    android:gravity="center"
-                    android:text="☺"
-                    android:textSize="26sp" />
+                    android:backgroundTint="#20C97A">
+
+                    <ImageView
+                        android:layout_width="31dp"
+                        android:layout_height="31dp"
+                        android:layout_gravity="center"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_profile_user" />
+                </FrameLayout>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginStart="22dp"
-                    android:layout_toEndOf="@id/iconMyProfile"
+                    android:layout_marginStart="24dp"
+                    android:layout_toEndOf="@id/iconMyProfileBox"
+                    android:fontFamily="@font/anton_regular"
                     android:text="Hồ sơ của tôi"
                     android:textColor="#111111"
-                    android:textSize="25sp"
+                    android:textSize="24sp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -131,44 +100,53 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
+                    android:fontFamily="@font/anton_regular"
                     android:text="›"
                     android:textColor="#111111"
-                    android:textSize="46sp"
+                    android:textSize="38sp"
                     android:textStyle="bold" />
             </RelativeLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginStart="72dp"
-                android:background="#E8E8E8" />
+                android:layout_marginStart="78dp"
+                android:background="#E9E9E9" />
 
+            <!-- Nhắc nhở -->
             <RelativeLayout
                 android:id="@+id/itemReminder"
                 android:layout_width="match_parent"
-                android:layout_height="76dp"
+                android:layout_height="82dp"
                 android:clickable="true"
                 android:focusable="true">
 
-                <TextView
-                    android:id="@+id/iconReminder"
-                    android:layout_width="52dp"
-                    android:layout_height="52dp"
+                <FrameLayout
+                    android:id="@+id/iconReminderBox"
+                    android:layout_width="54dp"
+                    android:layout_height="54dp"
                     android:layout_centerVertical="true"
                     android:background="@drawable/bg_profile_icon_box"
-                    android:gravity="center"
-                    android:text="🔔"
-                    android:textSize="24sp" />
+                    android:backgroundTint="#20C97A">
+
+                    <ImageView
+                        android:layout_width="31dp"
+                        android:layout_height="31dp"
+                        android:layout_gravity="center"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_profile_bell" />
+                </FrameLayout>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginStart="22dp"
-                    android:layout_toEndOf="@id/iconReminder"
+                    android:layout_marginStart="24dp"
+                    android:layout_toEndOf="@id/iconReminderBox"
+                    android:fontFamily="@font/anton_regular"
                     android:text="Nhắc nhở"
                     android:textColor="#111111"
-                    android:textSize="25sp"
+                    android:textSize="24sp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -176,93 +154,53 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
+                    android:fontFamily="@font/anton_regular"
                     android:text="›"
                     android:textColor="#111111"
-                    android:textSize="46sp"
+                    android:textSize="38sp"
                     android:textStyle="bold" />
             </RelativeLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginStart="72dp"
-                android:background="#E8E8E8" />
+                android:layout_marginStart="78dp"
+                android:background="#E9E9E9" />
 
-            <RelativeLayout
-                android:id="@+id/itemSound"
-                android:layout_width="match_parent"
-                android:layout_height="76dp"
-                android:clickable="true"
-                android:focusable="true">
-
-                <TextView
-                    android:id="@+id/iconSound"
-                    android:layout_width="52dp"
-                    android:layout_height="52dp"
-                    android:layout_centerVertical="true"
-                    android:background="@drawable/bg_profile_icon_box"
-                    android:gravity="center"
-                    android:text="♪"
-                    android:textColor="#FFFFFF"
-                    android:textSize="30sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="22dp"
-                    android:layout_toEndOf="@id/iconSound"
-                    android:text="Lựa chọn âm thanh"
-                    android:textColor="#111111"
-                    android:textSize="25sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:text="›"
-                    android:textColor="#111111"
-                    android:textSize="46sp"
-                    android:textStyle="bold" />
-            </RelativeLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginStart="72dp"
-                android:background="#E8E8E8" />
-
+            <!-- Đặt lại tiến độ -->
             <RelativeLayout
                 android:id="@+id/itemResetProgress"
                 android:layout_width="match_parent"
-                android:layout_height="76dp"
+                android:layout_height="82dp"
                 android:clickable="true"
                 android:focusable="true">
 
-                <TextView
-                    android:id="@+id/iconReset"
-                    android:layout_width="52dp"
-                    android:layout_height="52dp"
+                <FrameLayout
+                    android:id="@+id/iconResetBox"
+                    android:layout_width="54dp"
+                    android:layout_height="54dp"
                     android:layout_centerVertical="true"
                     android:background="@drawable/bg_profile_icon_box"
-                    android:gravity="center"
-                    android:text="↻"
-                    android:textColor="#FFFFFF"
-                    android:textSize="30sp"
-                    android:textStyle="bold" />
+                    android:backgroundTint="#20C97A">
+
+                    <ImageView
+                        android:layout_width="31dp"
+                        android:layout_height="31dp"
+                        android:layout_gravity="center"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_profile_reset" />
+                </FrameLayout>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginStart="22dp"
-                    android:layout_toEndOf="@id/iconReset"
+                    android:layout_marginStart="24dp"
+                    android:layout_toEndOf="@id/iconResetBox"
+                    android:fontFamily="@font/anton_regular"
                     android:text="Đặt lại tiến độ"
                     android:textColor="#111111"
-                    android:textSize="25sp"
+                    android:textSize="24sp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -270,152 +208,53 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
+                    android:fontFamily="@font/anton_regular"
                     android:text="›"
                     android:textColor="#111111"
-                    android:textSize="46sp"
-                    android:textStyle="bold" />
-            </RelativeLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="28dp"
-            android:background="@drawable/bg_profile_menu_card"
-            android:elevation="4dp"
-            android:orientation="vertical"
-            android:paddingStart="18dp"
-            android:paddingTop="16dp"
-            android:paddingEnd="18dp"
-            android:paddingBottom="16dp">
-
-            <RelativeLayout
-                android:id="@+id/itemDeleteAllData"
-                android:layout_width="match_parent"
-                android:layout_height="76dp"
-                android:clickable="true"
-                android:focusable="true">
-
-                <TextView
-                    android:id="@+id/iconDelete"
-                    android:layout_width="52dp"
-                    android:layout_height="52dp"
-                    android:layout_centerVertical="true"
-                    android:background="@drawable/bg_profile_icon_box"
-                    android:gravity="center"
-                    android:text="🗑"
-                    android:textSize="24sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="22dp"
-                    android:layout_toEndOf="@id/iconDelete"
-                    android:text="Xóa tất cả dữ liệu"
-                    android:textColor="#111111"
-                    android:textSize="25sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:text="›"
-                    android:textColor="#111111"
-                    android:textSize="46sp"
-                    android:textStyle="bold" />
-            </RelativeLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="28dp"
-            android:background="@drawable/bg_profile_menu_card"
-            android:elevation="4dp"
-            android:orientation="vertical"
-            android:paddingStart="18dp"
-            android:paddingTop="16dp"
-            android:paddingEnd="18dp"
-            android:paddingBottom="16dp">
-
-            <RelativeLayout
-                android:id="@+id/itemFeedback"
-                android:layout_width="match_parent"
-                android:layout_height="76dp"
-                android:clickable="true"
-                android:focusable="true">
-
-                <TextView
-                    android:id="@+id/iconFeedback"
-                    android:layout_width="52dp"
-                    android:layout_height="52dp"
-                    android:layout_centerVertical="true"
-                    android:background="@drawable/bg_profile_icon_box"
-                    android:gravity="center"
-                    android:text="✎"
-                    android:textColor="#FFFFFF"
-                    android:textSize="25sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="22dp"
-                    android:layout_toEndOf="@id/iconFeedback"
-                    android:text="Ý kiến phản hồi"
-                    android:textColor="#111111"
-                    android:textSize="25sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:text="›"
-                    android:textColor="#111111"
-                    android:textSize="46sp"
+                    android:textSize="38sp"
                     android:textStyle="bold" />
             </RelativeLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginStart="72dp"
-                android:background="#E8E8E8" />
+                android:layout_marginStart="78dp"
+                android:background="#E9E9E9" />
 
+            <!-- Xóa tất cả dữ liệu -->
             <RelativeLayout
-                android:id="@+id/itemFAQ"
+                android:id="@+id/itemDeleteAllData"
                 android:layout_width="match_parent"
-                android:layout_height="76dp"
+                android:layout_height="82dp"
                 android:clickable="true"
                 android:focusable="true">
 
-                <TextView
-                    android:id="@+id/iconFAQ"
-                    android:layout_width="52dp"
-                    android:layout_height="52dp"
+                <FrameLayout
+                    android:id="@+id/iconDeleteBox"
+                    android:layout_width="54dp"
+                    android:layout_height="54dp"
                     android:layout_centerVertical="true"
                     android:background="@drawable/bg_profile_icon_box"
-                    android:gravity="center"
-                    android:text="\?"
-                    android:textColor="#FFFFFF"
-                    android:textSize="28sp"
-                    android:textStyle="bold" />
+                    android:backgroundTint="#20C97A">
+
+                    <ImageView
+                        android:layout_width="31dp"
+                        android:layout_height="31dp"
+                        android:layout_gravity="center"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_profile_trash" />
+                </FrameLayout>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginStart="22dp"
-                    android:layout_toEndOf="@id/iconFAQ"
-                    android:text="Câu hỏi thường gặp"
+                    android:layout_marginStart="24dp"
+                    android:layout_toEndOf="@id/iconDeleteBox"
+                    android:fontFamily="@font/anton_regular"
+                    android:text="Xóa tất cả dữ liệu"
                     android:textColor="#111111"
-                    android:textSize="25sp"
+                    android:textSize="24sp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -423,23 +262,81 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
+                    android:fontFamily="@font/anton_regular"
                     android:text="›"
                     android:textColor="#111111"
-                    android:textSize="46sp"
+                    android:textSize="38sp"
                     android:textStyle="bold" />
             </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginStart="78dp"
+                android:background="#E9E9E9" />
+
+            <!-- Câu hỏi thường gặp -->
+            <RelativeLayout
+                android:id="@+id/itemFAQ"
+                android:layout_width="match_parent"
+                android:layout_height="82dp"
+                android:clickable="true"
+                android:focusable="true">
+
+                <FrameLayout
+                    android:id="@+id/iconFAQBox"
+                    android:layout_width="54dp"
+                    android:layout_height="54dp"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/bg_profile_icon_box"
+                    android:backgroundTint="#20C97A">
+
+                    <ImageView
+                        android:layout_width="31dp"
+                        android:layout_height="31dp"
+                        android:layout_gravity="center"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_profile_faq" />
+                </FrameLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="24dp"
+                    android:layout_toEndOf="@id/iconFAQBox"
+                    android:fontFamily="@font/anton_regular"
+                    android:text="Câu hỏi thường gặp"
+                    android:textColor="#111111"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:fontFamily="@font/anton_regular"
+                    android:text="›"
+                    android:textColor="#111111"
+                    android:textSize="38sp"
+                    android:textStyle="bold" />
+            </RelativeLayout>
+
         </LinearLayout>
 
+        <!-- Nút đăng xuất tách riêng -->
         <TextView
             android:id="@+id/btnLogout"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginTop="28dp"
-            android:background="#111111"
+            android:layout_height="58dp"
+            android:layout_marginTop="24dp"
+            android:background="@drawable/bg_profile_logout_button"
+            android:fontFamily="@font/anton_regular"
             android:gravity="center"
             android:text="ĐĂNG XUẤT"
             android:textColor="#FFFFFF"
-            android:textSize="20sp"
+            android:textSize="21sp"
             android:textStyle="bold" />
 
     </LinearLayout>

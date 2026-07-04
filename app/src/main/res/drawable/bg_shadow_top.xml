@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- Chức năng: tạo bóng mờ rất nhẹ phía trên thanh điều hướng dưới.
+         Phần sát thanh nav hơi xám, càng lên trên càng trong suốt. -->
     <gradient
-        android:startColor="#00000000"
-        android:endColor="#18000000"
-        android:angle="270" />
+        android:angle="90"
+        android:startColor="#12000000"
+        android:centerColor="#07000000"
+        android:endColor="@android:color/transparent" />
 
 </shape>

@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- Chức năng: tạo bóng mờ phía dưới một phần tử.
+         Màu được làm nhẹ để giống bóng mềm, không thành vệt xám rõ. -->
     <gradient
-        android:startColor="#22000000"
-        android:endColor="#00000000"
-        android:angle="270" />
+        android:angle="270"
+        android:startColor="#10000000"
+        android:centerColor="#06000000"
+        android:endColor="#00000000" />
 
 </shape>

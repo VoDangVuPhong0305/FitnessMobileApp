@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="#7ED3D1" />
+
+    <!-- Chức năng: ô vuông xanh nhạt chứa icon giống app mẫu -->
+    <solid android:color="#5ECBC8" />
+
     <corners android:radius="8dp" />
+
 </shape>
