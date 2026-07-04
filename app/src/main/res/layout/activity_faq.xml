@@ -9,29 +9,38 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="20dp">
+        android:paddingStart="20dp"
+        android:paddingTop="34dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="32dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="64dp">
+            android:layout_height="72dp">
 
             <ImageView
                 android:id="@+id/btnBackFAQ"
-                android:layout_width="42dp"
-                android:layout_height="42dp"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
-                android:padding="8dp"
-                android:src="@drawable/ic_back" />
+                android:layout_marginTop="4dp"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Quay lại"
+                android:padding="9dp"
+                android:src="@drawable/ic_arrow_back" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
+                android:layout_marginTop="4dp"
+                android:fontFamily="@font/anton_regular"
+                android:includeFontPadding="false"
                 android:text="CÂU HỎI THƯỜNG GẶP"
                 android:textColor="#111111"
-                android:textSize="21sp"
-                android:textStyle="bold" />
+                android:textSize="24sp"
+                android:textStyle="normal" />
         </RelativeLayout>
 
         <LinearLayout
@@ -41,23 +50,29 @@
             android:background="@drawable/bg_card_profile"
             android:elevation="4dp"
             android:orientation="vertical"
-            android:padding="20dp">
+            android:paddingStart="20dp"
+            android:paddingTop="22dp"
+            android:paddingEnd="20dp"
+            android:paddingBottom="22dp">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="1. Làm sao để sửa hồ sơ?"
+                android:fontFamily="sans-serif"
+                android:text="1. Làm sao để sửa hồ sơ cá nhân?"
                 android:textColor="#111111"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+                android:textSize="17sp"/>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Vào Của tôi → Hồ sơ của tôi, sau đó bấm vào chiều cao, cân nặng, giới tính hoặc ngày sinh để chỉnh."
+                android:fontFamily="sans-serif"
+                android:lineSpacingExtra="3dp"
+                android:text="Vào Của tôi → Hồ sơ của tôi, sau đó bấm vào chiều cao, cân nặng, giới tính, ngày sinh hoặc mức độ tập luyện để chỉnh lại thông tin."
                 android:textColor="#555555"
-                android:textSize="16sp" />
+                android:textSize="15sp"
+                android:textStyle="normal" />
 
             <View
                 android:layout_width="match_parent"
@@ -69,18 +84,21 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="2. Làm sao để đặt nhắc nhở?"
+                android:fontFamily="sans-serif"
+                android:text="2. Cân nặng mục tiêu dùng để làm gì?"
                 android:textColor="#111111"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+                android:textSize="17sp"/>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Vào mục Nhắc nhở, bật công tắc và chọn giờ bạn muốn app nhắc tập luyện."
+                android:fontFamily="sans-serif"
+                android:lineSpacingExtra="3dp"
+                android:text="Cân nặng mục tiêu giúp app xác định bạn đang muốn tăng cân, giảm cân hay duy trì cân nặng. Từ đó phần Ăn uống có thể gợi ý nội dung phù hợp hơn."
                 android:textColor="#555555"
-                android:textSize="16sp" />
+                android:textSize="15sp"
+                android:textStyle="normal" />
 
             <View
                 android:layout_width="match_parent"
@@ -92,18 +110,178 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="3. Xóa tất cả dữ liệu là gì?"
+                android:fontFamily="sans-serif"
+                android:text="3. Làm sao để đặt nhắc nhở?"
                 android:textColor="#111111"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+                android:textSize="17sp"/>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Chức năng này xóa hồ sơ, nhắc nhở, âm thanh đã chọn và tiến độ đang lưu trong máy."
+                android:fontFamily="sans-serif"
+                android:lineSpacingExtra="3dp"
+                android:text="Vào mục Nhắc nhở, bật công tắc và chọn giờ bạn muốn app nhắc tập luyện. Khi đến giờ, app sẽ thông báo để bạn không quên lịch tập."
                 android:textColor="#555555"
-                android:textSize="16sp" />
+                android:textSize="15sp"
+                android:textStyle="normal" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="18dp"
+                android:layout_marginBottom="18dp"
+                android:background="#EEEEEE" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
+                android:text="4. Đặt lại tiến độ sẽ xóa những gì?"
+                android:textColor="#111111"
+                android:textSize="17sp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:fontFamily="sans-serif"
+                android:lineSpacingExtra="3dp"
+                android:text="Đặt lại tiến độ sẽ đưa kế hoạch tập luyện về trạng thái ban đầu. Các ngày đã hoàn thành, báo cáo luyện tập và dữ liệu tiến độ liên quan sẽ được làm mới."
+                android:textColor="#555555"
+                android:textSize="15sp"
+                android:textStyle="normal" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="18dp"
+                android:layout_marginBottom="18dp"
+                android:background="#EEEEEE" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
+                android:text="5. Xóa tất cả dữ liệu là gì?"
+                android:textColor="#111111"
+                android:textSize="17sp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:fontFamily="sans-serif"
+                android:lineSpacingExtra="3dp"
+                android:text="Chức năng này xóa hồ sơ, nhắc nhở, tiến độ tập luyện, báo cáo và các dữ liệu đã lưu trong máy. Sau khi xóa, app gần như trở về trạng thái ban đầu."
+                android:textColor="#555555"
+                android:textSize="15sp"
+                android:textStyle="normal" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="18dp"
+                android:layout_marginBottom="18dp"
+                android:background="#EEEEEE" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
+                android:text="6. Tôi có thể tập lại ngày đã hoàn thành không?"
+                android:textColor="#111111"
+                android:textSize="17sp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:fontFamily="sans-serif"
+                android:lineSpacingExtra="3dp"
+                android:text="Có. Bạn có thể mở lại ngày đã hoàn thành để xem bài tập và tập lại nếu muốn. Tuy nhiên tiến độ chính vẫn được tính theo kế hoạch hiện tại."
+                android:textColor="#555555"
+                android:textSize="15sp"
+                android:textStyle="normal" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="18dp"
+                android:layout_marginBottom="18dp"
+                android:background="#EEEEEE" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
+                android:text="7. Ngày nghỉ có cần tập không?"
+                android:textColor="#111111"
+                android:textSize="17sp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:fontFamily="sans-serif"
+                android:lineSpacingExtra="3dp"
+                android:text="Không bắt buộc. Ngày nghỉ giúp cơ thể phục hồi. Bạn có thể nghỉ hoàn toàn hoặc vận động nhẹ như đi bộ, giãn cơ nếu cảm thấy phù hợp."
+                android:textColor="#555555"
+                android:textSize="15sp"
+                android:textStyle="normal" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="18dp"
+                android:layout_marginBottom="18dp"
+                android:background="#EEEEEE" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
+                android:text="8. Phần Ăn uống có thay thế chuyên gia dinh dưỡng không?"
+                android:textColor="#111111"
+                android:textSize="17sp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:fontFamily="sans-serif"
+                android:lineSpacingExtra="3dp"
+                android:text="Không. Thực đơn và danh sách mua sắm trong app chỉ mang tính tham khảo. Nếu bạn có bệnh lý hoặc nhu cầu đặc biệt, nên hỏi ý kiến chuyên gia dinh dưỡng hoặc bác sĩ."
+                android:textColor="#555555"
+                android:textSize="15sp"
+                android:textStyle="normal" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="18dp"
+                android:layout_marginBottom="18dp"
+                android:background="#EEEEEE" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
+                android:text="9. Vì sao số calo và thời gian trong báo cáo chỉ mang tính tương đối?"
+                android:textColor="#111111"
+                android:textSize="17sp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:fontFamily="sans-serif"
+                android:lineSpacingExtra="3dp"
+                android:text="Các chỉ số trong báo cáo được tính dựa trên dữ liệu bài tập và tiến độ bạn đã hoàn thành. Đây là số liệu tham khảo, không thay thế cho thiết bị đo chuyên dụng."
+                android:textColor="#555555"
+                android:textSize="15sp"
+                android:textStyle="normal" />
+
         </LinearLayout>
     </LinearLayout>
 </ScrollView>
