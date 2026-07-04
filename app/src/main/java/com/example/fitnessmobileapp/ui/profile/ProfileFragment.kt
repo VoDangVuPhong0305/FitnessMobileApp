@@ -22,6 +22,7 @@ import com.example.fitnessmobileapp.data.repository.CustomExerciseTargetManager
 import com.example.fitnessmobileapp.data.repository.PlanProgressManager
 import com.example.fitnessmobileapp.data.repository.WorkoutReportManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.example.fitnessmobileapp.data.repository.UserDataPrefs
 
 class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
@@ -337,13 +338,34 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         startActivity(intent)
     }
 
-    // Chức năng: xóa thêm các SharedPreferences liên quan trực tiếp đến bài tập.
-    // Dùng để tránh sót dữ liệu nếu trước đó app từng đổi tên nơi lưu.
+    // Chức năng: xóa thêm các SharedPreferences liên quan trực tiếp đến bài tập của tài khoản hiện tại.
+// Không xóa dữ liệu của tài khoản khác.
     private fun clearWorkoutRelatedPreferences(context: Context) {
-        val workoutPrefs = listOf(
+        val username = getCurrentUsername()
+            .trim()
+            .lowercase()
+            .replace("@", "_at_")
+            .replace(".", "_")
+            .replace(" ", "_")
+
+        val workoutPrefs = listOf<String>(
+            "user_${username}_plan_progress_pref",
+            "user_${username}_workout_report_pref",
+            "user_${username}_progress_data",
+            "user_${username}_custom_exercise_target",
+            "user_${username}_custom_exercise_targets",
+            "user_${username}_custom_exercise_target_data",
+            "user_${username}_exercise_target_data",
+            "user_${username}_workout_session_data",
+            "user_${username}_completed_exercise_data",
+            "user_${username}_completed_exercises",
+            "user_${username}_exercise_progress_data",
+
+            // Chức năng: xóa thêm dữ liệu cũ dạng lưu chung toàn app nếu trước đó từng dùng.
             "plan_progress_pref",
             "workout_report_pref",
             "progress_data",
+            "custom_exercise_target",
             "custom_exercise_targets",
             "custom_exercise_target_data",
             "exercise_target_data",
