@@ -30,8 +30,11 @@ object WorkoutReportManager {
     private const val PREF_NAME = "workout_report_pref"
     private const val KEY_WORKOUT_HISTORY = "workout_history"
 
-    // Chức năng: lưu một lần tập đã hoàn thành vào lịch sử.
-    // Mỗi lần người dùng tập xong một vòng thì sẽ tạo một bản ghi mới.
+    // Chức năng: lấy nơi lưu báo cáo riêng theo từng tài khoản.
+    private fun getPrefs(context: Context) =
+        UserDataPrefs.getUserPrefs(context, PREF_NAME)
+
+    // Chức năng: lưu một lần tập đã hoàn thành vào lịch sử của tài khoản hiện tại.
     fun saveCompletedWorkout(
         context: Context,
         dayNumber: Int,
@@ -60,8 +63,7 @@ object WorkoutReportManager {
         saveHistoryJsonArray(context, historyArray)
     }
 
-    // Chức năng: lấy toàn bộ lịch sử tập luyện đã lưu.
-    // Hàm này sẽ được màn Báo cáo dùng để thống kê tổng dữ liệu.
+    // Chức năng: lấy toàn bộ lịch sử tập luyện của tài khoản hiện tại.
     fun getAllRecords(context: Context): List<WorkoutReportRecord> {
         val historyArray = loadHistoryJsonArray(context)
         val records = mutableListOf<WorkoutReportRecord>()
@@ -76,8 +78,7 @@ object WorkoutReportManager {
         return records
     }
 
-    // Chức năng: lấy danh sách các lần tập trong hôm nay.
-    // Dùng để tính hôm nay tập bao nhiêu bài, bao nhiêu phút, bao nhiêu calo.
+    // Chức năng: lấy danh sách các lần tập trong hôm nay của tài khoản hiện tại.
     fun getTodayRecords(context: Context): List<WorkoutReportRecord> {
         val today = createDateString(System.currentTimeMillis())
 
@@ -86,22 +87,19 @@ object WorkoutReportManager {
         }
     }
 
-    // Chức năng: tính tổng thống kê trong hôm nay.
-    // Ví dụ: hôm nay tập 2 vòng, tổng 14 bài, 12 phút, 90 calo.
+    // Chức năng: tính thống kê hôm nay của tài khoản hiện tại.
     fun getTodaySummary(context: Context): WorkoutReportSummary {
         val todayRecords = getTodayRecords(context)
         return summarizeRecords(todayRecords)
     }
 
-    // Chức năng: tính tổng thống kê từ trước đến nay.
-    // Dùng cho màn Báo cáo tổng quan toàn bộ quá trình tập luyện.
+    // Chức năng: tính tổng thống kê của tài khoản hiện tại.
     fun getTotalSummary(context: Context): WorkoutReportSummary {
         val allRecords = getAllRecords(context)
         return summarizeRecords(allRecords)
     }
 
-    // Chức năng: lấy lịch sử tập theo một ngày cụ thể.
-    // date truyền vào có dạng yyyy-MM-dd, ví dụ 2026-06-25.
+    // Chức năng: lấy lịch sử tập theo một ngày cụ thể của tài khoản hiện tại.
     fun getRecordsByDate(
         context: Context,
         date: String
@@ -111,10 +109,9 @@ object WorkoutReportManager {
         }
     }
 
-    // Chức năng: xóa toàn bộ dữ liệu báo cáo.
-    // Hàm này dùng khi người dùng chọn "Xóa tất cả dữ liệu" hoặc khi cần test lại app.
+    // Chức năng: xóa toàn bộ dữ liệu báo cáo của tài khoản hiện tại.
     fun clearReportData(context: Context) {
-        val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        val sharedPreferences = getPrefs(context)
 
         sharedPreferences.edit()
             .remove(KEY_WORKOUT_HISTORY)
@@ -145,10 +142,9 @@ object WorkoutReportManager {
         )
     }
 
-    // Chức năng: đọc chuỗi JSON lịch sử từ SharedPreferences và chuyển thành JSONArray.
-    // Nếu chưa có dữ liệu thì trả về mảng rỗng.
+    // Chức năng: đọc chuỗi JSON lịch sử từ SharedPreferences theo tài khoản hiện tại.
     private fun loadHistoryJsonArray(context: Context): JSONArray {
-        val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        val sharedPreferences = getPrefs(context)
         val jsonString = sharedPreferences.getString(KEY_WORKOUT_HISTORY, "[]") ?: "[]"
 
         return try {
@@ -158,12 +154,12 @@ object WorkoutReportManager {
         }
     }
 
-    // Chức năng: lưu JSONArray lịch sử vào SharedPreferences.
+    // Chức năng: lưu JSONArray lịch sử vào SharedPreferences theo tài khoản hiện tại.
     private fun saveHistoryJsonArray(
         context: Context,
         historyArray: JSONArray
     ) {
-        val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        val sharedPreferences = getPrefs(context)
 
         sharedPreferences.edit()
             .putString(KEY_WORKOUT_HISTORY, historyArray.toString())
@@ -171,7 +167,6 @@ object WorkoutReportManager {
     }
 
     // Chức năng: tạo chuỗi ngày từ thời gian millis.
-    // Kết quả có dạng yyyy-MM-dd để dễ lọc dữ liệu theo ngày.
     private fun createDateString(timeMillis: Long): String {
         val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         return dateFormat.format(Date(timeMillis))

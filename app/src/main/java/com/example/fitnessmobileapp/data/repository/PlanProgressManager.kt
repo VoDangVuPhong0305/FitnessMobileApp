@@ -8,33 +8,31 @@ object PlanProgressManager {
 
     private const val PREF_NAME = "plan_progress_pref"
 
+    // Chức năng: lấy nơi lưu tiến độ riêng theo từng tài khoản.
+    private fun getPrefs(context: Context) =
+        UserDataPrefs.getUserPrefs(context, PREF_NAME)
+
     // Chức năng: tạo key lưu tiến độ riêng cho từng loại kế hoạch.
-    // Ví dụ:
-    // abs -> completed_abs_day
-    // legs -> completed_legs_day
     private fun getCompletedDayKey(planId: String): String {
         return "completed_${planId}_day"
     }
 
-    // Chức năng: lấy ngày cao nhất mà người dùng đã hoàn thành của một kế hoạch cụ thể.
-    // Ví dụ: lấy tiến độ riêng của cơ bụng, chân, tay ngực hoặc toàn thân.
+    // Chức năng: lấy ngày cao nhất mà người dùng hiện tại đã hoàn thành.
     fun getCompletedDay(
         context: Context,
         planId: String
     ): Int {
-        val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        val sharedPreferences = getPrefs(context)
         val key = getCompletedDayKey(planId)
         return sharedPreferences.getInt(key, 0)
     }
 
-    // Chức năng: phiên bản cũ để giữ cho phần cơ bụng hiện tại không bị lỗi.
-    // Nếu nơi nào trong code cũ gọi getCompletedDay(context) thì vẫn hiểu là lấy tiến độ cơ bụng.
+    // Chức năng: phiên bản cũ, mặc định lấy tiến độ cơ bụng.
     fun getCompletedDay(context: Context): Int {
         return getCompletedDay(context, WorkoutPlanCategories.ABS_ID)
     }
 
-    // Chức năng: lưu ngày vừa hoàn thành cho một kế hoạch cụ thể.
-    // Nếu người dùng tập lại ngày cũ thì không làm giảm tiến độ hiện tại.
+    // Chức năng: lưu ngày vừa hoàn thành cho tài khoản hiện tại.
     fun completeDay(
         context: Context,
         planId: String,
@@ -43,7 +41,7 @@ object PlanProgressManager {
         val currentCompletedDay = getCompletedDay(context, planId)
 
         if (dayNumber > currentCompletedDay) {
-            val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+            val sharedPreferences = getPrefs(context)
             val key = getCompletedDayKey(planId)
 
             sharedPreferences.edit()
@@ -52,8 +50,7 @@ object PlanProgressManager {
         }
     }
 
-    // Chức năng: phiên bản cũ để giữ cho phần cơ bụng hiện tại không bị lỗi.
-    // Nếu code cũ gọi completeDay(context, dayNumber) thì mặc định lưu cho kế hoạch cơ bụng.
+    // Chức năng: phiên bản cũ, mặc định lưu cho kế hoạch cơ bụng.
     fun completeDay(
         context: Context,
         dayNumber: Int
@@ -65,8 +62,7 @@ object PlanProgressManager {
         )
     }
 
-    // Chức năng: tìm ngày tập tiếp theo của một kế hoạch cụ thể.
-    // Nếu ngày kế tiếp là ngày nghỉ thì tự bỏ qua để tìm ngày tập tiếp theo.
+    // Chức năng: tìm ngày tập tiếp theo của tài khoản hiện tại.
     fun getCurrentDay(
         context: Context,
         planId: String,
@@ -81,7 +77,7 @@ object PlanProgressManager {
         return nextWorkoutDay?.dayNumber ?: 30
     }
 
-    // Chức năng: phiên bản cũ để giữ cho phần cơ bụng hiện tại không bị lỗi.
+    // Chức năng: phiên bản cũ, mặc định lấy ngày hiện tại của cơ bụng.
     fun getCurrentDay(
         context: Context,
         planDays: List<PlanDay>
@@ -93,8 +89,7 @@ object PlanProgressManager {
         )
     }
 
-    // Chức năng: tính phần trăm hoàn thành của một kế hoạch cụ thể.
-    // Ví dụ hoàn thành 3/30 ngày thì trả về 10.
+    // Chức năng: tính phần trăm hoàn thành của tài khoản hiện tại.
     fun getProgressPercent(
         context: Context,
         planId: String
@@ -103,18 +98,17 @@ object PlanProgressManager {
         return completedDay * 100 / 30
     }
 
-    // Chức năng: phiên bản cũ để giữ cho phần cơ bụng hiện tại không bị lỗi.
+    // Chức năng: phiên bản cũ, mặc định tính tiến độ cơ bụng.
     fun getProgressPercent(context: Context): Int {
         return getProgressPercent(context, WorkoutPlanCategories.ABS_ID)
     }
 
-    // Chức năng: reset tiến độ của một kế hoạch cụ thể.
-    // Ví dụ chỉ reset cơ bụng, không ảnh hưởng tới chân hoặc tay ngực.
+    // Chức năng: reset tiến độ một kế hoạch của tài khoản hiện tại.
     fun resetProgress(
         context: Context,
         planId: String
     ) {
-        val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        val sharedPreferences = getPrefs(context)
         val key = getCompletedDayKey(planId)
 
         sharedPreferences.edit()
@@ -127,10 +121,9 @@ object PlanProgressManager {
         resetProgress(context, WorkoutPlanCategories.ABS_ID)
     }
 
-    // Chức năng: reset toàn bộ tiến độ của tất cả kế hoạch.
-    // Sau này có thể dùng cho nút "Xóa tất cả dữ liệu".
+    // Chức năng: reset toàn bộ tiến độ của tài khoản hiện tại.
     fun resetAllProgress(context: Context) {
-        val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        val sharedPreferences = getPrefs(context)
         val editor = sharedPreferences.edit()
 
         WorkoutPlanCategories.allPlans.forEach { plan ->

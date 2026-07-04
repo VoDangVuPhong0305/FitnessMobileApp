@@ -6,21 +6,13 @@ import kotlin.math.roundToInt
 
 object CustomExerciseTargetManager {
 
-    // Chức năng: lấy tên tài khoản hiện tại để lưu số lần/thời gian chỉnh riêng cho từng người dùng.
-    private fun getCurrentUsername(context: Context): String {
-        val loginPrefs = context.getSharedPreferences("login_data", Context.MODE_PRIVATE)
-        return loginPrefs.getString("current_user", "guest") ?: "guest"
-    }
+    private const val PREF_NAME = "custom_exercise_target"
 
-    // Chức năng: lấy SharedPreferences dùng để lưu số lần/thời gian đã chỉnh của từng bài tập.
+    // Chức năng: lấy SharedPreferences lưu số lần/thời gian riêng cho từng tài khoản.
     private fun getPrefs(context: Context) =
-        context.getSharedPreferences(
-            "user_${getCurrentUsername(context)}_custom_exercise_target",
-            Context.MODE_PRIVATE
-        )
+        UserDataPrefs.getUserPrefs(context, PREF_NAME)
 
     // Chức năng: tạo key riêng cho từng bài tập theo loại bài, ngày tập và id bài tập.
-    // Ví dụ: arms_chest_1_push_up
     private fun getKeyPrefix(
         exerciseType: String,
         dayNumber: Int,
@@ -30,7 +22,6 @@ object CustomExerciseTargetManager {
     }
 
     // Chức năng: lấy số lần/thời gian mặc định của bài tập theo dữ liệu ban đầu.
-    // Ví dụ: Chống đẩy ngày 1 mặc định là x6.
     fun getDefaultTarget(
         exercise: Exercise,
         dayNumber: Int
@@ -43,8 +34,6 @@ object CustomExerciseTargetManager {
     }
 
     // Chức năng: lấy số lần/thời gian hiện tại của bài tập.
-    // Nếu người dùng chưa chỉnh thì trả về giá trị mặc định.
-    // Nếu người dùng đã bấm Lưu thì trả về giá trị đã lưu.
     fun getTarget(
         context: Context,
         exerciseType: String,
@@ -76,7 +65,6 @@ object CustomExerciseTargetManager {
     }
 
     // Chức năng: lưu số lần/thời gian mới sau khi người dùng chỉnh trong màn chi tiết bài tập.
-    // Nếu người dùng chỉnh về đúng giá trị mặc định thì xóa dữ liệu lưu để tránh lưu dư.
     fun saveTarget(
         context: Context,
         exerciseType: String,
@@ -114,7 +102,6 @@ object CustomExerciseTargetManager {
     }
 
     // Chức năng: tính lại thời lượng dự kiến của bài tập khi người dùng đổi số lần.
-    // Ví dụ: mặc định x6 = 30 giây, người dùng đổi thành x8 thì thời lượng tăng theo tỉ lệ 8/6.
     fun calculateDurationForTarget(
         baseDurationSeconds: Int,
         defaultTarget: ExerciseTargetHelper.ExerciseTarget,
@@ -132,7 +119,6 @@ object CustomExerciseTargetManager {
     }
 
     // Chức năng: tính lại kcal của bài tập khi người dùng đổi số lần.
-    // Ví dụ: mặc định x6 = 8 kcal, người dùng đổi thành x8 thì kcal = 8 * 8 / 6.
     fun calculateCaloriesForTarget(
         baseCalories: Int,
         defaultTarget: ExerciseTargetHelper.ExerciseTarget,
@@ -148,7 +134,6 @@ object CustomExerciseTargetManager {
     }
 
     // Chức năng: tính kcal thực tế cho bài tập theo thời gian.
-    // Nếu người dùng chỉ tập một phần thời gian rồi bỏ qua thì kcal chỉ tính theo số giây đã tập.
     fun calculateCaloriesForActualSeconds(
         baseCalories: Int,
         baseDurationSeconds: Int,
@@ -161,11 +146,35 @@ object CustomExerciseTargetManager {
         return baseCalories * (actualSeconds.toDouble() / baseDurationSeconds.toDouble())
     }
 
-    // Chức năng: xóa toàn bộ dữ liệu custom số lần / thời gian bài tập.
+    // Chức năng: xóa custom số lần/thời gian bài tập của tài khoản hiện tại.
     // Dùng khi Đặt lại tiến độ hoặc Xóa tất cả dữ liệu.
     fun clearAllTargets(context: Context) {
-        // Chức năng: clear các tên SharedPreferences từng dùng hoặc có thể đang dùng.
-        val possiblePrefNames = listOf(
+        val username = UserDataPrefs.getCurrentUsername(context)
+            .trim()
+            .lowercase()
+            .replace("@", "_at_")
+            .replace(".", "_")
+            .replace(" ", "_")
+
+        // Chức năng: xóa đúng file đang dùng hiện tại.
+        getPrefs(context)
+            .edit()
+            .clear()
+            .apply()
+
+        // Chức năng: xóa thêm các tên cũ nếu trước đó app từng lưu bằng tên khác.
+        val possiblePrefNames = listOf<String>(
+            "user_${username}_custom_exercise_target",
+            "user_${username}_custom_exercise_targets",
+            "user_${username}_custom_exercise_target_data",
+            "user_${username}_exercise_target_data",
+            "user_${username}_exercise_targets",
+            "user_${username}_custom_targets",
+            "user_${username}_workout_custom_targets",
+            "user_${username}_custom_exercise_target_pref",
+
+            // Các tên cũ dạng lưu chung toàn app, xóa để tránh app đọc nhầm dữ liệu cũ.
+            "custom_exercise_target",
             "custom_exercise_targets",
             "custom_exercise_target_data",
             "exercise_target_data",
@@ -180,36 +189,6 @@ object CustomExerciseTargetManager {
                 .edit()
                 .clear()
                 .apply()
-        }
-
-        // Chức năng: quét thư mục shared_prefs để xóa các file có tên liên quan tới custom target.
-        // Cách này giúp tránh sót nếu trước đó app từng đổi tên file lưu.
-        val sharedPrefsDir = java.io.File(
-            context.applicationInfo.dataDir,
-            "shared_prefs"
-        )
-
-        if (sharedPrefsDir.exists()) {
-            sharedPrefsDir.listFiles()?.forEach { file ->
-                val fileName = file.name.lowercase()
-
-                val isCustomExerciseTargetFile =
-                    fileName.contains("custom") ||
-                            fileName.contains("exercise_target") ||
-                            fileName.contains("target_exercise") ||
-                            fileName.contains("target")
-
-                if (isCustomExerciseTargetFile) {
-                    val prefName = file.name.removeSuffix(".xml")
-
-                    context.getSharedPreferences(prefName, Context.MODE_PRIVATE)
-                        .edit()
-                        .clear()
-                        .apply()
-
-                    file.delete()
-                }
-            }
         }
     }
 }
