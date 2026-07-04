@@ -9,20 +9,26 @@ import com.example.fitnessmobileapp.data.model.WorkoutPlanCategory
 object WorkoutPlanProvider {
 
     // Chức năng: lấy danh sách 30 ngày tập theo id kế hoạch.
-    // Tất cả kế hoạch, kể cả Cơ bụng, đều được tự sinh bằng WorkoutPlanGenerator,
-    // sau đó đi qua bước cá nhân hóa theo BMI/cân nặng.
+    // Tất cả kế hoạch, kể cả Cơ bụng, đều được tự sinh bằng WorkoutPlanGenerator.
+    // Sau đó chỉ cá nhân hóa các ngày chưa tập theo BMI/cân nặng.
     fun getPlanDays(
         context: Context,
         planId: String
     ): List<PlanDay> {
         val planLevel = getCurrentPlanLevel(context)
 
+        val completedDay = PlanProgressManager.getCompletedDay(
+            context = context,
+            planId = planId
+        )
+
         val planCategory = WorkoutPlanCategories.getPlanById(planId)
 
         return createGeneratedPlan(
             context = context,
             planCategory = planCategory,
-            planLevel = planLevel
+            planLevel = planLevel,
+            completedDay = completedDay
         )
     }
 
@@ -33,11 +39,12 @@ object WorkoutPlanProvider {
     }
 
     // Chức năng: tạo lộ trình 30 ngày cho các kế hoạch tự sinh.
-    // Sau khi tạo xong vẫn đưa qua bước cá nhân hóa theo BMI.
+    // Sau khi tạo xong chỉ đưa ngày chưa tập qua bước cá nhân hóa theo BMI.
     private fun createGeneratedPlan(
         context: Context,
         planCategory: WorkoutPlanCategory,
-        planLevel: String
+        planLevel: String,
+        completedDay: Int
     ): List<PlanDay> {
         val exercises = WorkoutDataReader.getExercisesByType(
             context = context,
@@ -54,7 +61,8 @@ object WorkoutPlanProvider {
             context = context,
             planDays = basePlan,
             exerciseType = planCategory.exerciseType,
-            planLevel = planLevel
+            planLevel = planLevel,
+            completedDay = completedDay
         )
     }
 
@@ -108,12 +116,13 @@ object WorkoutPlanProvider {
     }
 
     // Chức năng: áp dụng cấp độ lộ trình cho danh sách ngày tập.
-    // Dùng chung cho tất cả kế hoạch sau khi được tự sinh.
+    // Chỉ cá nhân hóa các ngày chưa tập, không đụng vào ngày đã hoàn thành.
     private fun applyPlanLevel(
         context: Context,
         planDays: List<PlanDay>,
         exerciseType: String,
-        planLevel: String
+        planLevel: String,
+        completedDay: Int
     ): List<PlanDay> {
         val allExercises = WorkoutDataReader.getExercisesByType(
             context = context,
@@ -121,11 +130,15 @@ object WorkoutPlanProvider {
         )
 
         return planDays.map { planDay ->
-            personalizePlanDay(
-                planDay = planDay,
-                allExercises = allExercises,
-                planLevel = planLevel
-            )
+            if (planDay.dayNumber <= completedDay) {
+                planDay
+            } else {
+                personalizePlanDay(
+                    planDay = planDay,
+                    allExercises = allExercises,
+                    planLevel = planLevel
+                )
+            }
         }
     }
 

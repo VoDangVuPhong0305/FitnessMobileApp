@@ -1,67 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/rootWorkoutSession"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF">
 
-    <!-- Màn chuẩn bị / màn tập chính -->
+    <!-- Chức năng: màn chuẩn bị và màn tập chính của buổi tập -->
     <LinearLayout
         android:id="@+id/layoutMainSession"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:paddingStart="22dp"
-        android:paddingTop="34dp"
+        android:paddingTop="26dp"
         android:paddingEnd="22dp"
         android:paddingBottom="28dp">
 
-        <!-- Header -->
+        <!-- Chức năng: thanh trên cùng, gồm nút quay lại và thông tin tiến trình bài tập -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="56dp"
+            android:layout_height="48dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <TextView
+            <!-- Chức năng: nút quay lại bằng icon drawable -->
+            <ImageView
                 android:id="@+id/btnCloseSession"
-                android:layout_width="52dp"
-                android:layout_height="52dp"
-                android:gravity="center"
-                android:text="←"
-                android:textColor="#B0B0B0"
-                android:textSize="36sp"
-                android:textStyle="bold" />
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:adjustViewBounds="true"
+                android:contentDescription="Quay lại"
+                android:padding="2dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_arrow_back"
+                app:tint="#B0B0B0" />
 
+            <!-- Chức năng: hiển thị dạng 1/7, 2/6,... -->
             <TextView
                 android:id="@+id/txtSessionInfo"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
+                android:includeFontPadding="false"
                 android:text=""
                 android:textColor="#999999"
                 android:textSize="26sp"
                 android:textStyle="bold" />
 
+            <!-- Chức năng: giữ bố cục cân đối vì bên phải không có nút tương ứng -->
             <Space
-                android:layout_width="52dp"
-                android:layout_height="52dp" />
+                android:layout_width="32dp"
+                android:layout_height="32dp" />
 
         </LinearLayout>
 
-        <!-- Video bài tập -->
+        <!-- Chức năng: khung hiển thị video/hoạt hình bài tập hiện tại.
+             Giữ khung vuông bình thường để VideoView hiển thị ổn định. -->
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="320dp"
-            android:layout_marginTop="18dp"
+            android:layout_height="292dp"
+            android:layout_marginTop="14dp"
             android:background="#FFFFFF">
 
+            <!-- Chức năng: video/hoạt hình bài tập chính -->
             <VideoView
                 android:id="@+id/videoSessionExercise"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
+            <!-- Chức năng: thông báo khi bài tập không có hoạt hình -->
             <TextView
                 android:id="@+id/txtSessionEmpty"
                 android:layout_width="match_parent"
@@ -74,48 +84,62 @@
 
         </FrameLayout>
 
+        <!-- Chức năng: tạo khoảng cách giữa video và cụm chữ bên dưới -->
         <Space
             android:layout_width="match_parent"
-            android:layout_height="62dp" />
+            android:layout_height="28dp" />
 
+        <!-- Chức năng: tiêu đề trạng thái hiện tại của buổi tập -->
         <TextView
             android:id="@+id/txtPhaseTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:includeFontPadding="false"
             android:text="ĐÃ SẴN SÀNG TẬP"
             android:textColor="#222222"
-            android:textSize="30sp"
+            android:textSize="29sp"
             android:textStyle="bold" />
 
+        <!-- Chức năng: tên bài tập hiện tại -->
         <TextView
             android:id="@+id/txtSessionExerciseName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"
+            android:layout_marginTop="12dp"
             android:gravity="center"
+            android:includeFontPadding="false"
             android:text="LEO NÚI"
-            android:textColor="#555555"
-            android:textSize="24sp"
+            android:textColor="#18C27A"
+            android:textSize="30sp"
             android:textStyle="bold" />
 
+        <!-- Chức năng: hiển thị số đếm chuẩn bị hoặc thời gian/số lần tập -->
         <TextView
             android:id="@+id/txtSessionTimer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="28dp"
+            android:layout_marginTop="8dp"
             android:gravity="center"
+            android:includeFontPadding="false"
             android:text="10"
             android:textColor="#111111"
-            android:textSize="76sp"
+            android:textSize="98sp"
             android:textStyle="bold" />
 
+        <!-- Chức năng: khoảng trống co giãn để giữ nút BẮT ĐẦU NGAY ở phía dưới -->
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <!-- Chức năng: nút bắt đầu nhanh bài tập hiện tại -->
         <TextView
             android:id="@+id/btnStartNow"
             android:layout_width="match_parent"
             android:layout_height="58dp"
             android:layout_marginStart="42dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="10dp"
             android:layout_marginEnd="42dp"
             android:background="@drawable/bg_session_gray_button"
             android:gravity="center"
@@ -124,12 +148,12 @@
             android:textSize="18sp"
             android:textStyle="bold" />
 
-        <!-- Cụm điều khiển khi đang tập -->
+        <!-- Chức năng: cụm điều khiển khi đang tập, gồm TẠM DỪNG/XONG, Trước đó và Bỏ qua -->
         <LinearLayout
             android:id="@+id/layoutExerciseControls"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="20dp"
             android:orientation="vertical"
             android:visibility="gone">
 
@@ -150,52 +174,52 @@
                 android:id="@+id/layoutExerciseNavigation"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:layout_marginTop="22dp"
                 android:layout_marginStart="36dp"
+                android:layout_marginTop="22dp"
                 android:layout_marginEnd="36dp">
 
-                <!-- Vạch giữa cố định ở chính giữa -->
+                <!-- Chức năng: vạch chia giữa hai nút Trước đó và Bỏ qua -->
                 <View
                     android:layout_width="1dp"
                     android:layout_height="30dp"
                     android:layout_gravity="center"
                     android:background="#DDDDDD" />
 
-                <!-- Nút Trước đó: nằm bên trái vạch giữa -->
+                <!-- Chức năng: quay lại bài tập trước đó -->
                 <TextView
                     android:id="@+id/btnPreviousExercise"
                     android:layout_width="200dp"
                     android:layout_height="match_parent"
                     android:layout_gravity="center_vertical|center_horizontal"
-                    android:translationX="-90dp"
+                    android:ellipsize="none"
+                    android:fontFamily="sans-serif"
                     android:gravity="center"
                     android:includeFontPadding="false"
-                    android:singleLine="true"
                     android:maxLines="1"
-                    android:ellipsize="none"
+                    android:singleLine="true"
                     android:text="←  Trước đó"
                     android:textColor="#777777"
                     android:textSize="19sp"
                     android:textStyle="bold"
-                    android:fontFamily="sans-serif" />
+                    android:translationX="-90dp" />
 
-                <!-- Nút Bỏ qua: nằm bên phải vạch giữa -->
+                <!-- Chức năng: bỏ qua bài hiện tại để sang bài tiếp theo -->
                 <TextView
                     android:id="@+id/btnSkip"
                     android:layout_width="190dp"
                     android:layout_height="match_parent"
                     android:layout_gravity="center_vertical|center_horizontal"
-                    android:translationX="90dp"
+                    android:ellipsize="none"
+                    android:fontFamily="sans-serif"
                     android:gravity="center"
                     android:includeFontPadding="false"
-                    android:singleLine="true"
                     android:maxLines="1"
-                    android:ellipsize="none"
+                    android:singleLine="true"
                     android:text="Bỏ qua  →"
                     android:textColor="#777777"
                     android:textSize="19sp"
                     android:textStyle="bold"
-                    android:fontFamily="sans-serif" />
+                    android:translationX="90dp" />
 
             </FrameLayout>
 
@@ -203,7 +227,7 @@
 
     </LinearLayout>
 
-    <!-- Màn nghỉ ngơi -->
+    <!-- Chức năng: màn nghỉ ngơi giữa các bài tập -->
     <LinearLayout
         android:id="@+id/layoutRestScreen"
         android:layout_width="match_parent"
@@ -212,14 +236,13 @@
         android:orientation="vertical"
         android:visibility="gone">
 
-        <!-- Phần trên nền tối -->
+        <!-- Chức năng: phần trên của màn nghỉ, hiển thị tiêu đề và thời gian nghỉ -->
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:background="#252B35">
 
-            <!-- Nội dung nghỉ ngơi -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -248,6 +271,7 @@
                     android:paddingStart="2dp"
                     android:paddingEnd="2dp">
 
+                    <!-- Chức năng: cộng thêm thời gian nghỉ -->
                     <TextView
                         android:id="@+id/btnAddRestTime"
                         android:layout_width="0dp"
@@ -260,6 +284,7 @@
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
+                    <!-- Chức năng: hiển thị số giây nghỉ còn lại -->
                     <TextView
                         android:id="@+id/txtRestTimer"
                         android:layout_width="0dp"
@@ -273,6 +298,7 @@
                         android:textSize="76sp"
                         android:textStyle="bold" />
 
+                    <!-- Chức năng: bỏ qua thời gian nghỉ để sang bài tiếp theo -->
                     <TextView
                         android:id="@+id/btnSkipRest"
                         android:layout_width="0dp"
@@ -291,7 +317,7 @@
 
         </FrameLayout>
 
-        <!-- Phần dưới trắng gợi ý cho bài tiếp theo -->
+        <!-- Chức năng: phần dưới màn nghỉ, hiển thị bài tập tiếp theo -->
         <LinearLayout
             android:id="@+id/layoutNextExerciseCard"
             android:layout_width="match_parent"
@@ -322,6 +348,8 @@
                 android:textSize="26sp"
                 android:textStyle="bold" />
 
+            <!-- Chức năng: khung xem trước bài tiếp theo ở màn nghỉ.
+                 Giữ khung vuông bình thường để VideoView hiển thị ổn định. -->
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -329,11 +357,13 @@
                 android:layout_weight="1"
                 android:background="#FFFFFF">
 
+                <!-- Chức năng: video xem trước bài tập tiếp theo ở màn nghỉ -->
                 <VideoView
                     android:id="@+id/videoRestNextExercise"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
 
+                <!-- Chức năng: thông báo khi bài tiếp theo không có hoạt hình -->
                 <TextView
                     android:id="@+id/txtRestNextEmpty"
                     android:layout_width="match_parent"
@@ -350,12 +380,13 @@
 
     </LinearLayout>
 
+    <!-- Chức năng: nút dấu hỏi để mở màn gợi ý/cách tập bài hiện tại -->
     <TextView
         android:id="@+id/btnExerciseHelp"
         android:layout_width="42dp"
         android:layout_height="42dp"
         android:layout_gravity="top|end"
-        android:layout_marginTop="108dp"
+        android:layout_marginTop="92dp"
         android:layout_marginEnd="22dp"
         android:elevation="8dp"
         android:gravity="center"

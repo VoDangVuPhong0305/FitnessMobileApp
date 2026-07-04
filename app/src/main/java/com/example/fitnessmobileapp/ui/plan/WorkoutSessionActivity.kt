@@ -33,7 +33,7 @@ import android.os.SystemClock
 
 class WorkoutSessionActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
-    private lateinit var btnCloseSession: TextView
+    private lateinit var btnCloseSession: View
     private lateinit var txtSessionInfo: TextView
     private lateinit var videoSessionExercise: VideoView
     private lateinit var txtSessionEmpty: TextView

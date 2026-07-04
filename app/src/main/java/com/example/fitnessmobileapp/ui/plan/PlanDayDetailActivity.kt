@@ -25,6 +25,7 @@ import java.io.FileOutputStream
 class PlanDayDetailActivity : AppCompatActivity() {
 
     private lateinit var btnBack: TextView
+    private lateinit var imgDayHeaderBackground: ImageView
     private lateinit var txtDayTitle: TextView
     private lateinit var txtWorkoutInfo: TextView
     private lateinit var txtWorkoutSummary: TextView
@@ -50,6 +51,7 @@ class PlanDayDetailActivity : AppCompatActivity() {
         setContentView(R.layout.activity_plan_day_detail)
 
         btnBack = findViewById(R.id.btnBack)
+        imgDayHeaderBackground = findViewById(R.id.imgDayHeaderBackground)
         txtDayTitle = findViewById(R.id.txtDayTitle)
         txtWorkoutInfo = findViewById(R.id.txtWorkoutInfo)
         txtWorkoutSummary = findViewById(R.id.txtWorkoutSummary)
@@ -91,10 +93,12 @@ class PlanDayDetailActivity : AppCompatActivity() {
     }
 
     // Chức năng: hiển thị thông tin đầu màn hình chi tiết ngày tập.
-    // Bao gồm tên ngày tập, loại kế hoạch, tổng phút và tổng số bài tập.
+    // Bao gồm ảnh nền, tên ngày tập, loại kế hoạch, tổng phút và tổng số bài tập.
     // Tổng phút sẽ được tính lại nếu người dùng đã chỉnh số lần/thời gian của bài tập.
     private fun showHeaderInfo() {
-        txtDayTitle.text = dayTitle.uppercase()
+        imgDayHeaderBackground.setImageResource(getHeaderImageResource())
+
+        txtDayTitle.text = "NGÀY $dayNumber"
         txtWorkoutInfo.text = getWorkoutTitle()
 
         val realExerciseCount = if (exercisesOfDay.isNotEmpty()) {
@@ -120,6 +124,18 @@ class PlanDayDetailActivity : AppCompatActivity() {
             "arms_chest" -> "Tập Tay & Ngực"
             "legs" -> "Tập Chân"
             else -> "Tập Luyện"
+        }
+    }
+
+    // Chức năng: chọn ảnh nền header theo từng loại kế hoạch.
+    // Ví dụ: tập toàn thân dùng ảnh bg_full_body, tập cơ bụng dùng bg_abs.
+    private fun getHeaderImageResource(): Int {
+        return when (exerciseType) {
+            "full_body" -> R.drawable.bg_full_body
+            "abs" -> R.drawable.bg_abs
+            "arms_chest" -> R.drawable.bg_arms_chest
+            "legs" -> R.drawable.bg_legs
+            else -> R.drawable.bg_full_body
         }
     }
 
@@ -187,14 +203,23 @@ class PlanDayDetailActivity : AppCompatActivity() {
     }
 
     // Chức năng: tạo từng dòng bài tập gồm ảnh, tên bài và thời lượng/số lần.
+    // Dòng bài tập được canh lại gọn hơn để giống tỷ lệ app mẫu.
     private fun createExerciseItem(exercise: Exercise): LinearLayout {
         val root = LinearLayout(this).apply {
-            orientation = LinearLayout.HORIZONTAL
-            gravity = Gravity.CENTER_VERTICAL
-            setPadding(0, dp(12), 0, dp(12))
+            orientation = LinearLayout.VERTICAL
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
-                dp(104)
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            )
+        }
+
+        val row = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+            setPadding(0, dp(8), 0, dp(8))
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                dp(106)
             )
         }
 
@@ -203,7 +228,7 @@ class PlanDayDetailActivity : AppCompatActivity() {
             setBackgroundResource(R.drawable.bg_exercise_media_rounded)
             clipToOutline = true
             outlineProvider = android.view.ViewOutlineProvider.BACKGROUND
-            layoutParams = LinearLayout.LayoutParams(dp(86), dp(86))
+            layoutParams = LinearLayout.LayoutParams(dp(126), dp(86))
         }
 
         val thumbnail = getVideoThumbnail(exercise.animationFile)
@@ -224,24 +249,40 @@ class PlanDayDetailActivity : AppCompatActivity() {
 
         val txtName = TextView(this).apply {
             text = exercise.name
-            textSize = 22f
+            textSize = 21f
             setTypeface(null, Typeface.BOLD)
-            setTextColor(0xFF222222.toInt())
+            setTextColor(0xFF333333.toInt())
             maxLines = 2
+            includeFontPadding = false
         }
 
         val txtDuration = TextView(this).apply {
             text = getExerciseTargetText(exercise)
             textSize = 16f
-            setTextColor(0xFF777777.toInt())
-            setPadding(0, dp(6), 0, 0)
+            setTypeface(null, Typeface.BOLD)
+            setTextColor(0xFF888888.toInt())
+            setPadding(0, dp(8), 0, 0)
+            includeFontPadding = false
         }
 
         textContainer.addView(txtName)
         textContainer.addView(txtDuration)
 
-        root.addView(imgExercise)
-        root.addView(textContainer)
+        row.addView(imgExercise)
+        row.addView(textContainer)
+
+        val divider = View(this).apply {
+            setBackgroundColor(Color.parseColor("#EEEEEE"))
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                dp(1)
+            ).apply {
+                marginStart = dp(144)
+            }
+        }
+
+        root.addView(row)
+        root.addView(divider)
 
         root.setOnClickListener {
             openExerciseDetail(exercise)
