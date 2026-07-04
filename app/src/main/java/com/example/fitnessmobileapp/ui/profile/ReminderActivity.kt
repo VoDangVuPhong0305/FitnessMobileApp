@@ -19,6 +19,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.NumberPicker
+import android.view.MotionEvent
 import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
@@ -27,16 +28,21 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.fitnessmobileapp.R
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.json.JSONArray
 import org.json.JSONObject
 import java.util.Calendar
 import java.util.Locale
+import android.graphics.Paint
+import android.widget.EditText
+import android.widget.FrameLayout
+import android.graphics.drawable.ColorDrawable
 
 class ReminderActivity : AppCompatActivity() {
 
     private lateinit var layoutReminderList: LinearLayout
     private lateinit var btnDeleteMode: TextView
-    private lateinit var btnAddReminder: TextView
+    private lateinit var btnAddReminder: View
 
     private val reminders = mutableListOf<ReminderItem>()
     private var deleteMode = false
@@ -102,7 +108,7 @@ class ReminderActivity : AppCompatActivity() {
         btnDeleteMode = findViewById(R.id.btnDeleteMode)
         btnAddReminder = findViewById(R.id.btnAddReminder)
 
-        btnAddReminder.background = roundedBackground("#7FE082", 100f)
+        updateDeleteModeButton()
         btnDeleteMode.setOnClickListener {
             if (reminders.isEmpty()) return@setOnClickListener
             deleteMode = !deleteMode
@@ -122,9 +128,7 @@ class ReminderActivity : AppCompatActivity() {
         layoutReminderList.removeAllViews()
 
         btnDeleteMode.visibility = if (reminders.isEmpty()) View.INVISIBLE else View.VISIBLE
-        btnDeleteMode.text = if (deleteMode) "HỦY" else "🗑"
-        btnDeleteMode.textSize = if (deleteMode) 16f else 24f
-        btnDeleteMode.setTextColor(if (deleteMode) Color.parseColor("#9CA3AF") else Color.parseColor("#EC5A70"))
+        updateDeleteModeButton()
 
         reminders
             .sortedWith(compareBy<ReminderItem> { it.hour }.thenBy { it.minute })
@@ -150,19 +154,23 @@ class ReminderActivity : AppCompatActivity() {
         }
 
         if (deleteMode) {
-            val deleteButton = TextView(this).apply {
-                text = "🗑"
-                textSize = 28f
-                gravity = Gravity.CENTER
-                setTextColor(Color.WHITE)
+            val deleteButton = ImageView(this).apply {
+                setImageResource(R.drawable.ic_trash_clean)
+                setColorFilter(Color.WHITE)
                 background = roundedBackground("#EC5A70", 18f)
+                scaleType = ImageView.ScaleType.CENTER
+                setPadding(dp(26), dp(26), dp(26), dp(26))
+                contentDescription = "Xóa nhắc nhở"
+
                 layoutParams = LinearLayout.LayoutParams(dp(88), dp(112)).apply {
                     rightMargin = dp(12)
                 }
+
                 setOnClickListener {
                     deleteReminder(reminder)
                 }
             }
+
             row.addView(deleteButton)
         }
 
@@ -249,25 +257,48 @@ class ReminderActivity : AppCompatActivity() {
         }
     }
 
+    // Chức năng: hiện bottom sheet để thêm hoặc chỉnh sửa nhắc nhở.
     private fun showReminderDialog(editingReminder: ReminderItem?) {
         val dialog = BottomSheetDialog(this)
+
+        dialog.setCancelable(false)
+        dialog.setCanceledOnTouchOutside(false)
 
         var selectedHour = editingReminder?.hour ?: 20
         var selectedMinute = editingReminder?.minute ?: 0
         val selectedDays = editingReminder?.days?.toMutableSet() ?: allDays.toMutableSet()
 
-        val root = LinearLayout(this).apply {
+        // Root container dùng FrameLayout để dễ dàng đè nút X lên góc
+        val rootFrame = FrameLayout(this).apply {
+            background = roundedBackground("#FFFFFF", 32f)
+        }
+
+        val contentLayout = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
-            setPadding(dp(28), dp(24), dp(28), dp(28))
-            background = roundedBackground("#FFFFFF", 28f)
+            setPadding(dp(28), dp(52), dp(28), dp(32))
+            layoutParams = FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
         }
 
         val btnClose = TextView(this).apply {
-            text = "×"
-            textSize = 42f
-            gravity = Gravity.END
-            setTextColor(Color.parseColor("#A3A3A3"))
-            setOnClickListener { dialog.dismiss() }
+            text = "✕"
+            textSize = 22f
+            gravity = Gravity.CENTER
+            setTextColor(Color.parseColor("#888888"))
+            includeFontPadding = false
+            typeface = Typeface.DEFAULT_BOLD
+
+            layoutParams = FrameLayout.LayoutParams(dp(54), dp(54)).apply {
+                gravity = Gravity.END or Gravity.TOP
+                topMargin = dp(14)
+                rightMargin = dp(14)
+            }
+
+            setOnClickListener {
+                dialog.dismiss()
+            }
         }
 
         val title = TextView(this).apply {
@@ -276,66 +307,102 @@ class ReminderActivity : AppCompatActivity() {
             gravity = Gravity.CENTER
             typeface = Typeface.DEFAULT_BOLD
             setTextColor(Color.BLACK)
+            includeFontPadding = false
+
+            layoutParams = LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
         }
 
         val subtitle = TextView(this).apply {
             text = "Hãy phấn chấn lên, nhắc bạn phải tập hằng ngày."
-            textSize = 20f
+            textSize = 17f
             gravity = Gravity.CENTER
-            setTextColor(Color.parseColor("#A0A7B5"))
-            setPadding(0, dp(10), 0, dp(22))
+            setTextColor(Color.parseColor("#9CA3AF"))
+            includeFontPadding = false
+            setLineSpacing(dp(2).toFloat(), 1.1f)
+
+            layoutParams = LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            ).apply {
+                topMargin = dp(14)
+            }
         }
 
+        // Chức năng: khu vực chọn giờ phút giống app mẫu.
+        // Không dùng NumberPicker để không có lằn ngang và không bị bấm mới phóng to.
         val pickerLayout = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER
-            setPadding(0, dp(8), 0, dp(28))
-        }
 
-        val hourPicker = NumberPicker(this).apply {
-            minValue = 0
-            maxValue = 23
-            value = selectedHour
-            setFormatter { value -> String.format(Locale.US, "%02d", value) }
-            setOnValueChangedListener { _, _, newValue ->
-                selectedHour = newValue
+            layoutParams = LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                dp(190)
+            ).apply {
+                topMargin = dp(34)
+                bottomMargin = dp(20)
             }
         }
 
-        val minutePicker = NumberPicker(this).apply {
-            minValue = 0
-            maxValue = 59
-            value = selectedMinute
-            setFormatter { value -> String.format(Locale.US, "%02d", value) }
-            setOnValueChangedListener { _, _, newValue ->
-                selectedMinute = newValue
-            }
+        val hourWheel = createTimeWheelColumn(
+            currentValue = selectedHour,
+            maxValue = 23,
+            alignToEnd = true
+        ) { newValue ->
+            selectedHour = newValue
+        }
+
+        val minuteWheel = createTimeWheelColumn(
+            currentValue = selectedMinute,
+            maxValue = 59,
+            alignToEnd = false
+        ) { newValue ->
+            selectedMinute = newValue
         }
 
         val colon = TextView(this).apply {
             text = ":"
             textSize = 42f
             typeface = Typeface.DEFAULT_BOLD
-            setTextColor(Color.BLACK)
+            setTextColor(Color.parseColor("#222222"))
             gravity = Gravity.CENTER
-            setPadding(dp(14), 0, dp(14), 0)
+            includeFontPadding = false
+
+            layoutParams = LinearLayout.LayoutParams(
+                dp(28),
+                dp(174)
+            )
         }
 
-        pickerLayout.addView(hourPicker)
+        pickerLayout.addView(hourWheel)
         pickerLayout.addView(colon)
-        pickerLayout.addView(minutePicker)
+        pickerLayout.addView(minuteWheel)
 
         val repeatTitle = TextView(this).apply {
             text = "Lặp lại"
             textSize = 20f
             typeface = Typeface.DEFAULT_BOLD
             setTextColor(Color.parseColor("#777777"))
-            setPadding(0, dp(8), 0, dp(14))
+            includeFontPadding = false
+
+            layoutParams = LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            ).apply {
+                topMargin = dp(16)
+                bottomMargin = dp(18)
+            }
         }
 
         val dayLayout = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER
+            layoutParams = LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                dp(52)
+            )
         }
 
         val dayViews = mutableMapOf<Int, TextView>()
@@ -343,10 +410,7 @@ class ReminderActivity : AppCompatActivity() {
         fun refreshDayViews() {
             dayViews.forEach { (day, view) ->
                 val selected = selectedDays.contains(day)
-                view.background = roundedBackground(
-                    if (selected) "#7FE082" else "#EEF1F4",
-                    100f
-                )
+                view.background = roundedBackground(if (selected) "#70E181" else "#EEF1F4", 100f)
                 view.setTextColor(Color.BLACK)
             }
         }
@@ -354,19 +418,19 @@ class ReminderActivity : AppCompatActivity() {
         dayShortOptions.forEach { (day, label) ->
             val dayView = TextView(this).apply {
                 text = label
-                textSize = 18f
+                textSize = 17f
                 gravity = Gravity.CENTER
                 typeface = Typeface.DEFAULT_BOLD
-                layoutParams = LinearLayout.LayoutParams(0, dp(54), 1f).apply {
+                includeFontPadding = false
+
+                layoutParams = LinearLayout.LayoutParams(dp(42), dp(42)).apply {
                     leftMargin = dp(4)
                     rightMargin = dp(4)
                 }
+
                 setOnClickListener {
-                    if (selectedDays.contains(day)) {
-                        selectedDays.remove(day)
-                    } else {
-                        selectedDays.add(day)
-                    }
+                    if (selectedDays.contains(day)) selectedDays.remove(day)
+                    else selectedDays.add(day)
                     refreshDayViews()
                 }
             }
@@ -382,19 +446,21 @@ class ReminderActivity : AppCompatActivity() {
             typeface = Typeface.DEFAULT_BOLD
             gravity = Gravity.CENTER
             setTextColor(Color.BLACK)
-            background = roundedBackground("#7FE082", 40f)
+            includeFontPadding = false
+            background = roundedBackground("#70E181", 40f)
+
             layoutParams = LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
-                dp(64)
+                dp(68)
             ).apply {
-                topMargin = dp(34)
+                topMargin = dp(42)
             }
 
             setOnClickListener {
                 if (selectedDays.isEmpty()) {
                     Toast.makeText(
                         this@ReminderActivity,
-                        "Bạn cần chọn ít nhất 1 ngày lặp lại",
+                        "Bạn cần chọn ít nhất 1 ngày",
                         Toast.LENGTH_SHORT
                     ).show()
                     return@setOnClickListener
@@ -405,7 +471,7 @@ class ReminderActivity : AppCompatActivity() {
                         id = nextReminderId(),
                         hour = selectedHour,
                         minute = selectedMinute,
-                        days = selectedDays,
+                        days = selectedDays.toMutableSet(),
                         enabled = true
                     ).also {
                         reminders.add(it)
@@ -419,6 +485,8 @@ class ReminderActivity : AppCompatActivity() {
                 }
 
                 saveReminders()
+
+                // Chức năng: hủy lịch cũ rồi đặt lại lịch mới.
                 cancelReminder(reminder.id)
 
                 if (reminder.enabled) {
@@ -428,19 +496,44 @@ class ReminderActivity : AppCompatActivity() {
 
                 renderReminders()
                 dialog.dismiss()
-                Toast.makeText(this@ReminderActivity, "Đã lưu nhắc nhở", Toast.LENGTH_SHORT).show()
+
+                Toast.makeText(
+                    this@ReminderActivity,
+                    "Đã lưu và đặt lịch nhắc nhở",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
 
-        root.addView(btnClose)
-        root.addView(title)
-        root.addView(subtitle)
-        root.addView(pickerLayout)
-        root.addView(repeatTitle)
-        root.addView(dayLayout)
-        root.addView(btnDone)
+        contentLayout.addView(title)
+        contentLayout.addView(subtitle)
+        contentLayout.addView(pickerLayout)
+        contentLayout.addView(repeatTitle)
+        contentLayout.addView(dayLayout)
+        contentLayout.addView(btnDone)
 
-        dialog.setContentView(root)
+        rootFrame.addView(contentLayout)
+        rootFrame.addView(btnClose)
+
+        dialog.setContentView(rootFrame)
+        dialog.setOnShowListener {
+            dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+            val bottomSheet = dialog.findViewById<View>(
+                com.google.android.material.R.id.design_bottom_sheet
+            )
+
+            bottomSheet?.background = null
+
+            if (bottomSheet != null) {
+                val behavior = BottomSheetBehavior.from(bottomSheet)
+
+                // Chức năng: không cho kéo cả popup xuống để đóng.
+                behavior.isDraggable = false
+                behavior.state = BottomSheetBehavior.STATE_EXPANDED
+                behavior.skipCollapsed = true
+            }
+        }
         dialog.show()
     }
 
@@ -687,5 +780,173 @@ class ReminderActivity : AppCompatActivity() {
 
     private fun dp(value: Int): Int {
         return (value * resources.displayMetrics.density).toInt()
+    }
+
+    private fun sp(value: Float): Float {
+        return value * resources.displayMetrics.scaledDensity
+    }
+
+    // Chức năng: cập nhật giao diện nút xóa ở góc phải.
+    // Bình thường chỉ hiện icon thùng rác bằng background.
+    // Khi vào chế độ xóa thì bỏ icon và chỉ hiện chữ HỦY.
+    private fun updateDeleteModeButton() {
+        if (deleteMode) {
+            btnDeleteMode.text = "HỦY"
+            btnDeleteMode.textSize = 16f
+            btnDeleteMode.setTextColor(Color.parseColor("#9CA3AF"))
+            btnDeleteMode.background = null
+            btnDeleteMode.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
+            btnDeleteMode.contentDescription = "Hủy xóa nhắc nhở"
+        } else {
+            btnDeleteMode.text = ""
+            btnDeleteMode.textSize = 16f
+            btnDeleteMode.setTextColor(Color.parseColor("#9CA3AF"))
+            btnDeleteMode.setBackgroundResource(R.drawable.ic_trash_clean)
+            btnDeleteMode.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
+            btnDeleteMode.contentDescription = "Xóa nhắc nhở"
+        }
+    }
+
+    // Chức năng: tạo cột chọn giờ/phút giống app mẫu.
+    // Vùng chạm rộng hơn để kéo dễ hơn, nhưng số vẫn nằm gần dấu ":".
+    private fun createTimeWheelColumn(
+        currentValue: Int,
+        maxValue: Int,
+        alignToEnd: Boolean,
+        onValueChanged: (Int) -> Unit
+    ): FrameLayout {
+        var value = currentValue.coerceIn(0, maxValue)
+        var lastY = 0f
+        var dragDistance = 0f
+
+        fun formatNumber(number: Int): String {
+            return String.format(Locale.US, "%02d", number)
+        }
+
+        fun previousValue(number: Int): Int {
+            return if (number - 1 < 0) maxValue else number - 1
+        }
+
+        fun nextValue(number: Int): Int {
+            return if (number + 1 > maxValue) 0 else number + 1
+        }
+
+        val topText = TextView(this)
+        val centerText = TextView(this)
+        val bottomText = TextView(this)
+
+        fun setupText(
+            textView: TextView,
+            textSizeValue: Float,
+            textColorValue: String,
+            heightValue: Int
+        ) {
+            textView.gravity = Gravity.CENTER
+            textView.includeFontPadding = false
+            textView.textSize = textSizeValue
+            textView.typeface = Typeface.DEFAULT_BOLD
+            textView.setTextColor(Color.parseColor(textColorValue))
+            textView.layoutParams = LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                dp(heightValue)
+            )
+        }
+
+        setupText(topText, 34f, "#AEB5C2", 54)
+        setupText(centerText, 44f, "#222222", 66)
+        setupText(bottomText, 34f, "#AEB5C2", 54)
+
+        fun refreshWheel() {
+            topText.text = formatNumber(previousValue(value))
+            centerText.text = formatNumber(value)
+            bottomText.text = formatNumber(nextValue(value))
+            onValueChanged(value)
+        }
+
+        fun increaseValue() {
+            value = nextValue(value)
+            refreshWheel()
+        }
+
+        fun decreaseValue() {
+            value = previousValue(value)
+            refreshWheel()
+        }
+
+        val touchListener = View.OnTouchListener { view, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    view.parent?.requestDisallowInterceptTouchEvent(true)
+                    lastY = event.y
+                    dragDistance = 0f
+                    true
+                }
+
+                MotionEvent.ACTION_MOVE -> {
+                    view.parent?.requestDisallowInterceptTouchEvent(true)
+
+                    val diffY = event.y - lastY
+                    dragDistance += diffY
+                    lastY = event.y
+
+                    while (dragDistance >= dp(18)) {
+                        decreaseValue()
+                        dragDistance -= dp(18)
+                    }
+
+                    while (dragDistance <= -dp(18)) {
+                        increaseValue()
+                        dragDistance += dp(18)
+                    }
+
+                    true
+                }
+
+                MotionEvent.ACTION_UP,
+                MotionEvent.ACTION_CANCEL -> {
+                    view.parent?.requestDisallowInterceptTouchEvent(false)
+                    dragDistance = 0f
+                    true
+                }
+
+                else -> true
+            }
+        }
+
+        val numberColumn = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            gravity = Gravity.CENTER
+
+            layoutParams = FrameLayout.LayoutParams(
+                dp(88),
+                dp(174),
+                if (alignToEnd) Gravity.END or Gravity.CENTER_VERTICAL
+                else Gravity.START or Gravity.CENTER_VERTICAL
+            )
+
+            addView(topText)
+            addView(centerText)
+            addView(bottomText)
+
+            setOnTouchListener(touchListener)
+        }
+
+        topText.setOnTouchListener(touchListener)
+        centerText.setOnTouchListener(touchListener)
+        bottomText.setOnTouchListener(touchListener)
+
+        val touchArea = FrameLayout(this).apply {
+            // Chức năng: vùng chạm rộng hơn, kéo mé ngoài vẫn ăn.
+            layoutParams = LinearLayout.LayoutParams(
+                dp(132),
+                dp(190)
+            )
+
+            setOnTouchListener(touchListener)
+            addView(numberColumn)
+        }
+
+        refreshWheel()
+        return touchArea
     }
 }

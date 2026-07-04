@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F4F4F4">
@@ -19,12 +20,14 @@
 
             <ImageView
                 android:id="@+id/btnBackReminder"
-                android:layout_width="46dp"
-                android:layout_height="46dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
-                android:padding="8dp"
-                android:src="@drawable/ic_back" />
+                android:contentDescription="Quay lại"
+                android:padding="7dp"
+                android:src="@drawable/ic_arrow_back"
+                app:tint="#111111" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -35,16 +38,23 @@
                 android:textSize="28sp"
                 android:textStyle="bold" />
 
+            <!-- Nút xóa: vẫn là TextView để không lỗi Kotlin.
+                 Icon được đặt bằng drawableTop, khi bấm xóa Kotlin sẽ đổi thành chữ HỦY. -->
             <TextView
                 android:id="@+id/btnDeleteMode"
-                android:layout_width="60dp"
-                android:layout_height="46dp"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
+                android:translationY="1dp"
+                android:background="@drawable/ic_trash_clean"
+                android:clickable="true"
+                android:contentDescription="Xóa nhắc nhở"
+                android:focusable="true"
                 android:gravity="center"
-                android:text="🗑"
-                android:textColor="#EC5A70"
-                android:textSize="24sp"
+                android:text=""
+                android:textColor="#9CA3AF"
+                android:textSize="16sp"
                 android:textStyle="bold" />
 
         </RelativeLayout>
@@ -54,6 +64,7 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:fillViewport="true"
+            android:importantForAccessibility="no"
             android:overScrollMode="never">
 
             <LinearLayout
@@ -67,16 +78,28 @@
 
     </LinearLayout>
 
-    <TextView
+    <!-- Nút thêm: dùng FrameLayout + ImageView để dấu + nằm chính giữa tuyệt đối -->
+    <FrameLayout
         android:id="@+id/btnAddReminder"
-        android:layout_width="72dp"
-        android:layout_height="72dp"
+        android:layout_width="78dp"
+        android:layout_height="78dp"
         android:layout_gravity="bottom|center_horizontal"
         android:layout_marginBottom="76dp"
-        android:elevation="8dp"
-        android:gravity="center"
-        android:text="+"
-        android:textColor="#000000"
-        android:textSize="40sp" />
+        android:background="@drawable/bg_add_reminder_button"
+        android:clickable="true"
+        android:contentDescription="Thêm nhắc nhở"
+        android:elevation="10dp"
+        android:focusable="true"
+        android:minWidth="48dp"
+        android:minHeight="48dp">
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_plus_bold" />
+
+    </FrameLayout>
 
 </FrameLayout>
