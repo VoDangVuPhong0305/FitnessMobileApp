@@ -14,6 +14,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import android.graphics.Typeface
+import androidx.core.content.res.ResourcesCompat
 
 class ShoppingFragment : Fragment(R.layout.fragment_shopping) {
 
@@ -29,14 +31,9 @@ class ShoppingFragment : Fragment(R.layout.fragment_shopping) {
             insets
         }
 
-        tvTitle.text = "Danh sách mua sắm"
-
-        val tvShoppingGoal = view.findViewById<TextView>(R.id.tvShoppingGoal)
-        val profileInfo = NutritionGoalHelper.getProfileInfo(requireContext())
-
-        tvShoppingGoal.text =
-            "${NutritionGoalHelper.getGoalTitle(profileInfo)}\n" +
-                    NutritionGoalHelper.getGoalDescription(profileInfo)
+        tvTitle.text = "DANH SÁCH MUA HÀNG"
+        tvTitle.typeface = ResourcesCompat.getFont(requireContext(), R.font.anton_regular)
+        tvTitle.textSize = 26f
 
         btnBack.setOnClickListener {
             parentFragmentManager.popBackStack()
@@ -57,51 +54,58 @@ class ShoppingFragment : Fragment(R.layout.fragment_shopping) {
 
         val btnStandard = view.findViewById<MaterialButton>(R.id.btnStandard)
         val btnVegetarian = view.findViewById<MaterialButton>(R.id.btnVegetarian)
+        val profileInfo = NutritionGoalHelper.getProfileInfo(requireContext())
+
+        fun showShoppingList(week: Int, vegetarian: Boolean) {
+            val modeKey = if (vegetarian) "vegetarian" else "standard"
+
+            rv.adapter = ShoppingAdapter(
+                items = getData(
+                    week = week,
+                    vegetarian = vegetarian
+                ),
+                listKey = "week_${week}_$modeKey"
+            )
+        }
 
         fun updateButtons(isStandard: Boolean) {
-
             if (isStandard) {
-
                 btnStandard.backgroundTintList =
-                    ColorStateList.valueOf(Color.parseColor("#20C76F"))
+                    ColorStateList.valueOf(Color.parseColor("#62C97B"))
                 btnStandard.setTextColor(Color.WHITE)
+                btnStandard.strokeWidth = 0
 
                 btnVegetarian.backgroundTintList =
                     ColorStateList.valueOf(Color.WHITE)
-                btnVegetarian.setTextColor(Color.parseColor("#666666"))
-
+                btnVegetarian.setTextColor(Color.parseColor("#7B7B7B"))
+                btnVegetarian.strokeWidth = 1
+                btnVegetarian.strokeColor =
+                    ColorStateList.valueOf(Color.parseColor("#E7E7E7"))
             } else {
-
                 btnVegetarian.backgroundTintList =
-                    ColorStateList.valueOf(Color.parseColor("#20C76F"))
+                    ColorStateList.valueOf(Color.parseColor("#62C97B"))
                 btnVegetarian.setTextColor(Color.WHITE)
+                btnVegetarian.strokeWidth = 0
 
                 btnStandard.backgroundTintList =
                     ColorStateList.valueOf(Color.WHITE)
-                btnStandard.setTextColor(Color.parseColor("#666666"))
+                btnStandard.setTextColor(Color.parseColor("#7B7B7B"))
+                btnStandard.strokeWidth = 1
+                btnStandard.strokeColor =
+                    ColorStateList.valueOf(Color.parseColor("#E7E7E7"))
             }
         }
 
         // Mặc định
         updateButtons(true)
-        rv.adapter = ShoppingAdapter(
-            applyGoalToShoppingList(
-                getData(1, false),
-                profileInfo
-            )
-        )
+        showShoppingList(1, false)
 
         // Chuyển tuần
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
-                rv.adapter = ShoppingAdapter(
-                    applyGoalToShoppingList(
-                        getData(
-                            week = tab.position + 1,
-                            vegetarian = isVegetarian
-                        ),
-                        profileInfo
-                    )
+                showShoppingList(
+                    week = tab.position + 1,
+                    vegetarian = isVegetarian
                 )
             }
 
@@ -116,14 +120,9 @@ class ShoppingFragment : Fragment(R.layout.fragment_shopping) {
             isVegetarian = false
             updateButtons(true)
 
-            rv.adapter = ShoppingAdapter(
-                applyGoalToShoppingList(
-                    getData(
-                        week = tabLayout.selectedTabPosition + 1,
-                        vegetarian = false
-                    ),
-                    profileInfo
-                )
+            showShoppingList(
+                week = tabLayout.selectedTabPosition + 1,
+                vegetarian = false
             )
         }
 
@@ -133,34 +132,10 @@ class ShoppingFragment : Fragment(R.layout.fragment_shopping) {
             isVegetarian = true
             updateButtons(false)
 
-            rv.adapter = ShoppingAdapter(
-                applyGoalToShoppingList(
-                    getData(
-                        week = tabLayout.selectedTabPosition + 1,
-                        vegetarian = true
-                    ),
-                    profileInfo
-                )
+            showShoppingList(
+                week = tabLayout.selectedTabPosition + 1,
+                vegetarian = true
             )
-        }
-    }
-
-    private fun applyGoalToShoppingList(
-        items: List<ShoppingItem>,
-        profileInfo: NutritionProfileInfo
-    ): List<ShoppingItem> {
-        return items.map { item ->
-            if (item.isHeader) {
-                item
-            } else {
-                item.copy(
-                    description = NutritionGoalHelper.adjustShoppingDescription(
-                        itemName = item.text,
-                        oldDescription = item.description,
-                        info = profileInfo
-                    )
-                )
-            }
         }
     }
 

@@ -4,7 +4,8 @@
     android:id="@+id/scrollNutrition"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#EEEEEE"
+    android:background="#F2F2F2"
+    android:clipToPadding="false"
     android:fillViewport="true">
 
     <LinearLayout
@@ -13,547 +14,126 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:paddingStart="20dp"
+        android:paddingTop="42dp"
         android:paddingEnd="20dp"
-        android:paddingTop="48dp"
-        android:paddingBottom="24dp">
+        android:paddingBottom="116dp">
 
         <TextView
             android:id="@+id/txtNutritionTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="CÔNG THỨC NẤU"
+            android:fontFamily="@font/anton_regular"
+            android:includeFontPadding="false"
+            android:text="ĂN UỐNG - DINH DƯỠNG"
+            android:layout_marginTop="15dp"
             android:textColor="#222222"
             android:textSize="30sp"
-            android:textStyle="bold" />
+            android:textStyle="normal" />
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardMealPlan"
             android:layout_width="match_parent"
-            android:layout_height="260dp"
-            android:layout_marginTop="28dp"
-            app:cardBackgroundColor="#FFF36D"
-            app:cardCornerRadius="24dp"
-            app:cardElevation="5dp">
+            android:layout_height="240dp"
+            android:layout_marginTop="18dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp"
+            app:cardUseCompatPadding="false"
+            app:strokeWidth="0dp"
+            app:cardBackgroundColor="@android:color/transparent">
 
-            <LinearLayout
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:padding="22dp">
+                android:layout_height="match_parent">
 
+                <ImageView
+                    android:id="@+id/imgNutritionBanner"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:contentDescription="@null"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/bg_nutrition_banner" />
+
+                <!-- Khối chữ -->
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:orientation="horizontal">
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Kế hoạch ăn\nuống 30 ngày"
-                            android:textColor="#222222"
-                            android:textSize="31sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="18dp"
-                            android:text="Công thức nấu ăn miễn phí để bạn tham khảo"
-                            android:textColor="#333333"
-                            android:textSize="17sp" />
-                    </LinearLayout>
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:paddingStart="18dp"
+                    android:paddingTop="22dp"
+                    android:paddingEnd="18dp">
 
                     <TextView
-                        android:layout_width="110dp"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:text="🥑\n🥗"
-                        android:textSize="42sp" />
+                        android:id="@+id/txtMealPlanTitle"
+                        android:layout_width="185dp"
+                        android:layout_height="wrap_content"
+                        android:includeFontPadding="false"
+                        android:lineSpacingExtra="2dp"
+                        android:text="Kế hoạch ăn uống \ntrong 30 ngày"
+                        android:textColor="#222222"
+                        android:textSize="24sp" />
+
+                    <TextView
+                        android:id="@+id/txtMealPlanSubtitle"
+                        android:layout_width="205dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="14dp"
+                        android:includeFontPadding="false"
+                        android:lineSpacingExtra="2dp"
+                        android:text="Công thức nấu ăn miễn phí để bạn tham khảo"
+                        android:textColor="#333333"
+                        android:textSize="14sp" />
+
                 </LinearLayout>
 
-                <TextView
+                <!-- Nút mua sắm nằm riêng, bám đáy trái -->
+                <LinearLayout
                     android:id="@+id/btnShoppingList"
-                    android:layout_width="220dp"
-                    android:layout_height="50dp"
+                    android:layout_width="198dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="start|bottom"
+                    android:layout_marginStart="0dp"
+                    android:layout_marginBottom="18dp"
                     android:background="@drawable/bg_shopping_button"
-                    android:gravity="center"
-                    android:text="🛒  Danh sách mua sắm  ❯"
-                    android:textColor="#222222"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="10dp">
 
-            </LinearLayout>
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:src="@drawable/ic_shopping_bag" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_weight="1"
+                        android:includeFontPadding="false"
+                        android:text="Danh sách mua sắm"
+                        android:textColor="#222222"
+                        android:textSize="16sp" />
+
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:src="@drawable/ic_chevron_right" />
+
+                </LinearLayout>
+
+            </FrameLayout>
         </com.google.android.material.card.MaterialCardView>
 
         <GridLayout
             android:id="@+id/gridMealDays"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="26dp"
+            android:layout_marginTop="24dp"
             android:columnCount="3"
-            android:useDefaultMargins="false">
-
-            <TextView
-                android:id="@+id/day1"
-                android:layout_width="0dp"
-                android:layout_height="90dp"
-                android:layout_columnWeight="1"
-                android:layout_margin="6dp"
-                android:background="@drawable/bg_day_item"
-                android:gravity="center"
-                android:text="Ngày 1"
-                android:textColor="#222222"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/day2"
-                android:layout_width="0dp"
-                android:layout_height="90dp"
-                android:layout_columnWeight="1"
-                android:layout_margin="6dp"
-                android:background="@drawable/bg_day_item"
-                android:gravity="center"
-                android:text="Ngày 2"
-                android:textColor="#222222"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/day3"
-                android:layout_width="0dp"
-                android:layout_height="90dp"
-                android:layout_columnWeight="1"
-                android:layout_margin="6dp"
-                android:background="@drawable/bg_day_item"
-                android:gravity="center"
-                android:text="Ngày 3"
-                android:textColor="#222222"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/day4"
-                android:layout_width="0dp"
-                android:layout_height="90dp"
-                android:layout_columnWeight="1"
-                android:layout_margin="6dp"
-                android:background="@drawable/bg_day_item"
-                android:gravity="center"
-                android:text="Ngày 4"
-                android:textColor="#222222"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/day5"
-                android:layout_width="0dp"
-                android:layout_height="90dp"
-                android:layout_columnWeight="1"
-                android:layout_margin="6dp"
-                android:background="@drawable/bg_day_item"
-                android:gravity="center"
-                android:text="Ngày 5"
-                android:textColor="#222222"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/day6"
-                android:layout_width="0dp"
-                android:layout_height="90dp"
-                android:layout_columnWeight="1"
-                android:layout_margin="6dp"
-                android:background="@drawable/bg_day_item"
-                android:gravity="center"
-                android:text="Ngày 6"
-                android:textColor="#222222"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/day7"
-                android:layout_width="0dp"
-                android:layout_height="90dp"
-                android:layout_columnWeight="1"
-                android:layout_margin="6dp"
-                android:background="@drawable/bg_day_item"
-                android:gravity="center"
-                android:text="Ngày 7"
-                android:textColor="#222222"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/day8"
-                android:layout_width="0dp"
-                android:layout_height="90dp"
-                android:layout_columnWeight="1"
-                android:layout_margin="6dp"
-                android:background="@drawable/bg_day_item"
-                android:gravity="center"
-                android:text="Ngày 8"
-                android:textColor="#222222"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/day9"
-                android:layout_width="0dp"
-                android:layout_height="90dp"
-                android:layout_columnWeight="1"
-                android:layout_margin="6dp"
-                android:background="@drawable/bg_day_item"
-                android:gravity="center"
-                android:text="Ngày 9"
-                android:textColor="#222222"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/day10"
-                android:layout_width="0dp"
-                android:layout_height="90dp"
-                android:layout_columnWeight="1"
-                android:layout_margin="6dp"
-                android:background="@drawable/bg_day_item"
-                android:gravity="center"
-                android:text="Ngày 10"
-                android:textColor="#222222"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/day11"
-                android:layout_width="0dp"
-                android:layout_height="90dp"
-                android:layout_columnWeight="1"
-                android:layout_margin="6dp"
-                android:background="@drawable/bg_day_item"
-                android:gravity="center"
-                android:text="Ngày 11"
-                android:textColor="#222222"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/day12"
-                android:layout_width="0dp"
-                android:layout_height="90dp"
-                android:layout_columnWeight="1"
-                android:layout_margin="6dp"
-                android:background="@drawable/bg_day_item"
-                android:gravity="center"
-                android:text="Ngày 12"
-                android:textColor="#222222"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/day13"
-                android:layout_width="0dp"
-                android:layout_height="90dp"
-                android:layout_columnWeight="1"
-                android:layout_margin="6dp"
-                android:background="@drawable/bg_day_item"
-                android:gravity="center"
-                android:text="Ngày 13"
-                android:textColor="#222222"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/day14"
-                android:layout_width="0dp"
-                android:layout_height="90dp"
-                android:layout_columnWeight="1"
-                android:layout_margin="6dp"
-                android:background="@drawable/bg_day_item"
-                android:gravity="center"
-                android:text="Ngày 14"
-                android:textColor="#222222"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/day15"
-                android:layout_width="0dp"
-                android:layout_height="90dp"
-                android:layout_columnWeight="1"
-                android:layout_margin="6dp"
-                android:background="@drawable/bg_day_item"
-                android:gravity="center"
-                android:text="Ngày 15"
-                android:textColor="#222222"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/day16"
-                android:layout_width="0dp"
-                android:layout_height="90dp"
-                android:layout_columnWeight="1"
-                android:layout_margin="6dp"
-                android:background="@drawable/bg_day_item"
-                android:gravity="center"
-                android:text="Ngày 16"
-                android:textColor="#222222"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/day17"
-                android:layout_width="0dp"
-                android:layout_height="90dp"
-                android:layout_columnWeight="1"
-                android:layout_margin="6dp"
-                android:background="@drawable/bg_day_item"
-                android:gravity="center"
-                android:text="Ngày 17"
-                android:textColor="#222222"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/day18"
-                android:layout_width="0dp"
-                android:layout_height="90dp"
-                android:layout_columnWeight="1"
-                android:layout_margin="6dp"
-                android:background="@drawable/bg_day_item"
-                android:gravity="center"
-                android:text="Ngày 18"
-                android:textColor="#222222"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/day19"
-                android:layout_width="0dp"
-                android:layout_height="90dp"
-                android:layout_columnWeight="1"
-                android:layout_margin="6dp"
-                android:background="@drawable/bg_day_item"
-                android:gravity="center"
-                android:text="Ngày 19"
-                android:textColor="#222222"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/day20"
-                android:layout_width="0dp"
-                android:layout_height="90dp"
-                android:layout_columnWeight="1"
-                android:layout_margin="6dp"
-                android:background="@drawable/bg_day_item"
-                android:gravity="center"
-                android:text="Ngày 20"
-                android:textColor="#222222"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/day21"
-                android:layout_width="0dp"
-                android:layout_height="90dp"
-                android:layout_columnWeight="1"
-                android:layout_margin="6dp"
-                android:background="@drawable/bg_day_item"
-                android:gravity="center"
-                android:text="Ngày 21"
-                android:textColor="#222222"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/day22"
-                android:layout_width="0dp"
-                android:layout_height="90dp"
-                android:layout_columnWeight="1"
-                android:layout_margin="6dp"
-                android:background="@drawable/bg_day_item"
-                android:gravity="center"
-                android:text="Ngày 22"
-                android:textColor="#222222"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/day23"
-                android:layout_width="0dp"
-                android:layout_height="90dp"
-                android:layout_columnWeight="1"
-                android:layout_margin="6dp"
-                android:background="@drawable/bg_day_item"
-                android:gravity="center"
-                android:text="Ngày 23"
-                android:textColor="#222222"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/day24"
-                android:layout_width="0dp"
-                android:layout_height="90dp"
-                android:layout_columnWeight="1"
-                android:layout_margin="6dp"
-                android:background="@drawable/bg_day_item"
-                android:gravity="center"
-                android:text="Ngày 24"
-                android:textColor="#222222"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/day25"
-                android:layout_width="0dp"
-                android:layout_height="90dp"
-                android:layout_columnWeight="1"
-                android:layout_margin="6dp"
-                android:background="@drawable/bg_day_item"
-                android:gravity="center"
-                android:text="Ngày 25"
-                android:textColor="#222222"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/day26"
-                android:layout_width="0dp"
-                android:layout_height="90dp"
-                android:layout_columnWeight="1"
-                android:layout_margin="6dp"
-                android:background="@drawable/bg_day_item"
-                android:gravity="center"
-                android:text="Ngày 26"
-                android:textColor="#222222"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/day27"
-                android:layout_width="0dp"
-                android:layout_height="90dp"
-                android:layout_columnWeight="1"
-                android:layout_margin="6dp"
-                android:background="@drawable/bg_day_item"
-                android:gravity="center"
-                android:text="Ngày 27"
-                android:textColor="#222222"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/day28"
-                android:layout_width="0dp"
-                android:layout_height="90dp"
-                android:layout_columnWeight="1"
-                android:layout_margin="6dp"
-                android:background="@drawable/bg_day_item"
-                android:gravity="center"
-                android:text="Ngày 28"
-                android:textColor="#222222"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/day29"
-                android:layout_width="0dp"
-                android:layout_height="90dp"
-                android:layout_columnWeight="1"
-                android:layout_margin="6dp"
-                android:background="@drawable/bg_day_item"
-                android:gravity="center"
-                android:text="Ngày 29"
-                android:textColor="#222222"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/day30"
-                android:layout_width="0dp"
-                android:layout_height="90dp"
-                android:layout_columnWeight="1"
-                android:layout_margin="6dp"
-                android:background="@drawable/bg_day_item"
-                android:gravity="center"
-                android:text="Ngày 30"
-                android:textColor="#222222"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-        </GridLayout>
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cardFaq"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:layout_marginBottom="16dp"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="4dp"
-        app:cardBackgroundColor="#FFFFFF">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:padding="18dp">
-
-            <!-- Icon -->
-            <TextView
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:gravity="center"
-                android:text="❓"
-                android:textSize="28sp"/>
-
-            <!-- Nội dung -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:layout_marginStart="12dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Câu hỏi thường gặp"
-                    android:textStyle="bold"
-                    android:textSize="20sp"
-                    android:textColor="#222222"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="Tìm câu trả lời cho các thắc mắc về chế độ ăn và ứng dụng."
-                    android:textColor="#666666"
-                    android:textSize="14sp"/>
-
-            </LinearLayout>
-
-            <!-- Mũi tên -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="❯"
-                android:textColor="#4CAF50"
-                android:textSize="24sp"/>
-
-        </LinearLayout>
-
-    </com.google.android.material.card.MaterialCardView>
+            android:useDefaultMargins="false" />
 
     </LinearLayout>
+
 </ScrollView>

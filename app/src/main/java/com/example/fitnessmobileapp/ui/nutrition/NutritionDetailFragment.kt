@@ -3,6 +3,7 @@ package com.example.fitnessmobileapp.ui.nutrition
 import android.app.AlertDialog
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -13,6 +14,11 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import com.example.fitnessmobileapp.R
+import android.text.SpannableString
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.style.RelativeSizeSpan
+import android.text.style.StyleSpan
 
 class NutritionDetailFragment : Fragment(R.layout.fragment_nutrition_detail) {
 
@@ -20,20 +26,22 @@ class NutritionDetailFragment : Fragment(R.layout.fragment_nutrition_detail) {
         super.onViewCreated(view, savedInstanceState)
 
         val header = view.findViewById<View>(R.id.header)
+
         ViewCompat.setOnApplyWindowInsetsListener(header) { v, insets ->
             val statusBarHeight =
                 insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
+
             v.setPadding(
                 v.paddingLeft,
                 statusBarHeight,
                 v.paddingRight,
                 v.paddingBottom
             )
+
             insets
         }
 
-        val tvTitle = view.findViewById<View>(R.id.header)
-            .findViewById<TextView>(R.id.tvTitle)
+        val tvTitle = header.findViewById<TextView>(R.id.tvTitle)
 
         val tvNutritionGoal = view.findViewById<TextView>(R.id.tvNutritionGoal)
 
@@ -47,6 +55,14 @@ class NutritionDetailFragment : Fragment(R.layout.fragment_nutrition_detail) {
 
         val btnBack = view.findViewById<ImageView>(R.id.btnBack)
         val btnCheck = view.findViewById<ImageView>(R.id.btnCheck)
+
+        val normalFont = Typeface.create("sans-serif", Typeface.NORMAL)
+
+        tvNutritionGoal.typeface = normalFont
+        tvBreakfast.typeface = normalFont
+        tvSnack.typeface = normalFont
+        tvLunch.typeface = normalFont
+        tvDinner.typeface = normalFont
 
         val data = arguments?.getSerializable("nutrition_data") as? NutritionItem
 
@@ -63,38 +79,107 @@ class NutritionDetailFragment : Fragment(R.layout.fragment_nutrition_detail) {
             val prefs = requireActivity().getSharedPreferences("user_prefs", 0)
             val isDone = prefs.getBoolean("day_${item.day}_done", false)
 
-            if (isDone) {
-                btnCheck.setImageResource(R.drawable.ic_check_black)
-                btnCheck.background = ContextCompat.getDrawable(
-                    requireContext(),
-                    R.drawable.bg_check_checked
-                )
-            } else {
-                btnCheck.setImageResource(R.drawable.ic_check_white)
-                btnCheck.background = ContextCompat.getDrawable(
-                    requireContext(),
-                    R.drawable.bg_check_unchecked
-                )
-            }
+            updateCheckButton(btnCheck, isDone)
 
             fun updateButtons(isStandard: Boolean) {
                 if (isStandard) {
                     btnStandard.backgroundTintList =
-                        ColorStateList.valueOf(Color.parseColor("#20C76F"))
+                        ColorStateList.valueOf(Color.parseColor("#62C97B"))
                     btnStandard.setTextColor(Color.WHITE)
 
                     btnVegetarian.backgroundTintList =
                         ColorStateList.valueOf(Color.WHITE)
-                    btnVegetarian.setTextColor(Color.parseColor("#666666"))
+                    btnVegetarian.setTextColor(Color.parseColor("#7D7D7D"))
                 } else {
                     btnVegetarian.backgroundTintList =
-                        ColorStateList.valueOf(Color.parseColor("#20C76F"))
+                        ColorStateList.valueOf(Color.parseColor("#62C97B"))
                     btnVegetarian.setTextColor(Color.WHITE)
 
                     btnStandard.backgroundTintList =
                         ColorStateList.valueOf(Color.WHITE)
-                    btnStandard.setTextColor(Color.parseColor("#666666"))
+                    btnStandard.setTextColor(Color.parseColor("#7D7D7D"))
                 }
+            }
+
+            fun cleanLine(line: String): String {
+                return line
+                    .trim()
+                    .removePrefix("•")
+                    .removePrefix("●")
+                    .trim()
+            }
+
+            fun addFoodLines(
+                result: MutableList<String>,
+                foodText: String
+            ) {
+                foodText.split("\n")
+                    .map { cleanLine(it) }
+                    .filter { it.isNotEmpty() }
+                    .forEach { line ->
+                        result.add("●  $line")
+                    }
+            }
+
+            fun getMealAdvice(
+                mealTitle: String,
+                mainFood: String,
+                altFood: String
+            ): String {
+                val fullText = NutritionGoalHelper.applyGoalToMeal(
+                    mealTitle = mealTitle,
+                    mainFood = mainFood,
+                    altFood = altFood,
+                    info = profileInfo
+                )
+
+                return fullText
+                    .split("\n")
+                    .map { cleanLine(it) }
+                    .lastOrNull { it.startsWith("Gợi ý") }
+                    ?: ""
+            }
+
+            fun formatMealBlock(
+                title: String,
+                mainFood: String,
+                altFood: String,
+                advice: String
+            ): SpannableStringBuilder {
+                val builder = SpannableStringBuilder()
+
+                val titleText = SpannableString(title)
+                titleText.setSpan(
+                    RelativeSizeSpan(1.35f),
+                    0,
+                    titleText.length,
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+                titleText.setSpan(
+                    StyleSpan(Typeface.BOLD),
+                    0,
+                    titleText.length,
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+
+                builder.append(titleText)
+                builder.append("\n\n")
+
+                val foodLines = mutableListOf<String>()
+
+                addFoodLines(foodLines, mainFood)
+                addFoodLines(foodLines, altFood)
+
+                val cleanAdvice = cleanLine(advice)
+
+                builder.append(foodLines.joinToString("\n"))
+
+                if (cleanAdvice.isNotEmpty()) {
+                    builder.append("\n\n")
+                    builder.append(cleanAdvice)
+                }
+
+                return builder
             }
 
             fun showMenu(
@@ -107,20 +192,35 @@ class NutritionDetailFragment : Fragment(R.layout.fragment_nutrition_detail) {
                 lAlt: String,
                 dAlt: String
             ) {
-                tvBreakfast.text = "🍳 Bữa sáng\n\n" +
-                        NutritionGoalHelper.applyGoalToMeal("Bữa sáng", b, bAlt, profileInfo)
+                tvBreakfast.text = formatMealBlock(
+                    title = "🍳  Bữa ăn sáng",
+                    mainFood = b,
+                    altFood = bAlt,
+                    advice = getMealAdvice("Bữa sáng", b, bAlt)
+                )
 
-                tvSnack.text = "🍎 Bữa nhẹ\n\n" +
-                        NutritionGoalHelper.applyGoalToMeal("Bữa nhẹ", s, sAlt, profileInfo)
+                tvSnack.text = formatMealBlock(
+                    title = "🍎  Bữa ăn nhẹ",
+                    mainFood = s,
+                    altFood = sAlt,
+                    advice = getMealAdvice("Bữa nhẹ", s, sAlt)
+                )
 
-                tvLunch.text = "🥗 Bữa trưa\n\n" +
-                        NutritionGoalHelper.applyGoalToMeal("Bữa trưa", l, lAlt, profileInfo)
+                tvLunch.text = formatMealBlock(
+                    title = "🥗  Bữa trưa",
+                    mainFood = l,
+                    altFood = lAlt,
+                    advice = getMealAdvice("Bữa trưa", l, lAlt)
+                )
 
-                tvDinner.text = "🍲 Bữa tối\n\n" +
-                        NutritionGoalHelper.applyGoalToMeal("Bữa tối", d, dAlt, profileInfo)
+                tvDinner.text = formatMealBlock(
+                    title = "🍲  Bữa tối",
+                    mainFood = d,
+                    altFood = dAlt,
+                    advice = getMealAdvice("Bữa tối", d, dAlt)
+                )
             }
 
-            // Hiển thị mặc định (Tiêu chuẩn)
             showMenu(
                 item.breakfastStd,
                 item.snackStd,
@@ -131,9 +231,9 @@ class NutritionDetailFragment : Fragment(R.layout.fragment_nutrition_detail) {
                 item.lunchAlt,
                 item.dinnerAlt
             )
+
             updateButtons(true)
 
-            // Nút Tiêu chuẩn
             btnStandard.setOnClickListener {
                 updateButtons(true)
 
@@ -149,7 +249,6 @@ class NutritionDetailFragment : Fragment(R.layout.fragment_nutrition_detail) {
                 )
             }
 
-            // Nút Ăn chay
             btnVegetarian.setOnClickListener {
                 updateButtons(false)
 
@@ -165,58 +264,54 @@ class NutritionDetailFragment : Fragment(R.layout.fragment_nutrition_detail) {
                 )
             }
 
-            // Nút hoàn thành
             btnCheck.setOnClickListener {
-                data?.let { item ->
+                val currentDone = prefs.getBoolean("day_${item.day}_done", false)
+                val newDone = !currentDone
 
-                    val currentDone = prefs.getBoolean("day_${item.day}_done", false)
+                prefs.edit()
+                    .putBoolean("day_${item.day}_done", newDone)
+                    .apply()
 
-                    if (!currentDone) {
-                        // Chưa hoàn thành -> chuyển sang hoàn thành
-                        btnCheck.setImageResource(R.drawable.ic_check_black)
-                        btnCheck.background = ContextCompat.getDrawable(
-                            requireContext(),
-                            R.drawable.bg_check_checked
-                        )
+                updateCheckButton(btnCheck, newDone)
 
-                        prefs.edit()
-                            .putBoolean("day_${item.day}_done", true)
-                            .apply()
-
-                        AlertDialog.Builder(requireContext())
-                            .setTitle("Thông báo")
-                            .setMessage("Đã kết thúc")
-                            .setPositiveButton("OK") { dialog, _ ->
-                                dialog.dismiss()
-                            }
-                            .show()
-
-                    } else {
-                        // Đã hoàn thành -> bỏ hoàn thành, quay về trạng thái ban đầu
-                        btnCheck.setImageResource(R.drawable.ic_check_white)
-                        btnCheck.background = ContextCompat.getDrawable(
-                            requireContext(),
-                            R.drawable.bg_check_unchecked
-                        )
-
-                        prefs.edit()
-                            .putBoolean("day_${item.day}_done", false)
-                            .apply()
-
-                        AlertDialog.Builder(requireContext())
-                            .setTitle("Thông báo")
-                            .setMessage("Đã bỏ đánh dấu hoàn thành")
-                            .setPositiveButton("OK") { dialog, _ ->
-                                dialog.dismiss()
-                            }
-                            .show()
-                    }
+                if (newDone) {
+                    AlertDialog.Builder(requireContext())
+                        .setTitle("Thông báo")
+                        .setMessage("Đã kết thúc")
+                        .setPositiveButton("OK") { dialog, _ ->
+                            dialog.dismiss()
+                        }
+                        .show()
+                } else {
+                    AlertDialog.Builder(requireContext())
+                        .setTitle("Thông báo")
+                        .setMessage("Đã bỏ đánh dấu hoàn thành")
+                        .setPositiveButton("OK") { dialog, _ ->
+                            dialog.dismiss()
+                        }
+                        .show()
                 }
             }
-            // Nút quay lại
+
             btnBack.setOnClickListener {
                 parentFragmentManager.popBackStack()
             }
+        }
+    }
+
+    private fun updateCheckButton(btnCheck: ImageView, isDone: Boolean) {
+        if (isDone) {
+            btnCheck.setImageResource(R.drawable.ic_check_black)
+            btnCheck.background = ContextCompat.getDrawable(
+                requireContext(),
+                R.drawable.bg_check_checked
+            )
+        } else {
+            btnCheck.setImageResource(R.drawable.ic_check_white)
+            btnCheck.background = ContextCompat.getDrawable(
+                requireContext(),
+                R.drawable.bg_check_unchecked
+            )
         }
     }
 }

@@ -1,104 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#ECEEEE"
+    android:fitsSystemWindows="true"
     android:orientation="vertical"
-    android:background="#F5F5F5"
-    android:fitsSystemWindows="true">
+    tools:ignore="HardcodedText">
 
-    <!-- Toolbar dùng chung -->
     <include
         android:id="@+id/header"
         layout="@layout/toolbar" />
 
-    <!-- Tabs tuần -->
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#FFFFFF"
-        android:elevation="2dp"
+        android:layout_height="48dp"
+        android:background="#62C97B"
+        android:contentDescription="Danh sách tuần"
         app:tabGravity="fill"
-        app:tabMode="fixed"
-        app:tabIndicatorColor="#20C76F"
+        app:tabIndicatorAnimationMode="elastic"
+        app:tabIndicatorColor="#FFFFFF"
+        app:tabIndicatorFullWidth="false"
         app:tabIndicatorHeight="3dp"
+        app:tabMode="fixed"
         app:tabRippleColor="@android:color/transparent"
-        app:tabSelectedTextColor="#20C76F"
-        app:tabTextColor="#888888" />
+        app:tabSelectedTextColor="#FFFFFF"
+        app:tabTextColor="#E8F5EA"
+        tools:ignore="TextContrastCheck" />
 
-    <!-- Chọn chế độ ăn -->
-    <com.google.android.material.card.MaterialCardView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="4dp">
+        android:orientation="horizontal"
+        android:paddingStart="16dp"
+        android:paddingTop="14dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="10dp">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="12dp">
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnStandard"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:backgroundTint="#62C97B"
+            android:contentDescription="Chế độ ăn tiêu chuẩn"
+            android:fontFamily="sans-serif"
+            android:minHeight="48dp"
+            android:text="Chế độ ăn tiêu chuẩn"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp"
+            android:textStyle="normal"
+            app:cornerRadius="24dp"
+            app:elevation="0dp"
+            tools:ignore="TextContrastCheck" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnStandard"
-                android:layout_width="0dp"
-                android:layout_height="46dp"
-                android:layout_weight="1"
-                android:text="Tiêu chuẩn"
-                android:textAllCaps="false"
-                android:textStyle="bold"
-                android:textColor="#FFFFFF"
-                android:backgroundTint="#20C76F"
-                app:cornerRadius="23dp" />
+        <Space
+            android:layout_width="12dp"
+            android:layout_height="1dp" />
 
-            <Space
-                android:layout_width="10dp"
-                android:layout_height="1dp" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnVegetarian"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:backgroundTint="#FFFFFF"
+            android:contentDescription="Chế độ ăn chay"
+            android:fontFamily="sans-serif"
+            android:minHeight="48dp"
+            android:text="Chế độ ăn chay"
+            android:textAllCaps="false"
+            android:textColor="#666666"
+            android:textSize="14sp"
+            android:textStyle="normal"
+            app:cornerRadius="24dp"
+            app:elevation="0dp"
+            app:strokeColor="#E7E7E7"
+            app:strokeWidth="1dp" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnVegetarian"
-                android:layout_width="0dp"
-                android:layout_height="46dp"
-                android:layout_weight="1"
-                android:text="Ăn chay"
-                android:textAllCaps="false"
-                android:textStyle="bold"
-                android:textColor="#666666"
-                android:backgroundTint="#FFFFFF"
-                app:strokeColor="#20C76F"
-                app:strokeWidth="1dp"
-                app:cornerRadius="23dp" />
+    </LinearLayout>
 
-        </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
-
-    <TextView
-        android:id="@+id/tvShoppingGoal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="12dp"
-        android:background="#EAF8F0"
-        android:padding="14dp"
-        android:textColor="#222222"
-        android:textSize="15sp"
-        android:lineSpacingExtra="3dp" />
-
-    <!-- Danh sách -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/shoppingRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:background="#F5F5F5"
         android:clipToPadding="false"
+        android:overScrollMode="never"
         android:paddingStart="16dp"
+        android:paddingTop="2dp"
         android:paddingEnd="16dp"
-        android:paddingBottom="16dp"
+        android:paddingBottom="24dp"
         android:scrollbars="vertical" />
 
 </LinearLayout>

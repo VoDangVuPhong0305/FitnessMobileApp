@@ -7,6 +7,11 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.fitnessmobileapp.R
+import android.graphics.Typeface
+import android.graphics.drawable.GradientDrawable
+import android.view.Gravity
+import android.view.ViewGroup
+import android.widget.GridLayout
 
 private val menuList = listOf(
     NutritionItem(
@@ -583,6 +588,7 @@ private val menuList = listOf(
 
 class NutritionFragment : Fragment(R.layout.fragment_nutrition) {
 
+    // Chức năng: khởi tạo giao diện màn Công thức nấu.
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -593,76 +599,108 @@ class NutritionFragment : Fragment(R.layout.fragment_nutrition) {
                 .commit()
         }
 
-        view.findViewById<View>(R.id.cardFaq)?.setOnClickListener {
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.fragmentContainer, FaqFragment())
-                .addToBackStack(null)
-                .commit()
-        }
-
+        setupDayGrid(view)
         refreshDayStates(view)
-
-        for (i in 1..30) {
-            val viewId = resources.getIdentifier(
-                "day$i",
-                "id",
-                requireContext().packageName
-            )
-
-            val dayView = view.findViewById<TextView>(viewId)
-
-            dayView?.setOnClickListener {
-                val detailFragment = NutritionDetailFragment()
-
-                val bundle = Bundle()
-                bundle.putSerializable("nutrition_data", menuList[i - 1])
-                detailFragment.arguments = bundle
-
-                parentFragmentManager.beginTransaction()
-                    .replace(R.id.fragmentContainer, detailFragment)
-                    .addToBackStack(null)
-                    .commit()
-            }
-        }
     }
 
     override fun onResume() {
         super.onResume()
-        view?.let { refreshDayStates(it) }
+        view?.let {
+            refreshDayStates(it)
+        }
     }
 
+    // Chức năng: tạo 30 ô ngày bằng code để giao diện gọn và dễ chỉnh.
+    private fun setupDayGrid(rootView: View) {
+        val gridMealDays = rootView.findViewById<GridLayout>(R.id.gridMealDays)
+
+        gridMealDays.removeAllViews()
+        gridMealDays.columnCount = 3
+
+        for (day in 1..30) {
+            val dayView = TextView(requireContext()).apply {
+                tag = "day_$day"
+                text = "Ngày $day"
+                gravity = Gravity.CENTER
+                includeFontPadding = false
+                textSize = 18f
+                typeface = Typeface.DEFAULT
+                setTextColor(Color.parseColor("#222222"))
+                background = createDayBackground(isDone = false)
+                elevation = dp(2).toFloat()
+                isClickable = true
+                isFocusable = true
+
+                setOnClickListener {
+                    val detailFragment = NutritionDetailFragment()
+
+                    val bundle = Bundle()
+                    bundle.putSerializable("nutrition_data", menuList[day - 1])
+                    detailFragment.arguments = bundle
+
+                    parentFragmentManager.beginTransaction()
+                        .replace(R.id.fragmentContainer, detailFragment)
+                        .addToBackStack(null)
+                        .commit()
+                }
+            }
+
+            val params = GridLayout.LayoutParams(
+                GridLayout.spec(GridLayout.UNDEFINED, 1f),
+                GridLayout.spec(GridLayout.UNDEFINED, 1f)
+            ).apply {
+                width = 0
+                height = dp(82)
+                setMargins(dp(6), dp(8), dp(6), dp(8))
+            }
+
+            gridMealDays.addView(dayView, params)
+        }
+    }
+
+    // Chức năng: cập nhật trạng thái hoàn thành của các ngày.
     private fun refreshDayStates(rootView: View) {
         val prefs = requireActivity().getSharedPreferences("user_prefs", 0)
 
-        for (i in 1..30) {
-            val viewId = resources.getIdentifier(
-                "day$i",
-                "id",
-                requireContext().packageName
-            )
+        for (day in 1..30) {
+            val dayView = rootView.findViewWithTag<TextView>("day_$day")
+            val isDone = prefs.getBoolean("day_${day}_done", false)
 
-            val dayView = rootView.findViewById<TextView>(viewId)
-            val isDone = prefs.getBoolean("day_${i}_done", false)
-
-            updateDayView(dayView, i, isDone)
+            updateDayView(dayView, day, isDone)
         }
     }
 
+    // Chức năng: đổi màu ô ngày nếu đã hoàn thành.
     private fun updateDayView(dayView: TextView?, day: Int, isDone: Boolean) {
-        dayView?.text = "Ngày $day"
+        if (dayView == null) return
+
+        dayView.text = "Ngày $day"
+        dayView.background = createDayBackground(isDone)
+        dayView.elevation = dp(2).toFloat()
 
         if (isDone) {
-            dayView?.setTextColor(Color.WHITE)
-            dayView?.background = ContextCompat.getDrawable(
-                requireContext(),
-                R.drawable.bg_day_done
-            )
-        }  else {
-            dayView?.setTextColor(Color.parseColor("#222222"))
-            dayView?.background = ContextCompat.getDrawable(
-                requireContext(),
-                R.drawable.bg_day_box
-            )
+            dayView.setTextColor(Color.WHITE)
+        } else {
+            dayView.setTextColor(Color.parseColor("#222222"))
         }
+    }
+
+    // Chức năng: tạo nền bo góc cho ô ngày.
+    private fun createDayBackground(isDone: Boolean): GradientDrawable {
+        return GradientDrawable().apply {
+            shape = GradientDrawable.RECTANGLE
+            cornerRadius = dp(12).toFloat()
+
+            if (isDone) {
+                setColor(Color.parseColor("#65D96F"))
+            } else {
+                setColor(Color.WHITE)
+            }
+        }
+    }
+
+    // Chức năng: đổi dp sang pixel.
+    private fun dp(value: Int): Int {
+        return (value * resources.displayMetrics.density).toInt()
     }
 }
