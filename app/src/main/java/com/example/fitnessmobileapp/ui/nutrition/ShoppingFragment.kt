@@ -31,6 +31,13 @@ class ShoppingFragment : Fragment(R.layout.fragment_shopping) {
 
         tvTitle.text = "Danh sách mua sắm"
 
+        val tvShoppingGoal = view.findViewById<TextView>(R.id.tvShoppingGoal)
+        val profileInfo = NutritionGoalHelper.getProfileInfo(requireContext())
+
+        tvShoppingGoal.text =
+            "${NutritionGoalHelper.getGoalTitle(profileInfo)}\n" +
+                    NutritionGoalHelper.getGoalDescription(profileInfo)
+
         btnBack.setOnClickListener {
             parentFragmentManager.popBackStack()
         }
@@ -77,16 +84,23 @@ class ShoppingFragment : Fragment(R.layout.fragment_shopping) {
 
         // Mặc định
         updateButtons(true)
-        rv.adapter = ShoppingAdapter(getData(1, false))
+        rv.adapter = ShoppingAdapter(
+            applyGoalToShoppingList(
+                getData(1, false),
+                profileInfo
+            )
+        )
 
         // Chuyển tuần
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-
             override fun onTabSelected(tab: TabLayout.Tab) {
                 rv.adapter = ShoppingAdapter(
-                    getData(
-                        week = tab.position + 1,
-                        vegetarian = isVegetarian
+                    applyGoalToShoppingList(
+                        getData(
+                            week = tab.position + 1,
+                            vegetarian = isVegetarian
+                        ),
+                        profileInfo
                     )
                 )
             }
@@ -103,9 +117,12 @@ class ShoppingFragment : Fragment(R.layout.fragment_shopping) {
             updateButtons(true)
 
             rv.adapter = ShoppingAdapter(
-                getData(
-                    week = tabLayout.selectedTabPosition + 1,
-                    vegetarian = false
+                applyGoalToShoppingList(
+                    getData(
+                        week = tabLayout.selectedTabPosition + 1,
+                        vegetarian = false
+                    ),
+                    profileInfo
                 )
             )
         }
@@ -117,20 +134,44 @@ class ShoppingFragment : Fragment(R.layout.fragment_shopping) {
             updateButtons(false)
 
             rv.adapter = ShoppingAdapter(
-                getData(
-                    week = tabLayout.selectedTabPosition + 1,
-                    vegetarian = true
+                applyGoalToShoppingList(
+                    getData(
+                        week = tabLayout.selectedTabPosition + 1,
+                        vegetarian = true
+                    ),
+                    profileInfo
                 )
             )
         }
     }
-        private fun getData(week: Int, vegetarian: Boolean): List<ShoppingItem> {
-            return if (vegetarian) {
-                getVegetarianData(week)
+
+    private fun applyGoalToShoppingList(
+        items: List<ShoppingItem>,
+        profileInfo: NutritionProfileInfo
+    ): List<ShoppingItem> {
+        return items.map { item ->
+            if (item.isHeader) {
+                item
             } else {
-                getStandardData(week)
+                item.copy(
+                    description = NutritionGoalHelper.adjustShoppingDescription(
+                        itemName = item.text,
+                        oldDescription = item.description,
+                        info = profileInfo
+                    )
+                )
             }
         }
+    }
+
+    private fun getData(week: Int, vegetarian: Boolean): List<ShoppingItem> {
+        return if (vegetarian) {
+            getVegetarianData(week)
+        } else {
+            getStandardData(week)
+        }
+    }
+
     private fun getStandardData(week: Int): List<ShoppingItem> {
         val week1 = listOf(
             ShoppingItem("BÁNH QUY", isHeader = true),

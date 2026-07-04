@@ -35,6 +35,8 @@ class NutritionDetailFragment : Fragment(R.layout.fragment_nutrition_detail) {
         val tvTitle = view.findViewById<View>(R.id.header)
             .findViewById<TextView>(R.id.tvTitle)
 
+        val tvNutritionGoal = view.findViewById<TextView>(R.id.tvNutritionGoal)
+
         val tvBreakfast = view.findViewById<TextView>(R.id.tvBreakfast)
         val tvSnack = view.findViewById<TextView>(R.id.tvSnack)
         val tvLunch = view.findViewById<TextView>(R.id.tvLunch)
@@ -49,6 +51,12 @@ class NutritionDetailFragment : Fragment(R.layout.fragment_nutrition_detail) {
         val data = arguments?.getSerializable("nutrition_data") as? NutritionItem
 
         data?.let { item ->
+
+            val profileInfo = NutritionGoalHelper.getProfileInfo(requireContext())
+
+            tvNutritionGoal.text =
+                "${NutritionGoalHelper.getGoalTitle(profileInfo)}\n" +
+                        NutritionGoalHelper.getGoalDescription(profileInfo)
 
             tvTitle.text = "NGÀY ${item.day}"
 
@@ -99,10 +107,17 @@ class NutritionDetailFragment : Fragment(R.layout.fragment_nutrition_detail) {
                 lAlt: String,
                 dAlt: String
             ) {
-                tvBreakfast.text = "🍳 Bữa sáng\n\n• $b\n• $bAlt"
-                tvSnack.text = "🍎 Bữa nhẹ\n\n• $s\n• $sAlt"
-                tvLunch.text = "🥗 Bữa trưa\n\n• $l\n• $lAlt"
-                tvDinner.text = "🍲 Bữa tối\n\n• $d\n• $dAlt"
+                tvBreakfast.text = "🍳 Bữa sáng\n\n" +
+                        NutritionGoalHelper.applyGoalToMeal("Bữa sáng", b, bAlt, profileInfo)
+
+                tvSnack.text = "🍎 Bữa nhẹ\n\n" +
+                        NutritionGoalHelper.applyGoalToMeal("Bữa nhẹ", s, sAlt, profileInfo)
+
+                tvLunch.text = "🥗 Bữa trưa\n\n" +
+                        NutritionGoalHelper.applyGoalToMeal("Bữa trưa", l, lAlt, profileInfo)
+
+                tvDinner.text = "🍲 Bữa tối\n\n" +
+                        NutritionGoalHelper.applyGoalToMeal("Bữa tối", d, dAlt, profileInfo)
             }
 
             // Hiển thị mặc định (Tiêu chuẩn)

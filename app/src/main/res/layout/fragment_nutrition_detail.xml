@@ -60,6 +60,19 @@
 
             </LinearLayout>
 
+            <TextView
+                android:id="@+id/tvNutritionGoal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="12dp"
+                android:background="#EAF8F0"
+                android:padding="14dp"
+                android:textColor="#222222"
+                android:textSize="15sp"
+                android:lineSpacingExtra="3dp" />
+
             <!-- Nội dung -->
             <LinearLayout
                 android:layout_width="match_parent"
