@@ -1,0 +1,12 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <!-- Chức năng: icon tab Ăn uống / Dinh dưỡng -->
+    <path
+        android:fillColor="@android:color/black"
+        android:pathData="M8.1,13.34L10.93,10.51L3.91,3.5C2.35,5.06 2.35,7.59 3.91,9.15L8.1,13.34ZM14.88,11.53C16.43,12.25 18.62,11.75 20.24,10.13C22.19,8.18 22.56,5.37 21.06,3.87C19.57,2.38 16.76,2.75 14.81,4.7C13.19,6.32 12.69,8.51 13.41,10.06L3.7,19.77L5.11,21.18L12,14.29L18.89,21.18L20.3,19.77L13.41,12.88L14.88,11.53Z" />
+
+</vector>

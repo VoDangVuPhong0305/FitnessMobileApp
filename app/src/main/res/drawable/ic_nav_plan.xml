@@ -1,0 +1,12 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="28dp"
+    android:height="28dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <!-- Chức năng: icon Kế hoạch, dùng tia sét giống app mẫu hơn -->
+    <path
+        android:fillColor="@android:color/black"
+        android:pathData="M13,2L4,14H10L8,22L20,9H13L13,2Z" />
+
+</vector>

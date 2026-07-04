@@ -1,24 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- Chức năng: tab Dinh dưỡng -->
     <item
         android:id="@+id/nav_nutrition"
-        android:icon="@android:drawable/ic_menu_upload"
-        android:title="Dinh dưỡng" />
+        android:icon="@drawable/ic_nav_food"
+        android:title="Ăn uống" />
 
+    <!-- Chức năng: tab Kế hoạch -->
     <item
         android:id="@+id/nav_plan"
-        android:icon="@android:drawable/ic_menu_my_calendar"
+        android:icon="@drawable/ic_nav_plan"
         android:title="Kế hoạch" />
 
+    <!-- Chức năng: tab Báo cáo -->
     <item
         android:id="@+id/nav_report"
-        android:icon="@android:drawable/ic_menu_sort_by_size"
+        android:icon="@drawable/ic_nav_report"
         android:title="Báo cáo" />
 
+    <!-- Chức năng: tab Tôi -->
     <item
         android:id="@+id/nav_profile"
-        android:icon="@android:drawable/ic_menu_myplaces"
+        android:icon="@drawable/ic_nav_profile"
         android:title="Tôi" />
 
 </menu>

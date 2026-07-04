@@ -1,37 +1,194 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@android:color/white">
+    android:background="#EEEEEE"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:orientation="vertical">
 
+    <!-- Chức năng: vùng hiển thị các Fragment chính của app -->
     <FrameLayout
         android:id="@+id/fragmentContainer"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />
 
-    <!-- Bóng đổ nhẹ phía trên thanh menu dưới -->
-    <View
+    <!-- Chức năng: vùng chứa thanh navigation custom.
+         Giữ chiều cao 88dp như bạn đang ưng ý. -->
+    <FrameLayout
+        android:id="@+id/bottomNavContainer"
         android:layout_width="match_parent"
-        android:layout_height="8dp"
-        android:background="@drawable/bg_shadow_top" />
-
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomNavigation"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="88dp"
         android:background="@android:color/white"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp"
-        app:itemIconSize="30dp"
-        app:labelVisibilityMode="labeled"
-        app:itemIconTint="@color/bottom_nav_color"
-        app:itemTextColor="@color/bottom_nav_color"
-        app:itemTextAppearanceActive="@style/BottomNavAntonText"
-        app:itemTextAppearanceInactive="@style/BottomNavAntonText"
-        app:menu="@menu/bottom_nav_menu" />
+        android:clipChildren="false"
+        android:clipToPadding="false">
+
+        <!-- Chức năng: thanh điều hướng dưới custom gồm 4 tab.
+             Đặt trước bóng để bóng có thể vẽ đè lên phía trên navigation. -->
+        <LinearLayout
+            android:id="@+id/customBottomNavigation"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="bottom"
+            android:background="@android:color/white"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingStart="8dp"
+            android:paddingTop="8dp"
+            android:paddingEnd="8dp"
+            android:paddingBottom="8dp">
+
+            <!-- Chức năng: tab Ăn uống -->
+            <LinearLayout
+                android:id="@+id/nav_nutrition"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:translationY="-5dp">
+
+                <ImageView
+                    android:id="@+id/imgNavNutrition"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:contentDescription="Ăn uống"
+                    android:src="@drawable/ic_nav_food" />
+
+                <TextView
+                    android:id="@+id/txtNavNutrition"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
+                    android:fontFamily="@font/anton_regular"
+                    android:gravity="center"
+                    android:includeFontPadding="false"
+                    android:singleLine="true"
+                    android:text="Ăn uống"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <!-- Chức năng: tab Kế hoạch -->
+            <LinearLayout
+                android:id="@+id/nav_plan"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:translationY="-5dp">
+
+                <ImageView
+                    android:id="@+id/imgNavPlan"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:contentDescription="Kế hoạch"
+                    android:src="@drawable/ic_nav_plan" />
+
+                <TextView
+                    android:id="@+id/txtNavPlan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
+                    android:fontFamily="@font/anton_regular"
+                    android:gravity="center"
+                    android:includeFontPadding="false"
+                    android:singleLine="true"
+                    android:text="Kế hoạch"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <!-- Chức năng: tab Báo cáo -->
+            <LinearLayout
+                android:id="@+id/nav_report"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:translationY="-5dp">
+
+                <ImageView
+                    android:id="@+id/imgNavReport"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:contentDescription="Báo cáo"
+                    android:src="@drawable/ic_nav_report" />
+
+                <TextView
+                    android:id="@+id/txtNavReport"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
+                    android:fontFamily="@font/anton_regular"
+                    android:gravity="center"
+                    android:includeFontPadding="false"
+                    android:singleLine="true"
+                    android:text="Báo cáo"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <!-- Chức năng: tab Tôi -->
+            <LinearLayout
+                android:id="@+id/nav_profile"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:translationY="-5dp">
+
+                <ImageView
+                    android:id="@+id/imgNavProfile"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:contentDescription="Tôi"
+                    android:src="@drawable/ic_nav_profile" />
+
+                <TextView
+                    android:id="@+id/txtNavProfile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
+                    android:fontFamily="@font/anton_regular"
+                    android:gravity="center"
+                    android:includeFontPadding="false"
+                    android:singleLine="true"
+                    android:text="Tôi"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Chức năng: bóng mờ nhẹ phía trên thanh điều hướng.
+             Đặt SAU customBottomNavigation để bóng không bị nền trắng che mất.
+             translationY âm giúp bóng hắt lên phía trên giống app mẫu. -->
+        <View
+            android:id="@+id/viewBottomShadow"
+            android:layout_width="match_parent"
+            android:layout_height="6dp"
+            android:layout_gravity="top"
+            android:background="@drawable/bg_shadow_top"
+            android:translationY="-5dp" />
+
+    </FrameLayout>
 
 </LinearLayout>
