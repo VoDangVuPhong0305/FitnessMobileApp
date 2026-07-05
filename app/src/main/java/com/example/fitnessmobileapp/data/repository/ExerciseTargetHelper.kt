@@ -23,9 +23,8 @@ object ExerciseTargetHelper {
     // Mình để cả id và tên để nếu bài Toàn thân lấy lại bài cũ nhưng đổi id,
     // app vẫn nhận diện được theo tên.
     private val repRules = mapOf(
-        // =========================
         // Tay & ngực
-        // =========================
+
         "arms_chest_002" to RepRule(8, 2),
         "Tập cơ tay sau trên ghế" to RepRule(8, 2),
 
@@ -62,9 +61,7 @@ object ExerciseTargetHelper {
         "arms_chest_021" to RepRule(6, 2),
         "Chống đẩy để tay rộng" to RepRule(6, 2),
 
-        // =========================
         // Chân
-        // =========================
         "legs_002" to RepRule(12, 2),
         "Gánh đùi" to RepRule(12, 2),
 
@@ -101,9 +98,7 @@ object ExerciseTargetHelper {
         "legs_021" to RepRule(12, 2),
         "Đứng tấn nâng bắp chân dựa tường" to RepRule(12, 2),
 
-        // =========================
         // Cơ bụng
-        // =========================
         "abs_001" to RepRule(14, 2),
         "Gập người xe đạp đứng" to RepRule(14, 2),
 

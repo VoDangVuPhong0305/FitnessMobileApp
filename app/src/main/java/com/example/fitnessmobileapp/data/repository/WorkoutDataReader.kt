@@ -108,7 +108,7 @@ object WorkoutDataReader {
     }
 
     // Chức năng: lấy danh sách bài tập toàn thân từ file JSON.
-// Hàm này dùng cho kế hoạch Tập toàn thân.
+    // Hàm này dùng cho kế hoạch Tập toàn thân.
     fun getFullBodyExercises(context: Context): List<Exercise> {
         val workoutData = loadWorkoutData(context)
         return workoutData.exerciseLibrary.fullBody

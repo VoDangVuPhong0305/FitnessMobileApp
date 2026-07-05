@@ -66,7 +66,7 @@ class ExerciseDetailActivity : AppCompatActivity() {
 
     // Chức năng: lưu mục tiêu hiện tại của bài.
     // Bài time: 30 giây.
-    // Bài reps: x12, x14, x16...
+    // Bài reps: x12, x14
     private var currentTarget = ExerciseTargetHelper.ExerciseTarget(
         ExerciseTargetHelper.TYPE_TIME,
         30
@@ -243,7 +243,6 @@ class ExerciseDetailActivity : AppCompatActivity() {
         txtExerciseName.text = exercise.name
 
         // Chức năng: xác định bài này là bài theo thời gian hay bài theo số lần.
-        // Ví dụ:
         // Bật nhảy -> Thời lượng 00:30
         // Gánh đùi -> Lần lặp lại x12.
         currentTarget = CustomExerciseTargetManager.getTarget(

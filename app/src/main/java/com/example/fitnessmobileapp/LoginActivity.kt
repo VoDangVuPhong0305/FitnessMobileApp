@@ -17,10 +17,9 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var btnLogin: TextView
     private lateinit var btnRegister: TextView
 
-    // Tài khoản mẫu cố định để demo
+    // Tài khoản mẫu
     private val accounts = mapOf(
-        "phong" to "123",
-        "tuyen" to "123"
+        "phong" to "123"
     )
 
     // Hàm khởi tạo màn hình đăng nhập
@@ -53,7 +52,7 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    // Hàm kiểm tra đăng nhập bằng tài khoản mẫu hoặc tài khoản đã đăng ký
+    // Hàm kiểm tra đăng nhập
     private fun handleLogin() {
         val username = edtUsername.text.toString().trim()
         val password = edtPassword.text.toString().trim()

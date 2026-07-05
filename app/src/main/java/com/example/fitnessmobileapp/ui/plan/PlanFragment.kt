@@ -33,7 +33,7 @@ class PlanFragment : Fragment(R.layout.fragment_plan) {
     private lateinit var pagerSnapHelper: PagerSnapHelper
 
     // Chức năng: lưu kế hoạch hiện tại đang được chọn.
-    // Mặc định mở app lên chọn Tập toàn thân.
+    // Mặc định mở app lên là ở giao diện Tập toàn thân.
     private var selectedPlanId: String = WorkoutPlanCategories.FULL_BODY_ID
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

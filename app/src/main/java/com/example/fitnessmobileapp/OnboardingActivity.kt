@@ -62,7 +62,6 @@ class OnboardingActivity : AppCompatActivity() {
     private lateinit var txtTargetWeightSummary: TextView
     private lateinit var txtLoadingPercent: TextView
 
-    // Các view loading được tạo bằng Kotlin, không cần thêm XML
     private var layoutPlanLoading: LinearLayout? = null
     private var circlePlanProgress: PlanCircleProgressView? = null
     private var txtPlanPercent: TextView? = null
@@ -174,7 +173,6 @@ class OnboardingActivity : AppCompatActivity() {
             return
         }
 
-        // Ở màn loading cuối, chỉ cho bấm Xong khi vòng tròn đã chạy đủ 100%
         if (step == 7) {
             if (!createPlanFinished) {
                 return

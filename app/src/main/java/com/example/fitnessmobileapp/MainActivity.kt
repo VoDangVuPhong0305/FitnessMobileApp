@@ -154,7 +154,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     // Chức năng: đổi màu và độ nổi bật cho từng tab.
-// Không setTypeface(null, ...) nữa để tránh ghi đè font Anton trong XML.
+    // Không setTypeface(null, ...) nữa để tránh ghi đè font Anton trong XML.
     private fun setTabState(
         icon: ImageView,
         text: TextView,
