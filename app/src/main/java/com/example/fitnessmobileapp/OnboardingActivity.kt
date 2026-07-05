@@ -728,10 +728,14 @@ class OnboardingActivity : AppCompatActivity() {
     // Hàm lưu thông tin setup vào SharedPreferences và chuyển vào MainActivity
     private fun finishSetup() {
         val loginPrefs = getSharedPreferences("login_data", Context.MODE_PRIVATE)
-        val username = loginPrefs.getString("current_user", "guest") ?: "guest"
+        val username = loginPrefs.getString("current_user", "guest")
+            ?.trim()
+            ?: "guest"
 
-        getSharedPreferences("user_${username}_profile", Context.MODE_PRIVATE)
-            .edit()
+        val userPrefs =
+            getSharedPreferences("user_${username}_profile", Context.MODE_PRIVATE)
+
+        userPrefs.edit()
             .putBoolean("setup_done", true)
             .putString("motivation", motivation)
             .putString("gender", gender)

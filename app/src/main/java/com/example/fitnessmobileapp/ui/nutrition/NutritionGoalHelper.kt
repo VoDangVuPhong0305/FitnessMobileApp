@@ -29,7 +29,9 @@ object NutritionGoalHelper {
 
     fun getProfileInfo(context: Context): NutritionProfileInfo {
         val loginPrefs = context.getSharedPreferences("login_data", Context.MODE_PRIVATE)
-        val username = loginPrefs.getString("current_user", "guest") ?: "guest"
+        val username = loginPrefs.getString("current_user", "guest")
+            ?.trim()
+            ?: "guest"
 
         val prefs = context.getSharedPreferences(
             "user_${username}_profile",

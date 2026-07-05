@@ -146,49 +146,13 @@ object CustomExerciseTargetManager {
         return baseCalories * (actualSeconds.toDouble() / baseDurationSeconds.toDouble())
     }
 
-    // Chức năng: xóa custom số lần/thời gian bài tập của tài khoản hiện tại.
-    // Dùng khi Đặt lại tiến độ hoặc Xóa tất cả dữ liệu.
+    // Chức năng: xóa toàn bộ mục tiêu tùy chỉnh của bài tập thuộc tài khoản hiện tại.
+    // Hàm này dùng khi người dùng đặt lại tiến độ hoặc xóa toàn bộ dữ liệu.
+    // Lưu ý: chỉ clear SharedPreferences đang dùng, không mở danh sách file cũ để tránh tạo file XML rỗng.
     fun clearAllTargets(context: Context) {
-        val username = UserDataPrefs.getCurrentUsername(context)
-            .trim()
-            .lowercase()
-            .replace("@", "_at_")
-            .replace(".", "_")
-            .replace(" ", "_")
-
-        // Chức năng: xóa đúng file đang dùng hiện tại.
         getPrefs(context)
             .edit()
             .clear()
             .apply()
-
-        // Chức năng: xóa thêm các tên cũ nếu trước đó app từng lưu bằng tên khác.
-        val possiblePrefNames = listOf<String>(
-            "user_${username}_custom_exercise_target",
-            "user_${username}_custom_exercise_targets",
-            "user_${username}_custom_exercise_target_data",
-            "user_${username}_exercise_target_data",
-            "user_${username}_exercise_targets",
-            "user_${username}_custom_targets",
-            "user_${username}_workout_custom_targets",
-            "user_${username}_custom_exercise_target_pref",
-
-            // Các tên cũ dạng lưu chung toàn app, xóa để tránh app đọc nhầm dữ liệu cũ.
-            "custom_exercise_target",
-            "custom_exercise_targets",
-            "custom_exercise_target_data",
-            "exercise_target_data",
-            "exercise_targets",
-            "custom_targets",
-            "workout_custom_targets",
-            "custom_exercise_target_pref"
-        )
-
-        possiblePrefNames.forEach { prefName ->
-            context.getSharedPreferences(prefName, Context.MODE_PRIVATE)
-                .edit()
-                .clear()
-                .apply()
-        }
     }
 }

@@ -144,7 +144,9 @@ class ProfileActivity : AppCompatActivity() {
     // Chức năng: lấy tên tài khoản hiện tại để đọc/lưu hồ sơ riêng theo từng user.
     private fun getCurrentUsername(): String {
         val loginPrefs = getSharedPreferences("login_data", MODE_PRIVATE)
-        return loginPrefs.getString("current_user", "guest") ?: "guest"
+        return loginPrefs.getString("current_user", "guest")
+            ?.trim()
+            ?: "guest"
     }
 
     // Chức năng: lấy SharedPreferences hồ sơ theo từng tài khoản.

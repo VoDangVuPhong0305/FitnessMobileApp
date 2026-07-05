@@ -115,7 +115,9 @@ class ReportFragment : Fragment() {
     // Chức năng: lấy tên tài khoản hiện tại để lưu cân nặng riêng cho từng người dùng.
     private fun getCurrentUsername(): String {
         val loginPrefs = requireContext().getSharedPreferences("login_data", Context.MODE_PRIVATE)
-        return loginPrefs.getString("current_user", "guest") ?: "guest"
+        return loginPrefs.getString("current_user", "guest")
+            ?.trim()
+            ?: "guest"
     }
 
     // Chức năng: lấy SharedPreferences hồ sơ người dùng đã tạo ở Onboarding.

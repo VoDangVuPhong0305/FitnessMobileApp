@@ -18,11 +18,9 @@ import androidx.fragment.app.Fragment
 import com.example.fitnessmobileapp.LoginActivity
 import com.example.fitnessmobileapp.OnboardingActivity
 import com.example.fitnessmobileapp.R
-import com.example.fitnessmobileapp.data.repository.CustomExerciseTargetManager
-import com.example.fitnessmobileapp.data.repository.PlanProgressManager
-import com.example.fitnessmobileapp.data.repository.WorkoutReportManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.example.fitnessmobileapp.data.repository.UserDataPrefs
+import java.io.File
 
 class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
@@ -80,14 +78,15 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         )
     }
 
-    // Chức năng: hiện bảng xác nhận xóa toàn bộ dữ liệu giống app mẫu.
+    // Chức năng: hiện bảng xác nhận xóa toàn bộ dữ liệu của tài khoản hiện tại.
+    // Chỉ xóa dữ liệu cá nhân, tiến độ, báo cáo, nhắc nhở; không xóa tài khoản đăng nhập.
     private fun showDeleteAllDataDialog() {
         showProfileConfirmDialog(
-            title = "Bạn có chắc muốn đặt\nlại ứng dụng và xóa tất\ncả dữ liệu?",
-            message = "",
-            confirmText = "XÓA",
+            title = "Xóa tất cả dữ liệu?",
+            message = "Hồ sơ, tiến độ tập luyện, báo cáo và dữ liệu cá nhân sẽ bị xóa.\n\nTài khoản đăng nhập vẫn được giữ lại.",
+            confirmText = "XÓA DỮ LIỆU",
             onConfirm = {
-                deleteAllUserDataButKeepLogin()
+                deleteCurrentUserDataKeepAccount()
             }
         )
     }
@@ -239,28 +238,13 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         dialog.show()
     }
 
-    // Chức năng: chỉ reset dữ liệu tập luyện.
+    /// Chức năng: chỉ đặt lại tiến độ tập luyện của tài khoản hiện tại.
     // Không xóa hồ sơ, không xóa tài khoản, không xóa nhắc nhở.
+    // Hàm này xóa trực tiếp file XML đang tồn tại để tránh Android tạo thêm file SharedPreferences rỗng.
     private fun resetWorkoutProgressOnly() {
         val context = requireContext()
 
-        // Chức năng: reset ngày đã hoàn thành của tất cả kế hoạch.
-        PlanProgressManager.resetAllProgress(context)
-
-        // Chức năng: xóa báo cáo kcal, phút tập, số bài, lịch sử workout.
-        WorkoutReportManager.clearReportData(context)
-
-        // Chức năng: xóa số lần / thời gian bài tập đã chỉnh custom.
-        CustomExerciseTargetManager.clearAllTargets(context)
-
-        // Chức năng: xóa dữ liệu tiến độ cũ nếu app từng lưu ở progress_data.
-        context.getSharedPreferences("progress_data", Context.MODE_PRIVATE)
-            .edit()
-            .clear()
-            .apply()
-
-        // Chức năng: xóa thêm một số dữ liệu tập luyện cũ nếu từng được lưu riêng.
-        clearWorkoutRelatedPreferences(context)
+        deleteExistingWorkoutPreferenceFiles(context)
 
         Toast.makeText(
             context,
@@ -269,117 +253,43 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         ).show()
     }
 
-    // Chức năng: xóa toàn bộ dữ liệu cá nhân nhưng giữ tài khoản đăng nhập.
-    // Sau khi xóa xong chuyển về Onboarding để setup lại từ đầu.
-    private fun deleteAllUserDataButKeepLogin() {
-        val context = requireContext()
-        val username = getCurrentUsername()
+    // Chức năng: xóa các file SharedPreferences liên quan đến tiến độ tập luyện đang tồn tại.
+    private fun deleteExistingWorkoutPreferenceFiles(context: Context) {
+        val safeUsername = UserDataPrefs.getSafeUsername(context)
+        val sharedPrefsDir = File(context.applicationInfo.dataDir, "shared_prefs")
+        if (!sharedPrefsDir.exists()) return
 
-        // Chức năng: hủy lịch nhắc nhở để sau khi xóa dữ liệu không còn thông báo cũ.
-        cancelAllReminderAlarms()
+        // Xóa sạch dữ liệu ăn uống trong RAM trước
+        context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE).edit().clear().commit()
 
-        // Chức năng: xóa dữ liệu tập luyện.
-        PlanProgressManager.resetAllProgress(context)
-        WorkoutReportManager.clearReportData(context)
-        CustomExerciseTargetManager.clearAllTargets(context)
-        clearWorkoutRelatedPreferences(context)
+        sharedPrefsDir.listFiles()?.forEach { file ->
+            val fileName = file.name
+            if (!fileName.endsWith(".xml")) return@forEach
+            
+            val lowerName = fileName.lowercase()
+            // Bảo vệ tuyệt đối file tài khoản và đăng nhập
+            if (lowerName.contains("accounts_data") || lowerName.contains("login_data")) return@forEach
 
-        // Chức năng: xóa hồ sơ chung.
-        context.getSharedPreferences("profile_data", Context.MODE_PRIVATE)
-            .edit()
-            .clear()
-            .apply()
+            val prefName = fileName.removeSuffix(".xml")
 
-        // Chức năng: xóa hồ sơ theo tài khoản.
-        context.getSharedPreferences("user_${username}_profile", Context.MODE_PRIVATE)
-            .edit()
-            .clear()
-            .apply()
+            // Các file tiến độ gắn với tên user (từ ảnh thực tế)
+            val isUserWorkoutFile = fileName.startsWith("user_${safeUsername}_") && (
+                fileName.contains("plan_progress") || 
+                fileName.contains("workout_report") || 
+                fileName.contains("weight_report") || 
+                fileName.contains("custom_exercise_target")
+            )
 
-        // Chức năng: xóa báo cáo cân nặng theo tài khoản.
-        context.getSharedPreferences("user_${username}_weight_report", Context.MODE_PRIVATE)
-            .edit()
-            .clear()
-            .apply()
+            // File ăn uống chung
+            val isNutritionFile = fileName == "user_prefs.xml"
 
-        // Chức năng: xóa nhắc nhở.
-        context.getSharedPreferences("reminder_data", Context.MODE_PRIVATE)
-            .edit()
-            .clear()
-            .apply()
-
-        // Chức năng: xóa dữ liệu âm thanh nếu còn dùng.
-        context.getSharedPreferences("sound_data", Context.MODE_PRIVATE)
-            .edit()
-            .clear()
-            .apply()
-
-        // Chức năng: xóa dữ liệu tiến độ cũ.
-        context.getSharedPreferences("progress_data", Context.MODE_PRIVATE)
-            .edit()
-            .clear()
-            .apply()
-
-        // Chức năng: giữ tài khoản đăng nhập, không bắt đăng nhập lại.
-        context.getSharedPreferences("login_data", Context.MODE_PRIVATE)
-            .edit()
-            .putString("current_user", username)
-            .putBoolean("remember_login", true)
-            .apply()
-
-        Toast.makeText(
-            context,
-            "Đã xóa dữ liệu. Vui lòng thiết lập lại.",
-            Toast.LENGTH_SHORT
-        ).show()
-
-        val intent = Intent(context, OnboardingActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        startActivity(intent)
-    }
-
-    // Chức năng: xóa thêm các SharedPreferences liên quan trực tiếp đến bài tập của tài khoản hiện tại.
-// Không xóa dữ liệu của tài khoản khác.
-    private fun clearWorkoutRelatedPreferences(context: Context) {
-        val username = getCurrentUsername()
-            .trim()
-            .lowercase()
-            .replace("@", "_at_")
-            .replace(".", "_")
-            .replace(" ", "_")
-
-        val workoutPrefs = listOf<String>(
-            "user_${username}_plan_progress_pref",
-            "user_${username}_workout_report_pref",
-            "user_${username}_progress_data",
-            "user_${username}_custom_exercise_target",
-            "user_${username}_custom_exercise_targets",
-            "user_${username}_custom_exercise_target_data",
-            "user_${username}_exercise_target_data",
-            "user_${username}_workout_session_data",
-            "user_${username}_completed_exercise_data",
-            "user_${username}_completed_exercises",
-            "user_${username}_exercise_progress_data",
-
-            // Chức năng: xóa thêm dữ liệu cũ dạng lưu chung toàn app nếu trước đó từng dùng.
-            "plan_progress_pref",
-            "workout_report_pref",
-            "progress_data",
-            "custom_exercise_target",
-            "custom_exercise_targets",
-            "custom_exercise_target_data",
-            "exercise_target_data",
-            "workout_session_data",
-            "completed_exercise_data",
-            "completed_exercises",
-            "exercise_progress_data"
-        )
-
-        workoutPrefs.forEach { prefName ->
-            context.getSharedPreferences(prefName, Context.MODE_PRIVATE)
-                .edit()
-                .clear()
-                .apply()
+            if (isUserWorkoutFile || isNutritionFile) {
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                    context.deleteSharedPreferences(prefName)
+                } else {
+                    file.delete()
+                }
+            }
         }
     }
 
@@ -419,14 +329,77 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         }
     }
 
+    // Chức năng: xóa toàn bộ dữ liệu phát sinh của tài khoản hiện tại nhưng giữ lại tài khoản đăng nhập.
+    // Hàm này KHÔNG xóa accounts_data.xml, vì accounts_data lưu username/password.
+    // Hàm này cũng giữ login_data.xml để app vẫn biết người dùng hiện tại là ai.
+    // Sau khi xóa, app chuyển về OnboardingActivity để người dùng thiết lập lại hồ sơ.
+    // Lưu ý: hàm này xóa trực tiếp file XML đang tồn tại, không gọi Manager để tránh tạo thêm file rỗng.
+    private fun deleteCurrentUserDataKeepAccount() {
+        val context = requireContext()
+        val currentUsername = UserDataPrefs.getCurrentUsername(context)
+
+        // Chức năng: hủy lịch nhắc nhở để sau khi xóa dữ liệu không còn thông báo cũ.
+        cancelAllReminderAlarms()
+
+        // Chức năng: xóa trực tiếp các file XML liên quan trong shared_prefs.
+        // Cách này không tạo thêm file rác như khi gọi getSharedPreferences cho file chưa tồn tại.
+        deleteExistingPreferenceFilesForCurrentUser(context)
+
+        // Chức năng: giữ lại trạng thái đăng nhập hiện tại.
+        // Dùng commit() thay vì apply() để đảm bảo dữ liệu được ghi xuống file ngay lập tức 
+        // trước khi app chuyển màn hình, giúp tránh xung đột với các tiến trình xóa file.
+        context.getSharedPreferences("login_data", Context.MODE_PRIVATE)
+            .edit()
+            .putString("current_user", currentUsername)
+            .putBoolean("remember_login", true)
+            .commit()
+
+        Toast.makeText(
+            context,
+            "Đã xóa dữ liệu. Vui lòng thiết lập lại hồ sơ.",
+            Toast.LENGTH_SHORT
+        ).show()
+
+        val intent = Intent(context, OnboardingActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+    }
+
+    // Chức năng: xóa triệt để các file SharedPreferences đang tồn tại của tài khoản hiện tại.
+    // Chỉ giữ lại đúng 2 file tài khoản, dọn sạch mọi file rác khác theo ảnh thực tế Device File Explorer.
+    private fun deleteExistingPreferenceFilesForCurrentUser(context: Context) {
+        val sharedPrefsDir = File(context.applicationInfo.dataDir, "shared_prefs")
+        if (!sharedPrefsDir.exists()) return
+
+        // Xóa sạch dữ liệu ăn uống trong RAM trước
+        context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE).edit().clear().commit()
+
+        sharedPrefsDir.listFiles()?.forEach { file ->
+            val fileName = file.name
+            if (!fileName.endsWith(".xml")) return@forEach
+
+            val lowerName = fileName.lowercase()
+            
+            // Bảo vệ tuyệt đối 2 file tài khoản quan trọng nhất
+            if (lowerName.contains("accounts_data") || lowerName.contains("login_data")) {
+                return@forEach
+            }
+
+            val prefName = fileName.removeSuffix(".xml")
+
+            // Xóa tất cả các file XML còn lại (profile, weight, workout, reminder, shopping...)
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                // Ưu tiên dùng API hệ thống để xóa sạch cả cache RAM
+                context.deleteSharedPreferences(prefName)
+            } else {
+                file.delete()
+            }
+        }
+    }
+
     // Chức năng: lấy tài khoản hiện tại để xóa đúng dữ liệu của user đó.
     private fun getCurrentUsername(): String {
-        val loginPrefs = requireContext().getSharedPreferences(
-            "login_data",
-            Context.MODE_PRIVATE
-        )
-
-        return loginPrefs.getString("current_user", "guest") ?: "guest"
+        return UserDataPrefs.getCurrentUsername(requireContext())
     }
 
     // Chức năng: tạo nền bo góc.
