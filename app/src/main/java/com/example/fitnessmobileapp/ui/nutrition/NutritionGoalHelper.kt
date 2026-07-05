@@ -28,7 +28,13 @@ data class NutritionProfileInfo(
 object NutritionGoalHelper {
 
     fun getProfileInfo(context: Context): NutritionProfileInfo {
-        val prefs = context.getSharedPreferences("profile_data", Context.MODE_PRIVATE)
+        val loginPrefs = context.getSharedPreferences("login_data", Context.MODE_PRIVATE)
+        val username = loginPrefs.getString("current_user", "guest") ?: "guest"
+
+        val prefs = context.getSharedPreferences(
+            "user_${username}_profile",
+            Context.MODE_PRIVATE
+        )
 
         val currentWeight = prefs.getFloat("weight", 65f).toDouble()
         val targetWeight = prefs.getFloat("targetWeight", 65f).toDouble()

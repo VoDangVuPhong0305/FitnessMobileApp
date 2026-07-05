@@ -737,6 +737,7 @@ class OnboardingActivity : AppCompatActivity() {
             .putString("gender", gender)
             .putInt("birthYear", birthYear)
             .putInt("height", height)
+            .putFloat("weight", currentWeight.toFloat())
             .putFloat("currentWeight", currentWeight.toFloat())
             .putFloat("targetWeight", targetWeight.toFloat())
             .putFloat("currentBMI", calculateBmi(currentWeight).toFloat())
